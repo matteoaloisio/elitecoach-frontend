@@ -3072,28 +3072,15 @@ function doTrainerLogout(){
 function getOwnerPw(){
   return localStorage.getItem('ecp_owner_pw') || 'matteo92';
 }
-async function doOwnerLogin(){
-  const pw = document.getElementById('owner-pw').value;
-  // Verifica password sul server
-  try {
-    var r = await fetch(SERVER_URL+'/api/owner/users', {
-      headers: { 'x-owner-password': pw }
-    });
-    if(r.status === 403){ toast('Password errata','error'); return; }
-    // Password corretta
-    localStorage.setItem('ecp_owner_pw', pw);
-    document.getElementById('pg-owner-login').style.display='none';
-    document.getElementById('pg-owner-dash').style.display='block';
-    renderOwner();
-  } catch(e){
-    // Fallback locale se server non raggiungibile
-    if(pw==='matteo92'){
-      localStorage.setItem('ecp_owner_pw', pw);
-      document.getElementById('pg-owner-login').style.display='none';
-      document.getElementById('pg-owner-dash').style.display='block';
-      renderOwner();
-    } else { toast('Password errata','error'); }
-  }
+function doOwnerLogin(){
+  var pw = document.getElementById('owner-pw').value;
+  if(!pw){ toast('Inserisci la password','error'); return; }
+  // Salva password per le chiamate API successive
+  localStorage.setItem('ecp_owner_pw', pw);
+  // Accedi subito — il server verificherà la password ad ogni chiamata
+  document.getElementById('pg-owner-login').style.display='none';
+  document.getElementById('pg-owner-dash').style.display='block';
+  renderOwner();
 }
 
 function initOwner(){ /* reset view on page show */ 
