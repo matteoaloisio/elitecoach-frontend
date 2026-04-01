@@ -2984,8 +2984,9 @@ async function doLogin(){
     await loadUserFromSupabase();
     window._loadingFromSupabase = false;
     saveSession(SESSION);
-    if(!SESSION.profile?.goal) showPage('pg-onboard');
-    else { showPage('pg-dash'); renderDashboard(); }
+    // Vai alla dashboard se ha goal O programma già generato
+    if(SESSION.program || (SESSION.profile && SESSION.profile.goal)) { showPage('pg-dash'); renderDashboard(); }
+    else { showPage('pg-onboard'); }
   } catch(e) {
     console.error('doLogin error:', e);
     showAuthError('Errore di connessione. Riprova.');
