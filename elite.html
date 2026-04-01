@@ -950,6 +950,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
         <div class="field"><label>Password</label><input class="inp" id="log-pass" type="password" placeholder="••••••••"></div>
         <div id="auth-err" style="color:var(--red);font-size:.85rem;display:none"></div>
         <button class="btn btn-primary" style="width:100%" onclick="doLogin()">Accedi</button>
+        <p style="text-align:center;margin:12px 0 0"><a onclick="showForgotPassword()" style="color:var(--accent);font-size:.85rem;cursor:pointer;text-decoration:underline">Hai dimenticato la password?</a></p>
         <p style="text-align:center;font-size:.82rem;color:var(--sub)">
           Non hai un account? <a onclick="switchAuthTab('register')" style="color:var(--accent);cursor:pointer">Registrati gratis</a>
         </p>
@@ -14556,4 +14557,123 @@ async function owSaveSystem(){
       <button onclick="acceptCookies('all')" style="padding:8px 18px;border-radius:50px;border:none;background:var(--accent);color:#fff;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap">✓ Accetta tutti</button>
     </div>
   </div>
-</div>e
+</div>
+
+<!-- ── FORGOT PASSWORD MODAL ── -->
+<div id="forgot-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--bg2);border-radius:16px;padding:32px;width:100%;max-width:400px">
+    <h3 style="font-family:var(--font2);margin:0 0 8px">&#128273; Password dimenticata</h3>
+    <p style="color:var(--sub);font-size:.85rem;margin:0 0 20px">Inserisci la tua email e ti mandiamo un link per reimpostare la password.</p>
+    <input class="inp" id="forgot-email" type="email" placeholder="La tua email" style="width:100%;margin-bottom:12px">
+    <div id="forgot-msg" style="display:none;padding:10px;border-radius:8px;font-size:.85rem;margin-bottom:12px"></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeForgotPassword()">Annulla</button>
+      <button class="btn btn-primary" style="flex:1" id="forgot-btn" onclick="submitForgotPassword()">Invia link</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── RESET PASSWORD PAGE ── -->
+<div id="pg-reset" style="display:none;position:fixed;inset:0;background:var(--bg);align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--bg2);border-radius:16px;padding:32px;width:100%;max-width:400px">
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="font-size:2.5rem">&#128273;</div>
+      <h2 style="font-family:var(--font2);margin:8px 0 4px">Nuova Password</h2>
+      <p style="color:var(--sub);font-size:.85rem;margin:0">Scegli una password sicura</p>
+    </div>
+    <input class="inp" id="reset-pass1" type="password" placeholder="Nuova password (min 6 caratteri)" style="width:100%;margin-bottom:10px">
+    <input class="inp" id="reset-pass2" type="password" placeholder="Conferma password" style="width:100%;margin-bottom:12px">
+    <div id="reset-msg" style="display:none;padding:10px;border-radius:8px;font-size:.85rem;margin-bottom:12px"></div>
+    <button class="btn btn-primary" style="width:100%" id="reset-btn" onclick="submitResetPassword()">&#10003; Salva nuova password</button>
+    <p style="text-align:center;margin:16px 0 0">
+      <a onclick="document.getElementById('pg-reset').style.display='none';showPage('pg-auth')" style="color:var(--accent);font-size:.85rem;cursor:pointer">&#8592; Torna al login</a>
+    </p>
+  </div>
+</div>
+
+<script>
+// ════ RECUPERO PASSWORD ════
+function showForgotPassword(){
+  var m=document.getElementById('forgot-modal');
+  if(m) m.style.display='flex';
+  var em=document.getElementById('forgot-email');
+  if(em) em.value='';
+  var msg=document.getElementById('forgot-msg');
+  if(msg) msg.style.display='none';
+  var btn=document.getElementById('forgot-btn');
+  if(btn){btn.disabled=false;btn.textContent='Invia link';}
+  setTimeout(function(){if(em)em.focus();},100);
+}
+function closeForgotPassword(){
+  var m=document.getElementById('forgot-modal');
+  if(m) m.style.display='none';
+}
+async function submitForgotPassword(){
+  var email=document.getElementById('forgot-email').value.trim().toLowerCase();
+  if(!email) return;
+  var btn=document.getElementById('forgot-btn');
+  var msg=document.getElementById('forgot-msg');
+  btn.disabled=true; btn.textContent='Invio in corso...';
+  try{
+    await fetch(SERVER_URL+'/api/auth/forgot-password',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:email})
+    });
+    msg.style.cssText='display:block;padding:10px;border-radius:8px;background:rgba(15,214,194,.1);color:var(--teal);border:1px solid rgba(15,214,194,.3);font-size:.85rem;margin-bottom:12px';
+    msg.textContent='Se questa email esiste nel sistema, riceverai il link entro pochi minuti.';
+    btn.textContent='Email inviata!';
+    setTimeout(function(){closeForgotPassword();},3000);
+  }catch(e){
+    msg.style.cssText='display:block;padding:10px;border-radius:8px;background:rgba(244,91,138,.1);color:#f45b8a;border:1px solid rgba(244,91,138,.3);font-size:.85rem;margin-bottom:12px';
+    msg.textContent='Errore di connessione. Riprova.';
+    btn.disabled=false; btn.textContent='Invia link';
+  }
+}
+async function submitResetPassword(){
+  var p1=document.getElementById('reset-pass1').value;
+  var p2=document.getElementById('reset-pass2').value;
+  var msg=document.getElementById('reset-msg');
+  var btn=document.getElementById('reset-btn');
+  function showErr(t){
+    msg.style.cssText='display:block;padding:10px;border-radius:8px;background:rgba(244,91,138,.1);color:#f45b8a;border:1px solid rgba(244,91,138,.3);font-size:.85rem;margin-bottom:12px';
+    msg.textContent=t;
+  }
+  if(p1.length<6){showErr('Password troppo corta, minimo 6 caratteri');return;}
+  if(p1!==p2){showErr('Le password non coincidono');return;}
+  var token=new URLSearchParams(window.location.search).get('reset_token');
+  if(!token){showErr('Token mancante, richiedi un nuovo reset');return;}
+  btn.disabled=true; btn.textContent='Salvataggio...';
+  try{
+    var r=await fetch(SERVER_URL+'/api/auth/reset-password',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({token:token,password:p1})
+    });
+    var d=await r.json();
+    if(d.ok){
+      msg.style.cssText='display:block;padding:10px;border-radius:8px;background:rgba(15,214,194,.1);color:var(--teal);border:1px solid rgba(15,214,194,.3);font-size:.85rem;margin-bottom:12px';
+      msg.textContent='Password aggiornata! Reindirizzamento al login...';
+      btn.textContent='Fatto!';
+      setTimeout(function(){
+        window.history.replaceState({},'',window.location.pathname);
+        var pg=document.getElementById('pg-reset');
+        if(pg) pg.style.display='none';
+        showPage('pg-auth');
+      },2000);
+    } else {
+      showErr(d.error||'Errore. Richiedi un nuovo link.');
+      btn.disabled=false; btn.textContent='Salva nuova password';
+    }
+  }catch(e){
+    showErr('Errore di connessione.');
+    btn.disabled=false; btn.textContent='Salva nuova password';
+  }
+}
+function checkResetToken(){
+  var token=new URLSearchParams(window.location.search).get('reset_token');
+  if(token){
+    var pg=document.getElementById('pg-reset');
+    if(pg) pg.style.display='flex';
+  }
+}
+</script>
+</body></html>
