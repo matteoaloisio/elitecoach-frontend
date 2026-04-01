@@ -12439,6 +12439,10 @@ addEventListener('DOMContentLoaded', ()=>{
   // Se c'è un token, mostra subito la pagina reset e STOP
   var _resetToken = new URLSearchParams(window.location.search).get('reset_token');
   if(_resetToken){
+    // Nascondi header, navbar e tutto il resto
+    var _toHide = document.querySelectorAll('header, nav, .nav, #main-nav, .hero, #pg-land, #cookie-banner');
+    _toHide.forEach(function(el){ if(el) el.style.display='none'; });
+    document.body.style.overflow = 'hidden';
     var _pgReset = document.getElementById('pg-reset');
     if(_pgReset){ _pgReset.style.display='flex'; }
     return; // Non eseguire il resto del login flow
@@ -14584,7 +14588,7 @@ async function owSaveSystem(){
 </div>
 
 <!-- ── RESET PASSWORD PAGE ── -->
-<div id="pg-reset" style="display:none;position:fixed;inset:0;background:var(--bg);align-items:center;justify-content:center;padding:20px">
+<div id="pg-reset" style="display:none;position:fixed;inset:0;z-index:99999;background:#0d0d12;align-items:center;justify-content:center;padding:20px;overflow-y:auto">
   <div style="background:var(--bg2);border-radius:16px;padding:32px;width:100%;max-width:400px">
     <div style="text-align:center;margin-bottom:24px">
       <div style="font-size:2.5rem">&#128273;</div>
