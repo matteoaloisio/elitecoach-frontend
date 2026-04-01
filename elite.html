@@ -3144,6 +3144,33 @@ async function owRefreshUsers(){
 function renderOwnerSection(sec){
   const users=getUsers(), trainers=getTrainers();
   if(sec==='esercizi'){ renderOwnerExercises(); return; }
+  if(sec==='users_loaded'){
+    // Re-render utenti con dati da Railway
+    var arr = window._owAllUsers || [];
+    var el = document.getElementById('os-users');
+    if(!el) return;
+    var rows = arr.length ? '<table class="data-table"><thead><tr><th>Nome</th><th>Email</th><th>Piano</th><th>Sessioni</th><th>Data</th><th>Azioni</th></tr></thead><tbody>'
+      +arr.map(function(u){
+        return '<tr>'
+          +'<td><strong>'+(u.name||'')+' '+(u.surname||'')+'</strong></td>'
+          +'<td style="font-size:.83rem;color:var(--sub)">'+(u.email||'')+'</td>'
+          +'<td>'+(u.pro?'<span class="badge badge-teal">PRO</span>':'<span class="badge badge-accent">Free</span>')+'</td>'
+          +'<td>'+(u.sessions_count||0)+'</td>'
+          +'<td style="font-size:.8rem;color:var(--sub)">'+(u.join_date?String(u.join_date).slice(0,10):'-')+'</td>'
+          +'<td><div style="display:flex;gap:6px">'
+          +'<button class="btn btn-xs '+(u.pro?'btn-ghost':'btn-teal')+'" data-em="'+(u.email||'')+'" onclick="ownerTogglePro(this.dataset.em)">'+(u.pro?'Rimuovi PRO':'Attiva PRO')+'</button>'
+          +'<button class="btn btn-xs btn-danger" data-em="'+(u.email||'')+'" onclick="ownerDeleteUser(this.dataset.em)">🗑</button>'
+          +'</div></td></tr>';
+      }).join('')+'</tbody></table>'
+      : '<p style="color:var(--sub);padding:16px">Nessun utente nel database</p>';
+    el.innerHTML = '<h2 style="font-family:var(--font2);margin-bottom:6px">👥 Utenti</h2>'
+      +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">'
+      +'<button id="ow-refresh-btn" onclick="owRefreshUsers()" class="btn btn-ghost btn-sm" style="border-radius:50px">🔄 Aggiorna</button>'
+      +'<span id="ow-u-cnt" style="font-size:11px;color:var(--sub)">'+arr.length+' utenti nel database</span>'
+      +'</div>'
+      +'<div id="ow-users-table">'+rows+'</div>';
+    return;
+  }
   if(sec==='stats'){
     const pro=users.filter(u=>u.pro).length;
     const mrr=pro*14.99;
@@ -3183,6 +3210,17 @@ function renderOwnerSection(sec){
         </div>
       </div>`;
   } else if(sec==='users'){
+    // Carica subito da Railway
+    var el_us = document.getElementById('os-users');
+    if(el_us) el_us.innerHTML = '<div style="padding:20px;color:var(--sub);text-align:center">Caricamento utenti dal database...</div>';
+    fetch(SERVER_URL+'/api/owner/users', {
+      headers: {'x-owner-password': getOwnerPw()}
+    }).then(function(r){ return r.json(); }).then(function(users){
+      if(Array.isArray(users)){
+        window._owAllUsers = users;
+        renderOwnerSection('users_loaded');
+      }
+    }).catch(function(e){ toast('Errore caricamento utenti: '+e.message,'error'); });
     var _rtbl = function(arr){
       if(!arr.length) return '<p style="color:var(--sub);font-size:.85rem;padding:16px">Nessun utente</p>';
       return '<table class="data-table"><thead><tr>'
@@ -7160,15 +7198,22 @@ async function deleteWorkoutSession(sid,date,dayName){
   if(!SESSION||!SESSION.email) return;
   var label=(dayName||'Sessione')+(date?' — '+new Date(date).toLocaleDateString('it-IT'):'');
   if(!confirm('Eliminare questa sessione?\n'+label)) return;
-  var sb=getSupabase(); if(!sb){ toast('Supabase non disponibile','error'); return; }
   try{
+    // Elimina dal server Railway
     if(sid&&sid!=='undefined'&&sid!==''){
-      await sb.from('workout_sessions').delete().eq('id',sid);
+      var r = await apiFetch('/api/workout/'+sid, {method:'DELETE'});
+      var d = await r.json();
+      if(!d.ok) throw new Error(d.error||'Eliminazione fallita');
     } else if(date){
-      var d0=new Date(date); d0.setHours(0,0,0,0);
-      var d1=new Date(date); d1.setHours(23,59,59,999);
-      await sb.from('workout_sessions').delete()
-        .eq('email',SESSION.email).gte('date',d0.toISOString()).lte('date',d1.toISOString()).eq('day_name',dayName||'');
+      // Fallback: elimina per data — trova l'ID dalla lista locale
+      var match = (SESSION.log||[]).find(function(l){
+        return l.date && new Date(l.date).toDateString()===new Date(date).toDateString() && (l.dayName||'')===(dayName||'');
+      });
+      if(match && match.id){
+        var r2 = await apiFetch('/api/workout/'+match.id, {method:'DELETE'});
+        var d2 = await r2.json();
+        if(!d2.ok) throw new Error(d2.error||'Eliminazione fallita');
+      }
     }
     // Rimuovi da SESSION.log
     SESSION.log=(SESSION.log||[]).filter(function(l){
@@ -14332,19 +14377,25 @@ async function owSetModel(model){
 async function owToggleFeat(key){
   var newVal = localStorage.getItem(key)==='0' ? '1' : '0';
   localStorage.setItem(key, newVal);
+  // Aggiorna visivamente il toggle immediatamente senza re-render completo
+  var el = document.querySelector('[data-fkey="'+key+'"]');
+  if(el){
+    var active = newVal === '1';
+    el.style.background = active ? 'var(--accent)' : 'var(--bg3)';
+    var dot = el.querySelector('div');
+    if(dot) dot.style.left = active ? '23px' : '3px';
+  }
+  // Salva su Railway in background
   var feats = {};
   ['ai_feat_generazione_programmi','ai_feat_ai_coach_chat','ai_feat_analisi_dieta',
    'ai_feat_analisi_video','ai_feat_ricette_ai','ai_feat_check_in_adattivo'].forEach(function(k){
     feats[k] = localStorage.getItem(k) !== '0';
   });
-  try {
-    await fetch(SERVER_URL+'/api/owner/config',{
-      method:'PUT',
-      headers:{'Content-Type':'application/json','x-owner-password':getOwnerPw()},
-      body: JSON.stringify({key:'ai_features', value:feats})
-    });
-  } catch(e){ console.warn('owToggleFeat sync:',e.message); }
-  renderOwnerSection('ai');
+  apiFetch('/api/owner/config',{
+    method:'PUT',
+    headers:{'Content-Type':'application/json','x-owner-password':getOwnerPw()},
+    body: JSON.stringify({key:'ai_features', value:feats})
+  }).catch(function(e){ console.warn('owToggleFeat sync:',e.message); });
 }
 async function owSaveSystem(){
   var val = (document.getElementById('ow-ai-system')||{}).value || '';
