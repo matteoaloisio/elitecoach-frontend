@@ -3068,13 +3068,32 @@ function doTrainerLogout(){
 }
 
 // ─── OWNER ───────────────────────────────────────────────
-function doOwnerLogin(){
-  const pw=document.getElementById('owner-pw').value;
-  if(pw==='matteo92'){
+
+function getOwnerPw(){
+  return localStorage.getItem('ecp_owner_pw') || 'matteo92';
+}
+async function doOwnerLogin(){
+  const pw = document.getElementById('owner-pw').value;
+  // Verifica password sul server
+  try {
+    var r = await fetch(SERVER_URL+'/api/owner/users', {
+      headers: { 'x-owner-password': pw }
+    });
+    if(r.status === 403){ toast('Password errata','error'); return; }
+    // Password corretta
+    localStorage.setItem('ecp_owner_pw', pw);
     document.getElementById('pg-owner-login').style.display='none';
     document.getElementById('pg-owner-dash').style.display='block';
     renderOwner();
-  } else { toast('Password errata','error'); }
+  } catch(e){
+    // Fallback locale se server non raggiungibile
+    if(pw==='matteo92'){
+      localStorage.setItem('ecp_owner_pw', pw);
+      document.getElementById('pg-owner-login').style.display='none';
+      document.getElementById('pg-owner-dash').style.display='block';
+      renderOwner();
+    } else { toast('Password errata','error'); }
+  }
 }
 
 function initOwner(){ /* reset view on page show */ 
@@ -3100,7 +3119,7 @@ async function owRefreshUsers(){
   if(btn){ btn.disabled=true; btn.textContent='Caricamento...'; }
   try {
     var res = await fetch(SERVER_URL + '/api/owner/users', {
-      headers: { 'x-owner-password': localStorage.getItem('ecp_owner_pw')||'matteo92' }
+      headers: { 'x-owner-password': getOwnerPw() }
     });
     var users = await res.json();
     if(!Array.isArray(users)) throw new Error(users.error||'Errore server');
@@ -3284,7 +3303,7 @@ function renderOwnerSection(sec){
   } else if(sec==='ai'){
     // Carica config aggiornata da Railway
     fetch(SERVER_URL + '/api/owner/config', {
-      headers: { 'x-owner-password': localStorage.getItem('ecp_owner_pw')||'matteo92' }
+      headers: { 'x-owner-password': getOwnerPw() }
     }).then(function(r){ return r.json(); }).then(function(d){
       if(d.ok && d.config){
         if(d.config.ai_system) localStorage.setItem('ecp_ai_system', d.config.ai_system);
@@ -3360,7 +3379,7 @@ async function ownerTogglePro(email){
   try {
     var res = await fetch(SERVER_URL + '/api/owner/users/' + encodeURIComponent(email) + '/pro', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'x-owner-password': localStorage.getItem('ecp_owner_pw')||'matteo92' },
+      headers: { 'Content-Type': 'application/json', 'x-owner-password': getOwnerPw() },
       body: JSON.stringify({ pro: newPro })
     });
     var data = await res.json();
@@ -3378,7 +3397,7 @@ async function ownerDeleteUser(email){
   try {
     var res = await fetch(SERVER_URL + '/api/owner/users/' + encodeURIComponent(email), {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json', 'x-owner-password': localStorage.getItem('ecp_owner_pw')||'matteo92' }
+      headers: { 'Content-Type': 'application/json', 'x-owner-password': getOwnerPw() }
     });
     var data = await res.json();
     if(data.ok){
@@ -14314,7 +14333,7 @@ async function owSetModel(model){
   try {
     var r = await fetch(SERVER_URL+'/api/owner/config',{
       method:'PUT',
-      headers:{'Content-Type':'application/json','x-owner-password':localStorage.getItem('ecp_owner_pw')||'matteo92'},
+      headers:{'Content-Type':'application/json','x-owner-password':getOwnerPw()},
       body: JSON.stringify({key:'ai_model', value:model})
     });
     var d = await r.json();
@@ -14333,7 +14352,7 @@ async function owToggleFeat(key){
   try {
     await fetch(SERVER_URL+'/api/owner/config',{
       method:'PUT',
-      headers:{'Content-Type':'application/json','x-owner-password':localStorage.getItem('ecp_owner_pw')||'matteo92'},
+      headers:{'Content-Type':'application/json','x-owner-password':getOwnerPw()},
       body: JSON.stringify({key:'ai_features', value:feats})
     });
   } catch(e){ console.warn('owToggleFeat sync:',e.message); }
@@ -14344,7 +14363,7 @@ async function owSaveSystem(){
   try {
     var r = await fetch(SERVER_URL+'/api/owner/config',{
       method:'PUT',
-      headers:{'Content-Type':'application/json','x-owner-password':localStorage.getItem('ecp_owner_pw')||'matteo92'},
+      headers:{'Content-Type':'application/json','x-owner-password':getOwnerPw()},
       body: JSON.stringify({key:'ai_system', value:val})
     });
     var d = await r.json();
