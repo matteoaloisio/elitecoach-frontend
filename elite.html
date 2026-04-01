@@ -1552,7 +1552,9 @@ var _authToken = localStorage.getItem('ecp_token') || null;
 async function apiFetch(path, opts){
   var url = SERVER_URL + path;
   var hdrs = { 'Content-Type': 'application/json' };
-  if(_authToken) hdrs['Authorization'] = 'Bearer ' + _authToken;
+  // Leggi sempre il token aggiornato (potrebbe essere stato settato dopo l'init)
+  var token = _authToken || localStorage.getItem('ecp_token');
+  if(token) hdrs['Authorization'] = 'Bearer ' + token;
   var res = await fetch(url, Object.assign({ headers: hdrs }, opts||{}));
   if(res.status === 401){ _authToken=null; localStorage.removeItem('ecp_token'); }
   return res;
@@ -2840,6 +2842,8 @@ function loadSession(){ try{return JSON.parse(localStorage.getItem('ecp_session'
 function saveSession(s){
   localStorage.setItem('ecp_session', JSON.stringify(s));
   SESSION = s;
+  // Assicura che _authToken sia sempre sincronizzato
+  if(!_authToken) _authToken = localStorage.getItem('ecp_token');
   if(window._loadingFromSupabase) return;
   // Sync user_data (non workout_sessions — quello si fa in completeWorkout)
   clearTimeout(window._sessionSyncTimer);
