@@ -2854,7 +2854,22 @@ function saveSession(s){
 
   // vecchio blocco auth rimosso — usa doLogin/doRegister
 
-  async function initApp(){
+  
+async function loadAIConfig(){
+  try {
+    var res = await apiGet('/api/ai-config');
+    if(res && !res.error){
+      if(res.model)         localStorage.setItem('ecp_ai_model', res.model);
+      if(res.system_prompt) localStorage.setItem('ecp_ai_system', res.system_prompt);
+      if(res.features && typeof res.features === 'object'){
+        Object.keys(res.features).forEach(function(k){
+          localStorage.setItem(k, res.features[k] ? '1' : '0');
+        });
+      }
+    }
+  } catch(e){ console.warn('loadAIConfig error:', e.message); }
+}
+async function initApp(){
   // Verifica token salvato
   var token = localStorage.getItem('ecp_token');
   if(!token) return;
@@ -2875,6 +2890,8 @@ function saveSession(s){
     if(document.getElementById('pg-land')?.classList.contains('on')){
       showPage('pg-dash'); renderDashboard();
     } else { try{ renderDashboard(); }catch(e){} }
+    // Carica configurazione AI dal server (globale)
+    loadAIConfig().catch(function(){});
     console.log('OK initApp: caricati', (SESSION.log||[]).length, 'allenamenti dal server');
   } catch(e){ console.warn('initApp error:', e.message); }
 }
@@ -3077,6 +3094,46 @@ function showOwnerSection(sec){
 
 function renderOwner(){ showOwnerSection('stats'); }
 
+
+async function owRefreshUsers(){
+  var btn = document.getElementById('ow-refresh-btn');
+  if(btn){ btn.disabled=true; btn.textContent='Caricamento...'; }
+  try {
+    var res = await fetch(SERVER_URL + '/api/owner/users', {
+      headers: { 'x-owner-password': localStorage.getItem('ecp_owner_pw')||'matteo92' }
+    });
+    var users = await res.json();
+    if(!Array.isArray(users)) throw new Error(users.error||'Errore server');
+    window._owAllUsers = users;
+    var cnt = document.getElementById('ow-u-cnt');
+    var tbl = document.getElementById('ow-users-table');
+    if(cnt) cnt.textContent = users.length + ' utenti nel database';
+    if(tbl){
+      if(!users.length){
+        tbl.innerHTML = '<p style="color:var(--sub);padding:16px">Nessun utente nel database</p>';
+      } else {
+        tbl.innerHTML = '<table class="data-table"><thead><tr><th>Nome</th><th>Email</th><th>Piano</th><th>Sessioni</th><th>Data</th><th>Azioni</th></tr></thead><tbody>'
+          +users.map(function(u){
+            return '<tr>'
+              +'<td><strong>'+(u.name||'')+' '+(u.surname||'')+'</strong></td>'
+              +'<td style="color:var(--sub);font-size:.83rem">'+(u.email||'')+'</td>'
+              +'<td>'+(u.pro?'<span class="badge badge-teal">PRO</span>':'<span class="badge badge-accent">Free</span>')+'</td>'
+              +'<td style="color:var(--sub)">'+(u.sessions_count||0)+'</td>'
+              +'<td style="color:var(--sub);font-size:.8rem">'+(u.join_date?String(u.join_date).slice(0,10):'-')+'</td>'
+              +'<td><div style="display:flex;gap:6px">'
+              +'<button class="btn btn-xs '+(u.pro?'btn-ghost':'btn-teal')+'" data-em="'+(u.email||'')+'" onclick="ownerTogglePro(this.dataset.em)">'+(u.pro?'Rimuovi PRO':'Attiva PRO')+'</button>'
+              +'<button class="btn btn-xs btn-danger" data-em="'+(u.email||'')+'" onclick="ownerDeleteUser(this.dataset.em)">&#128465; Elimina</button>'
+              +'</div></td>'
+              +'</tr>';
+          }).join('')
+          +'</tbody></table>';
+      }
+    }
+    toast(users.length+' utenti caricati dal database','success');
+  } catch(e){ toast('Errore: '+e.message,'error'); }
+  finally { if(btn){ btn.disabled=false; btn.textContent='&#128260; Aggiorna'; } }
+}
+
 function renderOwnerSection(sec){
   const users=getUsers(), trainers=getTrainers();
   if(sec==='esercizi'){ renderOwnerExercises(); return; }
@@ -3150,7 +3207,7 @@ function renderOwnerSection(sec){
         +'<p style="font-size:.85rem;color:var(--sub);margin-bottom:14px">localStorage + Supabase unificati</p>'
         +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">'
         +'<input class="inp" id="ow-user-search" placeholder="Cerca nome o email..." style="max-width:240px;border-radius:50px;font-size:12px" oninput="owFilterUsers()">'
-        +'<button onclick="owRefreshUsers()" class="btn btn-ghost btn-sm" style="border-radius:50px">🔄 Aggiorna da Supabase</button>'
+        +'<button onclick="owRefreshUsers()" class="btn btn-ghost btn-sm" style="border-radius:50px">🔄 Aggiorna</button>'
         +'<span id="ow-u-cnt" style="font-size:11px;color:var(--sub)">'+arr.length+' utenti</span>'
         +'</div>'
         +'<div id="ow-users-table">'+_rtbl(arr)+'</div>';
@@ -3225,112 +3282,112 @@ function renderOwnerSection(sec){
         <div id="promo-list">${renderPromoList()}</div>
       </div>`;
   } else if(sec==='ai'){
-    var _k=localStorage.getItem('ecp_anthropic_key')||'';
-    var _model=localStorage.getItem('ecp_ai_model')||'claude-haiku-4-5-20251001';
-    var _mH=_model==='claude-haiku-4-5-20251001';
-    var _mS=_model==='claude-sonnet-4-5';
-    var _allU=getUsers();
-    var _totalProg=_allU.filter(function(u){return u.program;}).length;
-    var _totalSess=_allU.reduce(function(a,u){return a+(u.log||[]).length;},0);
-    var _totalMsgs=_allU.reduce(function(a,u){return a+(u.coachMessages||0);},0);
-    var _lSt=_k
-      ?'<span style="color:var(--teal);font-size:.82rem">&#10003; Chiave locale</span>'
-      :'<span style="color:var(--sub);font-size:.82rem">Nessuna chiave locale</span>';
-    var _feats=['Generazione programmi','AI Coach chat','Analisi dieta','Analisi video','Ricette AI','Check-in adattivo'];
-    var _fH=_feats.map(function(feat){
-      var fk='ai_feat_'+feat.toLowerCase().replace(/[^a-z]/g,'_');
-      var act=localStorage.getItem(fk)!=='0';
-      return '<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg2);border-radius:8px">'
-        +'<span style="flex:1;font-size:.88rem">'+feat+'</span>'
-        +'<div data-fkey="'+fk+'" onclick="owToggleFeat(this.dataset.fkey)" style="width:44px;height:24px;border-radius:12px;background:'+(act?'var(--accent)':'var(--bg3)')+';position:relative;cursor:pointer;transition:.3s">'
-        +'<div style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:3px;left:'+(act?'23px':'3px')+';transition:.3s"></div>'
-        +'</div></div>';
+    // Carica config aggiornata da Railway
+    fetch(SERVER_URL + '/api/owner/config', {
+      headers: { 'x-owner-password': localStorage.getItem('ecp_owner_pw')||'matteo92' }
+    }).then(function(r){ return r.json(); }).then(function(d){
+      if(d.ok && d.config){
+        if(d.config.ai_system) localStorage.setItem('ecp_ai_system', d.config.ai_system);
+        if(d.config.ai_model)  localStorage.setItem('ecp_ai_model',  d.config.ai_model);
+        if(d.config.ai_features && typeof d.config.ai_features === 'object'){
+          Object.keys(d.config.ai_features).forEach(function(k){
+            localStorage.setItem(k, d.config.ai_features[k]?'1':'0');
+          });
+        }
+        // Re-render con dati aggiornati
+        renderOwnerSection('ai');
+      }
+    }).catch(function(){});
+    var _model = localStorage.getItem('ecp_ai_model') || 'claude-haiku-4-5-20251001';
+    var _mH = _model === 'claude-haiku-4-5-20251001';
+    var _mS = _model === 'claude-sonnet-4-5';
+    var _sys = localStorage.getItem('ecp_ai_system') || 'Sei il coach personale su EliteCoachProgram.fit. Rispondi in italiano, sii diretto e specifico. Massimo 3 punti per risposta. Non suggerire mai farmaci o integratori non naturali. Se menzioni infortuni, rimanda sempre a un medico. Promuovi recupero adeguato e consistenza a lungo termine.';
+    var _feats = ['Generazione programmi','AI Coach chat','Analisi dieta','Analisi video','Ricette AI','Check-in adattivo'];
+    var _fH = _feats.map(function(feat){
+      var fk = 'ai_feat_' + feat.toLowerCase().replace(/[^a-z]/g,'_');
+      var act = localStorage.getItem(fk) !== '0';
+      return '<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg2);border-radius:8px"><span style="flex:1;font-size:.88rem">'+feat+'</span><div data-fkey="'+fk+'" onclick="owToggleFeat(this.dataset.fkey)" style="width:44px;height:24px;border-radius:12px;background:'+(act?'var(--accent)':'var(--bg3)')+';position:relative;cursor:pointer;transition:.3s"><div style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:3px;left:'+(act?'23':'3')+'px;transition:.3s"></div></div></div>';
     }).join('');
-    document.getElementById('os-ai').innerHTML=
-      '<h2 style="font-family:var(--font2);margin-bottom:4px">&#129504; Configurazione AI</h2>'
-      +'<p style="font-size:.85rem;color:var(--sub);margin-bottom:18px">Chiave API, modello, funzionalita AI e istruzioni Coach</p>'
-      +'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:18px">'
-      +'<div class="card" style="text-align:center;padding:14px 8px"><div style="font-size:1.4rem;font-weight:800;color:var(--accent);font-family:var(--font2)">'+_totalProg+'</div><div style="font-size:.72rem;color:var(--sub)">Programmi AI</div></div>'
-      +'<div class="card" style="text-align:center;padding:14px 8px"><div style="font-size:1.4rem;font-weight:800;color:var(--teal);font-family:var(--font2)">'+_totalSess+'</div><div style="font-size:.72rem;color:var(--sub)">Sessioni log</div></div>'
-      +'<div class="card" style="text-align:center;padding:14px 8px"><div style="font-size:1.4rem;font-weight:800;color:var(--gold);font-family:var(--font2)">'+_totalMsgs+'</div><div style="font-size:.72rem;color:var(--sub)">Msg coach</div></div>'
-      +'<div class="card" style="text-align:center;padding:14px 8px"><div style="font-size:1.1rem;font-weight:800;color:var(--green);font-family:var(--font2)">'+(_mH?'Haiku':'Sonnet')+'</div><div style="font-size:.72rem;color:var(--sub)">Modello</div></div>'
+    var _haikuBorder = _mH ? 'var(--accent)' : 'var(--border)';
+    var _haikuBg    = _mH ? 'rgba(91,94,244,.1)' : 'var(--bg2)';
+    var _sonnetBorder= _mS ? 'var(--accent)' : 'var(--border)';
+    var _sonnetBg   = _mS ? 'rgba(91,94,244,.1)' : 'var(--bg2)';
+    document.getElementById('os-ai').innerHTML =
+      '<h2 style="font-family:var(--font2);margin-bottom:20px">&#129302; Configurazione AI</h2>'
+
+      // Chiave API info
+      +'<div class="card" style="margin-bottom:16px;border-left:3px solid var(--teal)">'
+      +'<h4 style="margin-bottom:8px">&#128273; Chiave API Anthropic</h4>'
+      +'<p style="font-size:.85rem;color:var(--sub);margin-bottom:8px">La chiave API &#232; configurata direttamente su Railway come variabile <code>ANTHROPIC_API_KEY</code>.</p>'
+      +'<div style="padding:10px;background:var(--bg2);border-radius:8px;font-size:.85rem;color:var(--teal)">&#10003; Configurata su Railway &#8594; Variables &#8594; ANTHROPIC_API_KEY</div>'
       +'</div>'
-      +'<div class="card" style="margin-bottom:14px;border-color:rgba(15,214,194,.25)">'
-      +'<h4 style="margin-bottom:10px">&#128279; Chiave API Vercel <span style="font-size:.75rem;color:var(--teal);font-weight:400">(raccomandata)</span></h4>'
-      +'<div style="background:var(--bg2);border-radius:8px;padding:12px;margin-bottom:10px;font-size:.8rem;color:var(--sub);line-height:2">'
-      +'<div>&#9312; <a href="https://vercel.com/dashboard" target="_blank" style="color:var(--accent)">vercel.com</a> &#8594; Settings &#8594; Environment Variables</div>'
-      +'<div>&#9313; <code style="background:var(--bg3);padding:1px 6px;border-radius:4px;color:var(--gold)">ANTHROPIC_API_KEY</code> = <code style="background:var(--bg3);padding:1px 6px;border-radius:4px">sk-ant-api03-...</code></div>'
-      +'<div>&#9314; Salva e rideploy</div>'
+
+      // Modello
+      +'<div class="card" style="margin-bottom:16px">'
+      +'<h4 style="margin-bottom:12px">&#9889; Modello AI</h4>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">'
+      +'<div data-model="claude-haiku-4-5-20251001" onclick="owSetModel(this.dataset.model)" style="padding:16px;border-radius:12px;border:2px solid '+_haikuBorder+';background:'+_haikuBg+';cursor:pointer">'
+      +'<div style="font-weight:700;margin-bottom:4px">&#9889; Claude Haiku</div>'
+      +'<div style="font-size:.8rem;color:var(--sub)">Veloce &#183; Economico &#183; 6-10s</div>'
+      +(_mH?'<div style="font-size:.75rem;color:var(--accent);margin-top:6px;font-weight:600">&#10003; ATTIVO</div>':'')
       +'</div>'
-      +'<button onclick="owTestKey()" class="btn" style="border-radius:50px;background:rgba(15,214,194,.12);border:1px solid rgba(15,214,194,.3);color:var(--teal)">&#129514; Testa connessione</button>'
-      +'<div id="ow-key-feedback" style="font-size:.83rem;padding:8px 12px;border-radius:8px;display:none;margin-top:10px"></div>'
-      +'</div>'
-      +'<div class="card" style="margin-bottom:14px">'
-      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
-      +'<div><h4>&#128273; Chiave locale</h4><p style="font-size:.77rem;color:var(--sub)">Sovrascrive Vercel su questo browser</p></div>'+_lSt+'</div>'
-      +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">'
-      +'<input class="inp" id="ow-api-key" type="password" placeholder="sk-ant-api03-..." style="flex:1;min-width:200px;font-family:monospace" value="'+_k+'">'
-      +'<button onclick="owSaveKey()" class="btn btn-primary" style="border-radius:50px">&#128190; Salva</button>'
-      +(_k?'<button onclick="owRevokeKey()" class="btn" style="border-radius:50px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:var(--red)">&#128465; Rimuovi</button>':'')
-      +'</div></div>'
-      +'<div class="card" style="margin-bottom:14px"><h4 style="margin-bottom:12px">&#9881; Modello AI</h4>'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
-      +'<div onclick="owSetModel(\'claude-haiku-4-5-20251001\')" style="border:2px solid '+(_mH?'var(--accent)':'var(--border)')+';border-radius:12px;padding:14px;cursor:pointer;transition:.2s;background:'+(_mH?'rgba(91,94,244,.08)':'var(--bg2)')+';">'
-      +'<div style="display:flex;align-items:center;gap:7px;margin-bottom:6px">&#9889;<strong style="font-size:.9rem">claude-haiku-4-5</strong>'+(_mH?'<span style="margin-left:auto;background:var(--accent);color:#fff;font-size:.65rem;padding:2px 7px;border-radius:20px;font-weight:700">ATTIVO</span>':'')+'</div>'
-      +'<div style="font-size:.76rem;color:var(--sub)">6-10s &#8226; Consigliato &#8226; Economico</div></div>'
-      +'<div onclick="owSetModel(\'claude-sonnet-4-5\')" style="border:2px solid '+(_mS?'var(--accent)':'var(--border)')+';border-radius:12px;padding:14px;cursor:pointer;transition:.2s;background:'+(_mS?'rgba(91,94,244,.08)':'var(--bg2)')+';">'
-      +'<div style="display:flex;align-items:center;gap:7px;margin-bottom:6px">&#129504;<strong style="font-size:.9rem">claude-sonnet-4-5</strong>'+(_mS?'<span style="margin-left:auto;background:var(--accent);color:#fff;font-size:.65rem;padding:2px 7px;border-radius:20px;font-weight:700">ATTIVO</span>':'')+'</div>'
-      +'<div style="font-size:.76rem;color:var(--sub)">20-30s &#8226; Piu potente &#8226; Costoso</div></div>'
-      +'</div></div>'
-      +'<div class="card" style="margin-bottom:14px"><h4 style="margin-bottom:12px">&#128337; Funzionalita AI</h4>'
+      +'<div data-model="claude-sonnet-4-5" onclick="owSetModel(this.dataset.model)" style="padding:16px;border-radius:12px;border:2px solid '+_sonnetBorder+';background:'+_sonnetBg+';cursor:pointer">'
+      +'<div style="font-weight:700;margin-bottom:4px">&#129504; Claude Sonnet</div>'
+      +'<div style="font-size:.8rem;color:var(--sub)">Potente &#183; Preciso &#183; 20-30s</div>'
+      +(_mS?'<div style="font-size:.75rem;color:var(--accent);margin-top:6px;font-weight:600">&#10003; ATTIVO</div>':'')
+      +'</div></div></div>'
+
+      // Funzionalità
+      +'<div class="card" style="margin-bottom:16px">'
+      +'<h4 style="margin-bottom:12px">&#127917; Funzionalit&#224; AI</h4>'
       +'<div style="display:flex;flex-direction:column;gap:8px">'+_fH+'</div></div>'
-      +'<div class="card"><h4 style="margin-bottom:8px">&#128221; Istruzioni Coach AI</h4>'
-      +'<p style="font-size:.82rem;color:var(--sub);margin-bottom:8px">Regole globali per tutti gli utenti</p>'
-      +'<textarea class="inp" id="ow-ai-system" rows="3" style="resize:vertical;font-size:.83rem" placeholder="Es: Rispondi in italiano formale. Non suggerire farmaci...">'+(localStorage.getItem('ecp_ai_system')||'')+'</textarea>'
-      +'<button onclick="owSaveSystem()" class="btn btn-primary btn-sm" style="border-radius:50px;margin-top:10px">&#128190; Salva</button>'
+
+      // Istruzioni sistema
+      +'<div class="card">'
+      +'<h4 style="margin-bottom:8px">&#128221; Istruzioni Sistema AI Coach</h4>'
+      +'<p style="font-size:.82rem;color:var(--sub);margin-bottom:10px">Definiscono la personalit&#224; e lo stile del coach per tutti gli utenti.</p>'
+      +'<textarea id="ow-ai-system" class="inp" rows="10" style="width:100%;font-size:.84rem;line-height:1.6;font-family:monospace" placeholder="Istruzioni sistema...">'+_sys+'</textarea>'
+      +'<button onclick="owSaveSystem()" class="btn btn-primary" style="margin-top:10px;border-radius:50px;padding:10px 28px">&#128190; Salva istruzioni</button>'
       +'</div>';
   }
 }
 
 async function ownerTogglePro(email){
   if(!email) return;
-  // 1. Aggiorna localStorage se presente
-  var u = getUserByEmail(email);
-  var newPro;
-  if(u){
-    u.pro = !u.pro;
-    newPro = u.pro;
-    updateUser(u);
-  } else {
-    // Utente solo su Supabase — leggi stato attuale
-    var found = (window._owAllUsers||[]).find(function(x){ return x.email===email; });
-    newPro = found ? !found.pro : true;
-    if(found) found.pro = newPro;
-  }
-  // 2. Aggiorna su Supabase ecp_profiles
+  var allUsers = window._owAllUsers || getUsers();
+  var user = allUsers.find(function(u){ return u.email===email; });
+  var newPro = user ? !user.pro : true;
   try {
-    var sb = getSupabase();
-    if(sb){
-      // Aggiorna sia ecp_profiles (legacy) che user_profiles (nuovo schema)
-      await sb.from('ecp_profiles')
-        .update({ pro: newPro, updated_at: new Date().toISOString() })
-        .eq('email', email);
-      var res = await sb.from('user_profiles')
-        .upsert({ email: email, pro: newPro, updated_at: new Date().toISOString() }, { onConflict: 'email' });
-      if(res.error) throw new Error(res.error.message);
-    }
-  } catch(e) {
-    toast('Errore aggiornamento Supabase: '+e.message, 'error');
-    return;
-  }
-  toast(newPro ? 'Pro attivato ✅' : 'Pro rimosso', 'success');
-  // 3. Re-render con dati aggiornati
-  owRefreshUsers();
+    var res = await fetch(SERVER_URL + '/api/owner/users/' + encodeURIComponent(email) + '/pro', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'x-owner-password': localStorage.getItem('ecp_owner_pw')||'matteo92' },
+      body: JSON.stringify({ pro: newPro })
+    });
+    var data = await res.json();
+    if(data.ok){
+      if(user) user.pro = newPro;
+      var arr = getUsers(); var i = arr.findIndex(function(u){ return u.email===email; });
+      if(i>=0){ arr[i].pro = newPro; saveUsers(arr); }
+      toast((newPro?'⭐ PRO attivato':'PRO rimosso')+' per '+email,'success');
+      renderOwnerSection('users');
+    } else { toast('Errore: '+(data.error||'Aggiornamento fallito'),'error'); }
+  } catch(e){ toast('Errore: '+e.message,'error'); }
 }
-function ownerDeleteUser(email){
-  if(!confirm('Eliminare utente '+email+'?')) return;
-  saveUsers(getUsers().filter(u=>u.email!==email));
-  toast('Utente eliminato'); renderOwnerSection('users');
+async function ownerDeleteUser(email){
+  if(!confirm('Eliminare utente '+email+'?\nTutti i dati e allenamenti saranno cancellati dal database.')) return;
+  try {
+    var res = await fetch(SERVER_URL + '/api/owner/users/' + encodeURIComponent(email), {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', 'x-owner-password': localStorage.getItem('ecp_owner_pw')||'matteo92' }
+    });
+    var data = await res.json();
+    if(data.ok){
+      saveUsers(getUsers().filter(function(u){ return u.email!==email; }));
+      window._owAllUsers = (window._owAllUsers||[]).filter(function(u){ return u.email!==email; });
+      toast('Utente eliminato dal database ✅','success');
+      renderOwnerSection('users');
+    } else { toast('Errore: '+(data.error||'Eliminazione fallita'),'error'); }
+  } catch(e){ toast('Errore: '+e.message,'error'); }
 }
 function ownerApprove(email){
   const tr=getTrainerByEmail(email); if(!tr) return;
@@ -14253,20 +14310,47 @@ function owRevokeKey(){
   toast('Chiave API rimossa','');
   showOwnerSection('ai');
 }
-function owSetModel(model){
-  localStorage.setItem('ecp_ai_model', model);
-  toast('Modello: '+model,'success');
-  showOwnerSection('ai');
+async function owSetModel(model){
+  try {
+    var r = await fetch(SERVER_URL+'/api/owner/config',{
+      method:'PUT',
+      headers:{'Content-Type':'application/json','x-owner-password':localStorage.getItem('ecp_owner_pw')||'matteo92'},
+      body: JSON.stringify({key:'ai_model', value:model})
+    });
+    var d = await r.json();
+    if(d.ok){ localStorage.setItem('ecp_ai_model',model); renderOwnerSection('ai'); toast('Modello salvato su Railway ✅','success'); }
+    else { toast('Errore: '+(d.error||''),'error'); }
+  } catch(e){ toast('Errore: '+e.message,'error'); }
 }
-function owToggleFeat(key){
-  var current=localStorage.getItem(key);
-  localStorage.setItem(key, current==='0'?'1':'0');
-  showOwnerSection('ai');
+async function owToggleFeat(key){
+  var newVal = localStorage.getItem(key)==='0' ? '1' : '0';
+  localStorage.setItem(key, newVal);
+  var feats = {};
+  ['ai_feat_generazione_programmi','ai_feat_ai_coach_chat','ai_feat_analisi_dieta',
+   'ai_feat_analisi_video','ai_feat_ricette_ai','ai_feat_check_in_adattivo'].forEach(function(k){
+    feats[k] = localStorage.getItem(k) !== '0';
+  });
+  try {
+    await fetch(SERVER_URL+'/api/owner/config',{
+      method:'PUT',
+      headers:{'Content-Type':'application/json','x-owner-password':localStorage.getItem('ecp_owner_pw')||'matteo92'},
+      body: JSON.stringify({key:'ai_features', value:feats})
+    });
+  } catch(e){ console.warn('owToggleFeat sync:',e.message); }
+  renderOwnerSection('ai');
 }
-function owSaveSystem(){
-  var val=(document.getElementById('ow-ai-system')||{}).value||'';
-  localStorage.setItem('ecp_ai_system', val);
-  toast('Istruzioni sistema salvate!','success');
+async function owSaveSystem(){
+  var val = (document.getElementById('ow-ai-system')||{}).value || '';
+  try {
+    var r = await fetch(SERVER_URL+'/api/owner/config',{
+      method:'PUT',
+      headers:{'Content-Type':'application/json','x-owner-password':localStorage.getItem('ecp_owner_pw')||'matteo92'},
+      body: JSON.stringify({key:'ai_system', value:val})
+    });
+    var d = await r.json();
+    if(d.ok){ localStorage.setItem('ecp_ai_system',val); toast('Istruzioni salvate su Railway ✅','success'); }
+    else { toast('Errore: '+(d.error||''),'error'); }
+  } catch(e){ toast('Errore: '+e.message,'error'); }
 }
 </script>
 
