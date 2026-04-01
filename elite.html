@@ -12434,6 +12434,16 @@ addEventListener('DOMContentLoaded', ()=>{
   loadTheme();
   registerServiceWorker();
   initFacebook();
+
+  // ── PRIORITÀ: verifica token reset password nell'URL ──
+  // Se c'è un token, mostra subito la pagina reset e STOP
+  var _resetToken = new URLSearchParams(window.location.search).get('reset_token');
+  if(_resetToken){
+    var _pgReset = document.getElementById('pg-reset');
+    if(_pgReset){ _pgReset.style.display='flex'; }
+    return; // Non eseguire il resto del login flow
+  }
+
   // Session check
   SESSION    = loadSession();
   TR_SESSION = loadTrainerSession();
@@ -14669,10 +14679,15 @@ async function submitResetPassword(){
   }
 }
 function checkResetToken(){
+  // Già gestito nel DOMContentLoaded — questa è una funzione di fallback
   var token=new URLSearchParams(window.location.search).get('reset_token');
   if(token){
+    // Nascondi tutto e mostra solo pg-reset
+    document.querySelectorAll('body > div[id]').forEach(function(el){
+      el.style.display='none';
+    });
     var pg=document.getElementById('pg-reset');
-    if(pg) pg.style.display='flex';
+    if(pg){ pg.style.display='flex'; }
   }
 }
 </script>
