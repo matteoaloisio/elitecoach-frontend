@@ -2763,43 +2763,28 @@ var loadFullSession = loadUserFromSupabase;
 
 async function loadUsersFromSupabase() {
   try {
-    var sb = getSupabase();
-    if (!sb) { console.warn('Supabase non inizializzato'); return []; }
-    // NOTA: la tabella ecp_profiles deve avere SELECT aperto (USING true) per funzionare
-    var result = await sb
-      .from('ecp_profiles')
-      .select('*')
-      .order('join_date', { ascending: false });
-    if (result.error) {
-      console.error('loadUsersFromSupabase RLS error:', result.error.message, result.error.code);
-      // Mostra errore visibile nel pannello
-      var tbl = document.getElementById('ow-users-table');
-      if(tbl) tbl.insertAdjacentHTML('afterbegin',
-        '<div style="background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:.82rem;color:var(--red)">'
-        +'⚠️ Supabase RLS Error: '+result.error.message+'<br>'
-        +'<strong>Soluzione:</strong> Esegui su Supabase SQL Editor:<br>'
-        +'<code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:.78rem">'
-        +'DROP POLICY IF EXISTS "owner_reads_all" ON ecp_profiles; '
-        +'CREATE POLICY "public_select" ON ecp_profiles FOR SELECT USING (true);'
-        +'</code></div>');
-      return [];
-    }
-    console.log('Supabase ecp_profiles:', (result.data||[]).length, 'utenti trovati');
-    return (result.data || []).map(function(r) {
+    var r = await fetch(SERVER_URL + '/api/owner/users', {
+      headers: { 'x-owner-password': getOwnerPw() }
+    });
+    if (!r.ok) return [];
+    var users = await r.json();
+    if (!Array.isArray(users)) return [];
+    // Normalizza formato per compatibilità con il resto del codice
+    return users.map(function(u) {
       return {
-        name:     r.name || '',
-        surname:  r.surname || '',
-        email:    r.email,
-        pro:      r.pro || false,
-        joinDate: r.join_date,
-        avatar:   r.avatar || '',
-        profile:  { goal: r.goal || '', level: r.level || '' },
-        program:  r.has_program ? { name: 'Programma attivo' } : null,
-        log:      Array(parseInt(r.sessions_count) || 0).fill({})
+        name:     u.name || '',
+        surname:  u.surname || '',
+        email:    u.email,
+        pro:      u.pro || false,
+        joinDate: u.join_date,
+        avatar:   u.avatar || '',
+        profile:  { goal: u.goal || '', level: u.level || '' },
+        program:  u.has_program ? { name: 'Programma attivo' } : null,
+        log:      Array(parseInt(u.sessions_count) || 0).fill({})
       };
     });
   } catch(e) {
-    console.error('loadUsersFromSupabase exception:', e.message);
+    console.error('loadUsersFromSupabase:', e.message);
     return [];
   }
 }
@@ -3249,7 +3234,7 @@ function renderOwnerSection(sec){
       if(!el) return;
       el.innerHTML =
         '<h2 style="font-family:var(--font2);margin-bottom:6px">👥 Utenti</h2>'
-        +'<p style="font-size:.85rem;color:var(--sub);margin-bottom:14px">localStorage + Supabase unificati</p>'
+        +'<p style="font-size:.85rem;color:var(--sub);margin-bottom:14px">Database Railway</p>'
         +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">'
         +'<input class="inp" id="ow-user-search" placeholder="Cerca nome o email..." style="max-width:240px;border-radius:50px;font-size:12px" oninput="owFilterUsers()">'
         +'<button onclick="owRefreshUsers()" class="btn btn-ghost btn-sm" style="border-radius:50px">🔄 Aggiorna</button>'
@@ -3270,19 +3255,22 @@ function renderOwnerSection(sec){
     };
     window.owRefreshUsers = async function(){
       var el=document.getElementById('ow-users-table');
-      if(el) el.innerHTML='<div style="text-align:center;padding:24px;color:var(--sub)"><div class="spinner" style="margin:0 auto 10px"></div>Caricamento da Supabase...</div>';
+      if(el) el.innerHTML='<div style="text-align:center;padding:24px;color:var(--sub)"><div class="spinner" style="margin:0 auto 10px"></div>Caricamento dal database...</div>';
       try {
-        var merged = await getMergedUsers();
+        var resp = await fetch(SERVER_URL+'/api/owner/users', {headers:{'x-owner-password':getOwnerPw()}});
+        var merged = await resp.json();
+        if(!Array.isArray(merged)) merged = [];
+        window._owAllUsers = merged;
         _showU(merged);
-        toast('✅ '+merged.length+' utenti caricati','success');
+        if(merged.length) toast('✅ '+merged.length+' utenti caricati da Railway','success');
       } catch(e) {
         toast('Errore caricamento: '+e.message,'error');
       }
     };
     // Render immediato con localStorage
     _showU(users);
-    // Poi merge async da Supabase
-    getMergedUsers().then(function(merged){ _showU(merged); }).catch(function(){});
+    // Poi aggiorna da Railway
+    fetch(SERVER_URL+'/api/owner/users',{headers:{'x-owner-password':getOwnerPw()}}).then(function(r){return r.json();}).then(function(arr){if(Array.isArray(arr)){window._owAllUsers=arr;_showU(arr);}}).catch(function(){});
   } else if(sec==='trainers'){
     document.getElementById('os-trainers').innerHTML=`
       <h2 style="font-family:var(--font2);margin-bottom:20px">🏋️ Trainer (${trainers.length})</h2>
@@ -7922,7 +7910,8 @@ function saveMeasures(){
     if(el&&el.value) SESSION.measures[m]=parseFloat(el.value);
   });
   updateUser(SESSION); saveSession(SESSION);
-  if(typeof syncSessionToSupabase==='function') syncSessionToSupabase();
+  clearTimeout(window._userDataTimer);
+  saveUserData().catch(function(){});
   toast('Misure salvate!','success');
 }
 
@@ -10478,6 +10467,10 @@ function handleGoogleLoginResponse(response) {
 // ─── APPLE SIGN-IN ────────────────────────────────────────────
 // ─── GOOGLE OAUTH via SUPABASE (login/registrazione unificata) ───
 async function signInWithGoogle() {
+  // Google OAuth non disponibile senza Supabase — usa login normale
+  toast('Accedi con email e password', 'info');
+  showPage('pg-auth');
+  return;
   try {
     const sb = getSupabase();
     if (!sb) {
@@ -10508,6 +10501,9 @@ async function signInWithGoogle() {
 
 // ─── GOOGLE OAUTH via SUPABASE per TRAINER ───────────────────────
 async function signInWithGoogleTrainer() {
+  toast('Accedi con email e password', 'info');
+  showPage('pg-auth');
+  return;
   try {
     const sb = getSupabase();
     if (!sb) { toast('Connessione in corso...', ''); setTimeout(signInWithGoogleTrainer, 600); return; }
@@ -10531,6 +10527,8 @@ async function checkOAuthCallback() {
   const oauthType = params.get('oauth');
   if (!oauthType) return;
 
+  // Google OAuth non disponibile senza Supabase
+  return;
   // Leggi la sessione Supabase appena creata
   const sb = getSupabase();
   if (!sb) return;
