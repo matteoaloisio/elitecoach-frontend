@@ -960,7 +960,11 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
             <span style="background:var(--card);padding:0 10px;position:relative;z-index:1">oppure accedi con</span>
             <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:var(--border)"></div>
           </div>
+          <div style="position:relative">
           <div id="g-signin-btn-auth" style="display:flex;justify-content:center;width:100%"></div>
+          <div id="g-terms-overlay-auth" onclick="showGoogleTermsModal('login')" 
+               style="position:absolute;inset:0;cursor:pointer;z-index:10;background:transparent"></div>
+        </div>
             <p style="font-size:.72rem;color:var(--muted);text-align:center;margin:6px 0 0;line-height:1.5">Accedendo accetti i nostri <a href="javascript:void(0)" onclick="showTermsModal()" style="color:var(--accent)">Termini</a> e <a href="javascript:void(0)" onclick="showPrivacyModal()" style="color:var(--accent)">Privacy Policy</a></p>
           
           
@@ -996,7 +1000,11 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
           <span>oppure registrati con</span>
           <div style="flex:1;height:1px;background:var(--border)"></div>
         </div>
-        <div id="g-signin-btn-register" style="display:flex;justify-content:center;width:100%"></div>
+        <div style="position:relative">
+          <div id="g-signin-btn-register" style="display:flex;justify-content:center;width:100%"></div>
+          <div id="g-terms-overlay-reg" onclick="showGoogleTermsModal('register')" 
+               style="position:absolute;inset:0;cursor:pointer;z-index:10;background:transparent"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -14013,7 +14021,35 @@ body { overflow-x: hidden !important; -webkit-overflow-scrolling: touch; }
     Generato da EliteCoachProgram.fit — AI Coach personalizzato · ${new Date().toLocaleDateString('it-IT')}
   </div>
   <scr"+"ipt>window.print();<\/scr"+"ipt>
-  </body></html>`;
+  
+<!-- ── MODALE TERMINI GOOGLE ── -->
+<div id="google-terms-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:99997;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--bg2);border-radius:16px;padding:28px;width:100%;max-width:400px">
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="font-size:2rem;margin-bottom:6px">🔐</div>
+      <h3 style="font-family:var(--font2);margin:0 0 6px">Accesso con Google</h3>
+      <p style="color:var(--sub);font-size:.83rem;margin:0">Prima di continuare, accetta i termini</p>
+    </div>
+    <!-- LIBERATORIA -->
+    <div style="background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.2);border-radius:10px;padding:12px 14px;margin-bottom:10px;font-size:.8rem;color:var(--sub);line-height:1.7">
+      <div style="font-weight:700;color:var(--text);margin-bottom:6px;font-size:.85rem">⚕️ Liberatoria da Responsabilità</div>
+      Dichiaro di essere in buona salute, privo di patologie che sconsiglino l'attività fisica intensa, e di assumere la piena responsabilità della mia attività sportiva. I programmi generati dall'AI sono suggerimenti — <strong style="color:var(--text)">consulta sempre un medico prima di iniziare.</strong>
+    </div>
+    <!-- TERMINI -->
+    <div style="background:var(--bg3);border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:.8rem;color:var(--sub);line-height:1.7">
+      <div style="font-weight:700;color:var(--text);margin-bottom:6px;font-size:.85rem">📋 Termini e Condizioni</div>
+      ✅ Accetto i <a onclick="showTerms()" style="color:var(--accent);cursor:pointer;text-decoration:underline">Termini di Servizio</a> e la <a onclick="showPrivacy()" style="color:var(--accent);cursor:pointer;text-decoration:underline">Privacy Policy</a><br>
+      ✅ Confermo di avere almeno 16 anni<br>
+      ✅ I dati personali sono trattati solo per personalizzare il programma
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" style="flex:1" onclick="document.getElementById('google-terms-modal').style.display='none'">Annulla</button>
+      <button class="btn btn-primary" style="flex:1" id="google-terms-confirm-btn" onclick="acceptGoogleTermsAndLogin()">Accetto → Continua con Google</button>
+    </div>
+  </div>
+</div>
+
+</body></html>`;
 
   const w = window.open('','_blank');
   w.document.write(html);
@@ -14886,6 +14922,20 @@ function initGoogleSignIn() {
 
 async function handleGoogleCredential(response) {
   var credential = response.credential;
+  // Se non ha già accettato i termini in questa sessione, mostra modale
+  if(!window._googleTermsAccepted){
+    // Salva il credential e mostra il modale termini
+    window._pendingGoogleCredential = credential;
+    var modal = document.getElementById('google-terms-modal');
+    if(modal){
+      // Aggiorna titolo per indicare che è accesso
+      var h3 = modal.querySelector('h3');
+      if(h3) h3.textContent = 'Accesso con Google';
+      modal.style.display = 'flex';
+    }
+    return;
+  }
+  // Procedi con il login
   try {
     showAuthError('');
     var r = await fetch(SERVER_URL + '/api/auth/google', {
@@ -15072,6 +15122,44 @@ function renderDashNotifiche(){
   if(!el) return;
   el.innerHTML = '<h2 style="font-family:var(--font2);margin-bottom:20px">&#128276; Notifiche</h2><div id="notif-settings-container"></div>';
   renderNotifSettings();
+}
+
+
+// Mostra modale termini prima del login Google
+var _googleLoginMode = 'login';
+function showGoogleTermsModal(mode){
+  _googleLoginMode = mode || 'login';
+  document.getElementById('google-terms-modal').style.display = 'flex';
+}
+
+async function acceptGoogleTermsAndLogin(){
+  document.getElementById('google-terms-modal').style.display = 'none';
+  window._googleTermsAccepted = true;
+
+  // Caso A: c'è già un credential in attesa (utente ha già fatto click su Google)
+  if(window._pendingGoogleCredential){
+    var cred = window._pendingGoogleCredential;
+    window._pendingGoogleCredential = null;
+    await handleGoogleCredential({ credential: cred });
+    return;
+  }
+
+  // Caso B: rimuovi overlay e clicca sul bottone Google reale
+  var overlayReg = document.getElementById('g-terms-overlay-reg');
+  var overlayAuth = document.getElementById('g-terms-overlay-auth');
+  if(_googleLoginMode === 'register'){
+    if(overlayReg) overlayReg.style.display = 'none';
+    var gBtn = document.querySelector('#g-signin-btn-register iframe');
+    if(gBtn) gBtn.click();
+    else if(typeof google !== 'undefined') google.accounts.id.prompt();
+    setTimeout(function(){ if(overlayReg) overlayReg.style.display = 'block'; window._googleTermsAccepted=false; }, 10000);
+  } else {
+    if(overlayAuth) overlayAuth.style.display = 'none';
+    var gBtnA = document.querySelector('#g-signin-btn-auth iframe');
+    if(gBtnA) gBtnA.click();
+    else if(typeof google !== 'undefined') google.accounts.id.prompt();
+    setTimeout(function(){ if(overlayAuth) overlayAuth.style.display = 'block'; window._googleTermsAccepted=false; }, 10000);
+  }
 }
 
 </script>
