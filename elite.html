@@ -1853,82 +1853,120 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
 <!-- ── MODALS -->
 
 <!-- ════════════════════════════════════════════════
-     EXERCISE PLAYER MODAL — full screen
+     EXERCISE PLAYER MODAL — fitness app style
      ════════════════════════════════════════════════ -->
 <div id="ex-player-modal">
-  <!-- TOP BAR -->
-  <div class="ep-topbar">
-    <button class="ep-close" onclick="closeExPlayer()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
-    </button>
-    <div style="flex:1;min-width:0">
-      <div class="ep-title" id="ep-name">Esercizio</div>
-      <div id="ep-progress-label" style="font-size:11px;color:var(--sub);margin-top:2px">Serie 1 di 4</div>
+
+  <!-- MEDIA AREA (video or placeholder) -->
+  <div class="ep-media" id="ep-media">
+    <!-- Top bar overlays video -->
+    <div class="ep-topbar">
+      <button class="ep-close" onclick="closeExPlayer()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      </button>
+      <div id="ep-name" class="ep-topbar-title">ESERCIZIO</div>
+      <button class="ep-topbar-vol" id="ep-vol-btn" onclick="epToggleVol()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      </button>
     </div>
-    <a id="ep-yt-link" href="#" target="_blank" style="display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:rgba(255,0,0,.15);color:#ff4444;flex-shrink:0;text-decoration:none">
-      <svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.55 3.5 12 3.5 12 3.5s-7.55 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.03 0 12 0 12s0 3.97.5 5.81a3.02 3.02 0 002.12 2.14C4.45 20.5 12 20.5 12 20.5s7.55 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.97 24 12 24 12s0-3.97-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>
-    </a>
+    <!-- Media content -->
+    <div id="ep-media-content" style="width:100%;height:100%"></div>
+    <!-- Rest timer overlay -->
+    <div class="ep-rest-overlay" id="ep-rest-overlay">
+      <div class="ep-rest-label">RECUPERO</div>
+      <div class="ep-rest-num" id="ep-rest-num">90</div>
+      <div class="ep-rest-next" id="ep-rest-next">Prossima: serie 2</div>
+      <button class="ep-rest-skip" onclick="epSkipRest()">Salta recupero →</button>
+    </div>
   </div>
 
-  <!-- VIDEO -->
-  <div class="ep-video-wrap" id="ep-video-wrap"></div>
+  <!-- BOTTOM PANEL -->
+  <div class="ep-panel" id="ep-bottom-panel">
 
-  <!-- SCROLLABLE BODY -->
-  <div class="ep-body">
-
-    <!-- META BADGES -->
-    <div class="ep-meta" id="ep-meta"></div>
-
-    <!-- SETS GRID -->
-    <div>
-      <div class="ep-section-label">Serie — tocca per completare</div>
-      <div class="ep-sets-grid" id="ep-sets-grid"></div>
+    <!-- INFO PILL -->
+    <div class="ep-info-pill" id="ep-info-pill">
+      <div class="ep-info-top" id="ep-info-top"><strong>4</strong> × 12 - 10 - 8 - 8</div>
+      <div class="ep-info-rest" id="ep-info-rest">Rip. <b>01:30</b> - <b>01:30</b> - <b>01:30</b></div>
     </div>
 
-    <!-- COMPLETE SET BUTTON -->
-    <button class="ep-complete-btn ready" id="ep-complete-btn" onclick="epCompleteCurrentSet()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      <span id="ep-btn-label">Completa serie 1</span>
-    </button>
-
-    <!-- REST TIMER (hidden until needed) -->
-    <div id="ep-timer-wrap" class="ep-timer-wrap" style="display:none">
-      <div class="ep-timer-ring">
-        <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" stroke-width="8" stroke="var(--border2)"/><circle id="ep-timer-circle" cx="50" cy="50" r="44" stroke-width="8" stroke-dasharray="276.46" stroke-dashoffset="0"/></svg>
-        <div class="ep-timer-num" id="ep-timer-num">90s</div>
+    <!-- STATS ROW -->
+    <div class="ep-stats">
+      <div class="ep-stat">
+        <div class="ep-stat-lbl">Serie</div>
+        <div class="ep-stat-val" id="ep-stat-serie">1/4</div>
       </div>
-      <div style="flex:1">
-        <div style="font-weight:700;color:var(--teal);font-size:.95rem;margin-bottom:3px">Recupero</div>
-        <div style="font-size:.82rem;color:var(--sub);margin-bottom:10px" id="ep-timer-sub">Prossima: serie 2</div>
-        <button onclick="epSkipRest()" style="padding:7px 16px;border-radius:50px;border:1px solid var(--border2);background:var(--bg3);color:var(--sub);font-size:13px;cursor:pointer;font-family:var(--font)">Salta recupero →</button>
+      <div class="ep-stat">
+        <div class="ep-stat-lbl">Ripetizioni</div>
+        <div class="ep-stat-val" id="ep-stat-reps">12</div>
+      </div>
+      <div class="ep-stat">
+        <div class="ep-stat-lbl">Peso</div>
+        <div class="ep-stat-val">
+          <input id="ep-kg-input" type="number" placeholder="-" style="font-size:2rem;font-weight:900;font-family:var(--font2)" onchange="epSaveCurrentKg(this.value)">
+        </div>
       </div>
     </div>
 
-    <!-- SUGGESTIONS -->
-    <div id="ep-suggestions-wrap">
-      <div class="ep-section-label">Suggerimenti — tocca per leggere</div>
-      <div id="ep-suggestions" style="display:flex;flex-direction:column;gap:8px"></div>
+    <!-- MEDIA CONTROLS |< < ▶ > >| -->
+    <div class="ep-controls">
+      <button class="ep-ctrl" onclick="epGoExercise(-1)" title="Esercizio precedente">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+      </button>
+      <button class="ep-ctrl" onclick="epPrevSet()" title="Serie precedente">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="ep-ctrl-play" id="ep-play-btn" onclick="epCompleteCurrentSet()">
+        <svg id="ep-play-icon" width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </button>
+      <button class="ep-ctrl" onclick="epNextSet()" title="Serie successiva">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button class="ep-ctrl" onclick="epGoExercise(1)" title="Esercizio successivo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z"/></svg>
+      </button>
     </div>
 
-    <!-- NOTES -->
-    <div>
-      <div class="ep-section-label">Note personali</div>
-      <textarea class="ep-note" id="ep-note-input"
-        placeholder="Carico usato, sensazioni, difficoltà..."
-        oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';epSaveNote(this.value)"></textarea>
+    <!-- BOTTOM ACTIONS -->
+    <div class="ep-actions">
+      <button class="ep-action active" id="ep-act-video" onclick="epToggleView('video')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Video
+      </button>
+      <button class="ep-action" id="ep-act-notes" onclick="epToggleView('notes')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Note
+      </button>
+      <button class="ep-action" id="ep-act-tips" onclick="epToggleView('tips')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Suggerimenti
+      </button>
+      <button class="ep-action" id="ep-act-kg" onclick="epToggleView('kg')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="21"/><line x1="18" y1="3" x2="18" y2="21"/><line x1="3" y1="7" x2="9" y2="7"/><line x1="15" y1="7" x2="21" y2="7"/><line x1="3" y1="17" x2="9" y2="17"/><line x1="15" y1="17" x2="21" y2="17"/></svg>
+        Pesi
+      </button>
     </div>
 
-    <!-- YT SEARCH FALLBACK -->
-    <div id="ep-yt-search" style="display:none;flex-direction:column;gap:8px">
-      <div class="ep-section-label">Cerca video tecnica</div>
-      <a id="ep-yt-it" href="#" target="_blank" class="btn btn-primary" style="text-decoration:none;justify-content:center;gap:8px">
-        <svg width="14" height="14" viewBox="0 0 24 24"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.55 3.5 12 3.5 12 3.5s-7.55 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.03 0 12 0 12s0 3.97.5 5.81a3.02 3.02 0 002.12 2.14C4.45 20.5 12 20.5 12 20.5s7.55 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.97 24 12 24 12s0-3.97-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>
-        Cerca su YouTube
-      </a>
+    <!-- SLIDE PANELS -->
+    <div class="ep-slide" id="ep-slide-notes">
+      <div class="ep-slide-handle"></div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.35);margin-bottom:10px">Note personali</div>
+      <textarea class="ep-note" id="ep-note-input" placeholder="Carico usato, sensazioni, difficoltà..." oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';epSaveNote(this.value)"></textarea>
+    </div>
+    <div class="ep-slide" id="ep-slide-tips">
+      <div class="ep-slide-handle"></div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.35);margin-bottom:12px">Suggerimenti — tocca per leggere</div>
+      <div id="ep-suggestions"></div>
+    </div>
+    <div class="ep-slide" id="ep-slide-kg">
+      <div class="ep-slide-handle"></div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.35);margin-bottom:12px">Pesi per serie</div>
+      <div id="ep-kg-table"></div>
     </div>
 
-  </div><!-- end ep-body -->
+  </div><!-- end ep-bottom-panel -->
+
 </div><!-- end ex-player-modal -->
+
 
 
   <div class="modal" style="max-width:480px">
@@ -14450,47 +14488,71 @@ nav {
 }
 
 /* ══════════════════════════════════════════════
-   EXERCISE PLAYER — full-screen workout modal
+   EXERCISE PLAYER — fitness app style
    ══════════════════════════════════════════════ */
-#ex-player-modal{display:none;position:fixed;inset:0;z-index:8000;background:var(--bg);flex-direction:column;overflow:hidden}
+#ex-player-modal{display:none;position:fixed;inset:0;z-index:8000;background:#09090f;flex-direction:column;overflow:hidden}
 #ex-player-modal.open{display:flex}
-.ep-video-wrap{position:relative;width:100%;background:#000;flex-shrink:0}
-.ep-video-wrap iframe{width:100%;display:block;aspect-ratio:16/9;border:none}
-.ep-video-placeholder{width:100%;aspect-ratio:16/9;background:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--muted)}
-.ep-topbar{display:flex;align-items:center;padding:max(10px,env(safe-area-inset-top)) 16px 10px;background:rgba(8,8,16,.96);border-bottom:1px solid var(--border);gap:12px;flex-shrink:0}
-.ep-close{width:36px;height:36px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);color:var(--sub);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
-.ep-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px;padding-bottom:calc(24px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
-.ep-title{font-family:var(--font2);font-size:1.15rem;font-weight:800;color:var(--text);line-height:1.2}
-.ep-meta{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
-.ep-badge{padding:4px 11px;border-radius:50px;font-size:11px;font-weight:700;background:var(--bg3);color:var(--sub)}
-.ep-badge.accent{background:rgba(91,94,244,.15);color:var(--accent-xl)}
-.ep-badge.teal{background:rgba(15,214,194,.12);color:var(--teal)}
-.ep-badge.gold{background:rgba(245,200,66,.12);color:var(--gold)}
-.ep-badge.green{background:rgba(45,212,160,.12);color:var(--green)}
-.ep-sets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(85px,1fr));gap:8px}
-.ep-set-card{background:var(--bg2);border:2px solid var(--border2);border-radius:14px;padding:12px 8px;text-align:center;cursor:pointer;transition:.12s;-webkit-tap-highlight-color:transparent;min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
-.ep-set-card.done{background:rgba(45,212,160,.1);border-color:var(--green)}
-.ep-set-card.current{border-color:var(--accent);background:rgba(91,94,244,.08)}
-.ep-set-card:active{transform:scale(.94)}
-.ep-set-num{font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
-.ep-set-kg{width:56px;background:transparent;border:none;color:var(--text);font-family:var(--font2);font-size:1.15rem;font-weight:800;text-align:center;outline:none;padding:0}
-.ep-set-reps{font-size:11px;color:var(--sub)}
-.ep-timer-wrap{display:flex;align-items:center;gap:16px;background:var(--bg2);border-radius:16px;padding:14px 16px}
-.ep-timer-ring{width:80px;height:80px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
-.ep-timer-ring svg{position:absolute;inset:-3px;width:calc(100% + 6px);height:calc(100% + 6px);transform:rotate(-90deg)}
-.ep-timer-ring svg circle{fill:none;stroke:var(--teal);stroke-linecap:round;transition:stroke-dashoffset .95s linear}
-.ep-timer-num{font-family:var(--font2);font-size:1.4rem;font-weight:800;color:var(--text);position:relative;z-index:1}
-.ep-suggestion{display:flex;align-items:flex-start;gap:10px;background:var(--bg2);border:1.5px solid var(--border2);border-radius:12px;padding:12px 14px;cursor:pointer;transition:.12s;-webkit-tap-highlight-color:transparent;text-align:left}
-.ep-suggestion:active,.ep-suggestion.tapped{border-color:var(--teal);background:rgba(15,214,194,.06)}
-.ep-suggestion-icon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ep-note{background:var(--bg2);border:1.5px solid var(--border2);border-radius:12px;padding:12px;color:var(--text);font-family:var(--font);font-size:15px;width:100%;resize:none;min-height:68px;outline:none;transition:border-color .15s}
+/* Top bar — overlays video */
+.ep-topbar{position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;padding:max(14px,env(safe-area-inset-top)) 16px 14px;background:linear-gradient(to bottom,rgba(0,0,0,.8) 0%,transparent 100%);gap:12px}
+.ep-close{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.14);border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.ep-close:active{background:rgba(255,255,255,.25)}
+.ep-topbar-title{flex:1;font-family:var(--font2);font-size:13px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ep-topbar-vol{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.14);border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+/* Media area — 55vh */
+.ep-media{width:100%;height:55vh;background:#111;position:relative;flex-shrink:0;overflow:hidden}
+.ep-media iframe,.ep-media video{width:100%;height:100%;border:none;display:block;object-fit:cover}
+.ep-media-placeholder{width:100%;height:100%;background:linear-gradient(150deg,#0d0d1f 0%,#151530 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+/* Bottom panel */
+.ep-panel{flex:1;background:#09090f;overflow-y:auto;display:flex;flex-direction:column;-webkit-overflow-scrolling:touch;position:relative}
+/* Info pill */
+.ep-info-pill{margin:14px 16px 0;background:var(--accent);border-radius:16px;padding:13px 18px;display:flex;flex-direction:column;gap:5px}
+.ep-info-top{font-family:var(--font2);font-size:15px;font-weight:900;color:#fff;letter-spacing:.2px}
+.ep-info-top strong{font-size:19px}
+.ep-info-rest{font-size:12px;color:rgba(255,255,255,.7);font-weight:600}
+.ep-info-rest b{color:#fff;font-weight:800}
+/* Stats row */
+.ep-stats{display:grid;grid-template-columns:1fr 1fr 1fr;margin:0 16px;border-bottom:1px solid rgba(255,255,255,.06)}
+.ep-stat{padding:14px 0;text-align:center;border-right:1px solid rgba(255,255,255,.06)}
+.ep-stat:last-child{border-right:none}
+.ep-stat-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.35);margin-bottom:5px}
+.ep-stat-val{font-family:var(--font2);font-size:2rem;font-weight:900;color:#fff;line-height:1}
+.ep-stat-val input{background:transparent;border:none;color:#fff;font-family:var(--font2);font-size:2rem;font-weight:900;width:80px;text-align:center;outline:none;padding:0}
+/* Controls */
+.ep-controls{display:flex;align-items:center;justify-content:center;gap:0;padding:14px 16px 10px}
+.ep-ctrl{flex:1;min-height:52px;background:none;border:none;color:rgba(255,255,255,.45);cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;transition:color .1s}
+.ep-ctrl:active{color:#fff}
+.ep-ctrl-play{width:72px;height:72px;border-radius:50%;background:#fff;border:none;color:#09090f;flex:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 24px rgba(255,255,255,.12);transition:transform .1s;-webkit-tap-highlight-color:transparent}
+.ep-ctrl-play:active{transform:scale(.92)}
+.ep-ctrl-play.resting{background:var(--teal)}
+.ep-ctrl-play.all-done{background:var(--green)}
+/* Rest timer overlay on media */
+.ep-rest-overlay{position:absolute;inset:0;background:rgba(9,9,15,.88);backdrop-filter:blur(14px);display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:6}
+.ep-rest-overlay.visible{display:flex}
+.ep-rest-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.4)}
+.ep-rest-num{font-family:var(--font2);font-size:6rem;font-weight:900;color:var(--teal);line-height:1}
+.ep-rest-skip{padding:8px 20px;border-radius:50px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;font-family:var(--font);-webkit-tap-highlight-color:transparent;margin-top:6px}
+.ep-rest-next{font-size:12px;color:rgba(255,255,255,.4)}
+/* Bottom action bar */
+.ep-actions{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(255,255,255,.06);background:#09090f;flex-shrink:0;padding:6px 0 max(10px,env(safe-area-inset-bottom))}
+.ep-action{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;-webkit-tap-highlight-color:transparent;transition:.1s;min-height:44px;justify-content:center}
+.ep-action:active,.ep-action.active{color:var(--accent-xl)}
+/* Slide panels */
+.ep-slide{position:absolute;bottom:0;left:0;right:0;background:#121220;border-radius:20px 20px 0 0;padding:8px 16px max(20px,env(safe-area-inset-bottom));transform:translateY(101%);transition:transform .26s cubic-bezier(.32,0,.67,0);z-index:20;max-height:78vh;overflow-y:auto}
+.ep-slide.open{transform:translateY(0)}
+.ep-slide-handle{width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.12);margin:0 auto 14px}
+/* Note */
+.ep-note{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:12px;color:#fff;font-family:var(--font);font-size:15px;width:100%;resize:none;min-height:80px;outline:none;transition:border-color .15s;display:block}
 .ep-note:focus{border-color:var(--accent)}
-.ep-section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px}
-.ep-complete-btn{width:100%;padding:16px;border-radius:16px;border:none;font-family:var(--font);font-size:16px;font-weight:700;cursor:pointer;transition:.12s;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center;gap:8px;min-height:56px}
-.ep-complete-btn.ready{background:var(--accent);color:#fff}
-.ep-complete-btn.ready:active{transform:scale(.97);background:var(--accent-l)}
-.ep-complete-btn.resting{background:var(--bg3);color:var(--teal);border:2px solid var(--teal)}
-.ep-complete-btn.all-done{background:var(--green);color:#fff}
+/* Hint items */
+.ep-hint{display:flex;align-items:flex-start;gap:12px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ep-hint:last-child{border:none}
+.ep-hint-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.ep-hint-text{font-size:13px;color:rgba(255,255,255,.55);line-height:1.6;flex:1}
+.ep-hint.tapped .ep-hint-text{color:#fff}
+/* KG panel set rows */
+.ep-kg-row{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;margin-bottom:8px;transition:.12s}
+.ep-kg-row.done{border-color:var(--green);background:rgba(45,212,160,.06)}
+.ep-kg-row.current{border-color:var(--accent);background:rgba(91,94,244,.07)}
 
 </style>  <div style="display:flex;align-items:center;justify-content:space-between">
     <h1>💪 ${p.name}</h1>
@@ -15710,409 +15772,421 @@ function renderDashNotifiche(){
 // Mostra modale termini prima del login Google
 var _googleLoginMode = 'login';
 
-// ════════════════════════════════════════════════════════════════
-// EXERCISE PLAYER — full-screen workout experience
-// ════════════════════════════════════════════════════════════════
-var _epEx = null;         // current exercise object
-var _epDayKey = null;
-var _epEi = null;
-var _epCurrentSet = 0;    // 0-indexed
-var _epTotalSets = 4;
-var _epResting = false;
-var _epRestInterval = null;
-var _epRestTotal = 90;
-var _epNoteKey = null;
+// ════════════════════════════════════════════════════════════
+// EXERCISE PLAYER — fitness app style (v2)
+// ════════════════════════════════════════════════════════════
+var _epEx=null,_epDayKey=null,_epEi=null;
+var _epCurrentSet=0,_epTotalSets=4,_epRepsArr=[],_epRestArr=[];
+var _epResting=false,_epRestInterval=null,_epNoteKey=null,_epActiveTab='video';
 
-function openExPlayer(ex, dayKey, ei) {
-  _epEx = ex || {};
-  _epDayKey = dayKey || null;
-  _epEi = ei != null ? ei : null;
-  _epCurrentSet = 0;
-  _epResting = false;
-  _epTotalSets = parseInt(_epEx.sets) || 4;
+function openExPlayer(ex,dayKey,ei){
+  _epEx=ex||{}; _epDayKey=dayKey||null; _epEi=ei!=null?ei:null;
+  _epCurrentSet=0; _epResting=false; _epTotalSets=parseInt(_epEx.sets)||4;
+  // Parse reps array: "12-10-8-8" → [12,10,8,8]
+  var rStr=String(_epEx.reps||'10');
+  _epRepsArr=rStr.includes('-')?rStr.split('-').map(Number):[Array(_epTotalSets).fill(parseInt(rStr)||10)].flat();
+  while(_epRepsArr.length<_epTotalSets) _epRepsArr.push(_epRepsArr[_epRepsArr.length-1]||10);
+  // Parse rest array
+  var restRaw=String(_epEx.rest||'90');
+  var restSec=restRaw.includes(':')?restRaw.split(':').reduce(function(a,v,i){return i===0?parseInt(v)*60:a+parseInt(v);},0):parseInt(restRaw)||90;
+  _epRestArr=Array(_epTotalSets-1).fill(restSec);
 
-  var modal = document.getElementById('ex-player-modal');
-  if (!modal) return;
+  var modal=document.getElementById('ex-player-modal');
+  if(!modal) return;
   modal.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.body.style.overflow='hidden';
+  if(_epRestInterval){clearInterval(_epRestInterval);_epRestInterval=null;}
+  document.getElementById('ep-rest-overlay').classList.remove('visible');
 
-  _epBuildVideo();
-  _epBuildMeta();
-  _epBuildSets();
+  _epBuildMedia();
+  _epBuildInfoPill();
+  _epUpdateStats();
+  _epUpdatePlayBtn();
   _epBuildSuggestions();
   _epLoadNote();
-  _epUpdateButton();
-  _epUpdateProgress();
+  epToggleView('video');
 }
 
-function closeExPlayer() {
-  var modal = document.getElementById('ex-player-modal');
-  if (modal) modal.classList.remove('open');
-  document.body.style.overflow = '';
-  // Stop rest timer if running
-  if (_epRestInterval) { clearInterval(_epRestInterval); _epRestInterval = null; }
+function closeExPlayer(){
+  var modal=document.getElementById('ex-player-modal');
+  if(modal) modal.classList.remove('open');
+  document.body.style.overflow='';
+  if(_epRestInterval){clearInterval(_epRestInterval);_epRestInterval=null;}
   // Stop video
-  var wrap = document.getElementById('ep-video-wrap');
-  if (wrap) wrap.innerHTML = '';
-  _epResting = false;
+  var mc=document.getElementById('ep-media-content');
+  if(mc) mc.innerHTML='';
+  _epResting=false;
 }
 
-function _epBuildVideo() {
-  var wrap = document.getElementById('ep-video-wrap');
-  if (!wrap) return;
-  var ex = _epEx;
-  var url = getYTLink(ex);
-  var videoId = url ? getYTVideoId(url) : null;
-
-  if (videoId) {
-    var embedUrl = 'https://www.youtube.com/embed/' + videoId + '?autoplay=0&rel=0&modestbranding=1';
-    wrap.innerHTML = '<div style="position:relative;width:100%;padding-bottom:56.25%"><iframe src="' + embedUrl + '" frameborder="0" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>';
-    // Update YT link
-    var ytLink = document.getElementById('ep-yt-link');
-    if (ytLink) { ytLink.href = 'https://www.youtube.com/watch?v=' + videoId; ytLink.style.display = 'flex'; }
-    var srch = document.getElementById('ep-yt-search');
-    if (srch) srch.style.display = 'none';
+function _epBuildMedia(){
+  var mc=document.getElementById('ep-media-content');
+  if(!mc) return;
+  var ex=_epEx;
+  var url=getYTLink(ex);
+  var videoId=url?getYTVideoId(url):null;
+  if(videoId){
+    var embed='https://www.youtube.com/embed/'+videoId+'?autoplay=0&rel=0&modestbranding=1';
+    mc.innerHTML='<iframe src="'+embed+'" allowfullscreen allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" style="width:100%;height:100%;border:none;display:block"></iframe>';
+    // Update YT link button
+    var ytLink=document.getElementById('ep-yt-link');
+    if(ytLink) ytLink.href='https://www.youtube.com/watch?v='+videoId;
   } else {
-    // No video — show search button
-    var name = ex.name || '';
-    wrap.innerHTML = '<div class="ep-video-placeholder"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg><span style="font-size:13px;color:#555">Nessun video specifico</span></div>';
-    var ytLink = document.getElementById('ep-yt-link');
-    if (ytLink) { ytLink.href = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(name + ' esercizio tecnica'); ytLink.style.display = 'flex'; }
-    var it = document.getElementById('ep-yt-it');
-    if (it) it.href = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(name + ' esercizio tecnica');
-    var srch = document.getElementById('ep-yt-search');
-    if (srch) srch.style.display = 'flex';
+    // Placeholder with exercise name and search button
+    var name=ex.name||'';
+    var cat=(ex.cat||ex.group||'').toLowerCase();
+    var icon=_epCatIcon(cat);
+    mc.innerHTML='<div class="ep-media-placeholder" style="gap:16px">'
+      +'<div style="width:80px;height:80px;border-radius:20px;background:rgba(91,94,244,.15);display:flex;align-items:center;justify-content:center">'+icon+'</div>'
+      +'<div style="font-family:var(--font2);font-size:15px;font-weight:700;color:rgba(255,255,255,.7);text-align:center;padding:0 20px">'+name+'</div>'
+      +'<a href="https://www.youtube.com/results?search_query='+encodeURIComponent(name+' esercizio tecnica')+'" target="_blank" style="background:#FF0000;color:#fff;padding:10px 20px;border-radius:50px;font-weight:700;font-size:13px;text-decoration:none;display:flex;align-items:center;gap:8px">'
+      +'<svg width="14" height="14" viewBox="0 0 24 24"><path fill="#fff" d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.55 3.5 12 3.5 12 3.5s-7.55 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.03 0 12 0 12s0 3.97.5 5.81a3.02 3.02 0 002.12 2.14C4.45 20.5 12 20.5 12 20.5s7.55 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.97 24 12 24 12s0-3.97-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>'
+      +'Cerca su YouTube</a></div>';
+  }
+  // Name in topbar
+  var nameEl=document.getElementById('ep-name');
+  if(nameEl) nameEl.textContent=(ex.name||'Esercizio').toUpperCase();
+}
+
+function _epCatIcon(cat){
+  var icons={
+    'petto':'<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(91,94,244,.8)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>',
+    'schiena':'<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(15,214,194,.8)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>',
+    'gambe':'<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(245,200,66,.8)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><path d="M6 15c0 3 3 5 6 6"/></svg>',
+    'spalle':'<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(244,91,138,.8)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><path d="M12 8v13"/><path d="M6 14l6 2 6-2"/></svg>',
+  };
+  return icons[cat]||'<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(91,94,244,.8)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="21"/><line x1="18" y1="3" x2="18" y2="21"/><line x1="3" y1="7" x2="9" y2="7"/><line x1="15" y1="7" x2="21" y2="7"/><line x1="3" y1="17" x2="9" y2="17"/><line x1="15" y1="17" x2="21" y2="17"/></svg>';
+}
+
+function _epBuildInfoPill(){
+  var pill=document.getElementById('ep-info-pill');
+  if(!pill) return;
+  var ex=_epEx;
+  // Sets line: "4 × 12 - 10 - 8 - 8"
+  var repsStr=_epRepsArr.slice(0,_epTotalSets).join(' - ');
+  var top=document.getElementById('ep-info-top');
+  if(top) top.innerHTML='<strong>'+_epTotalSets+'</strong> &times; '+repsStr;
+  // Rest line
+  var restParts=_epRestArr.map(function(s){
+    var m=Math.floor(s/60); var ss=s%60;
+    return (m<10?'0':'')+m+':'+(ss<10?'0':'')+ss;
+  });
+  var restEl=document.getElementById('ep-info-rest');
+  if(restEl && restParts.length) restEl.innerHTML='Rip. <b>'+restParts.join('</b> - <b>')+'</b>';
+  else if(restEl) restEl.textContent='';
+}
+
+function _epUpdateStats(){
+  var serieEl=document.getElementById('ep-stat-serie');
+  var repsEl=document.getElementById('ep-stat-reps');
+  var kgInp=document.getElementById('ep-kg-input');
+  if(serieEl){
+    if(_epCurrentSet>=_epTotalSets) serieEl.textContent='✓';
+    else serieEl.textContent=(_epCurrentSet+1)+'/'+_epTotalSets;
+  }
+  if(repsEl){
+    var r=_epRepsArr[Math.min(_epCurrentSet,_epTotalSets-1)]||10;
+    repsEl.textContent=_epCurrentSet>=_epTotalSets?'-':String(r);
+  }
+  // Load previous kg if available
+  if(kgInp && _epDayKey && _epEi!=null){
+    var orig=document.getElementById('kg-'+_epDayKey+'-'+_epEi+'-'+_epCurrentSet);
+    if(orig && orig.value) kgInp.value=orig.value;
+    else kgInp.value='';
+    kgInp.placeholder=_epCurrentSet>=_epTotalSets?'✓':'-';
   }
 }
 
-function _epBuildMeta() {
-  var el = document.getElementById('ep-meta');
-  var name = document.getElementById('ep-name');
-  if (!el) return;
-  var ex = _epEx;
-  if (name) name.textContent = ex.name || 'Esercizio';
-
-  var badges = [];
-  badges.push('<span class="ep-badge accent">' + _epTotalSets + ' serie × ' + (ex.reps || '10-12') + ' reps</span>');
-  if (ex.rest) badges.push('<span class="ep-badge teal">⏱ ' + ex.rest + 's recupero</span>');
-  if (ex.rpe) badges.push('<span class="ep-badge gold">RPE ' + ex.rpe + '</span>');
-  if (ex.tempo) badges.push('<span class="ep-badge">Tempo: ' + ex.tempo + '</span>');
-  if (ex.technique && ex.technique !== 'normale') badges.push('<span class="ep-badge">' + ex.technique.toUpperCase() + '</span>');
-  el.innerHTML = badges.join('');
-}
-
-function _epBuildSets() {
-  var grid = document.getElementById('ep-sets-grid');
-  if (!grid) return;
-  var ex = _epEx;
-  var reps = ex.reps || '10-12';
-  var dayKey = _epDayKey; var ei = _epEi;
-
-  var html = '';
-  for (var s = 0; s < _epTotalSets; s++) {
-    var sid = s;
-    var prevKg = '';
-    if (dayKey && ei != null) {
-      var inp = document.getElementById('kg-' + dayKey + '-' + ei + '-' + s);
-      if (inp) prevKg = inp.value || '';
-    }
-    var isDone = s < _epCurrentSet;
-    var isCurrent = s === _epCurrentSet;
-    var cls = isDone ? 'ep-set-card done' : (isCurrent ? 'ep-set-card current' : 'ep-set-card');
-    html += '<div class="' + cls + '" id="ep-sc-' + s + '" onclick="epTapSet(' + s + ')">'
-      + '<div class="ep-set-num">S' + (s+1) + '</div>'
-      + '<input type="number" class="ep-set-kg" id="ep-kg-' + s + '" placeholder="kg"'
-      + ' value="' + prevKg + '" onclick="event.stopPropagation()"'
-      + ' onchange="epSaveKg(' + s + ',this.value)"'
-      + ' style="pointer-events:' + (isCurrent||isDone ? 'auto' : 'none') + '">'
-      + '<div class="ep-set-reps">' + reps + '</div>'
-      + (isDone ? '<div style="color:var(--green);font-size:16px">✓</div>' : '')
-      + '</div>';
-  }
-  grid.innerHTML = html;
-}
-
-function _epUpdateProgress() {
-  var lbl = document.getElementById('ep-progress-label');
-  if (!lbl) return;
-  if (_epCurrentSet >= _epTotalSets) {
-    lbl.textContent = 'Tutte le ' + _epTotalSets + ' serie completate!';
-    lbl.style.color = 'var(--green)';
+function _epUpdatePlayBtn(){
+  var btn=document.getElementById('ep-play-btn');
+  var icon=document.getElementById('ep-play-icon');
+  if(!btn) return;
+  btn.classList.remove('resting','all-done');
+  if(_epCurrentSet>=_epTotalSets){
+    btn.classList.add('all-done');
+    if(icon) icon.innerHTML='<polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
+  } else if(_epResting){
+    btn.classList.add('resting');
+    if(icon) icon.innerHTML='<rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/>';
   } else {
-    lbl.textContent = 'Serie ' + (_epCurrentSet + 1) + ' di ' + _epTotalSets;
-    lbl.style.color = '';
+    if(icon) icon.innerHTML='<polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/>';
   }
+  btn.onclick=_epCurrentSet>=_epTotalSets ? null : (_epResting ? epSkipRest : epCompleteCurrentSet);
 }
 
-function _epUpdateButton() {
-  var btn = document.getElementById('ep-complete-btn');
-  var lbl = document.getElementById('ep-btn-label');
-  if (!btn || !lbl) return;
-
-  if (_epCurrentSet >= _epTotalSets) {
-    btn.className = 'ep-complete-btn all-done';
-    lbl.textContent = 'Esercizio completato!';
-    btn.onclick = null;
-  } else if (_epResting) {
-    btn.className = 'ep-complete-btn resting';
-    lbl.textContent = 'In recupero…';
-    btn.onclick = null;
-  } else {
-    btn.className = 'ep-complete-btn ready';
-    lbl.textContent = 'Completa serie ' + (_epCurrentSet + 1);
-    btn.onclick = epCompleteCurrentSet;
+function epCompleteCurrentSet(){
+  if(_epResting||_epCurrentSet>=_epTotalSets) return;
+  // Save kg
+  var kgInp=document.getElementById('ep-kg-input');
+  var kg=kgInp?kgInp.value:'';
+  if(_epDayKey && _epEi!=null && kg){
+    var orig=document.getElementById('kg-'+_epDayKey+'-'+_epEi+'-'+_epCurrentSet);
+    if(orig){orig.value=kg;orig.dispatchEvent(new Event('change'));}
   }
-}
-
-function epTapSet(s) {
-  // Allow tapping done sets to undo, or current to complete
-  if (s === _epCurrentSet && !_epResting) {
-    epCompleteCurrentSet();
-  } else if (s < _epCurrentSet) {
-    // Undo: go back
-    _epCurrentSet = s;
-    _epResting = false;
-    if (_epRestInterval) { clearInterval(_epRestInterval); _epRestInterval = null; }
-    document.getElementById('ep-timer-wrap').style.display = 'none';
-    _epBuildSets();
-    _epUpdateButton();
-    _epUpdateProgress();
+  // Mark original pill done
+  if(_epDayKey && _epEi!=null){
+    var pill=document.getElementById('set-'+_epDayKey+'-'+_epEi+'-'+_epCurrentSet);
+    if(pill) pill.classList.add('done');
   }
-}
-
-function epCompleteCurrentSet() {
-  if (_epResting || _epCurrentSet >= _epTotalSets) return;
-
-  // Save kg back to original set pills
-  var kgInput = document.getElementById('ep-kg-' + _epCurrentSet);
-  var kg = kgInput ? kgInput.value : '';
-  if (_epDayKey && _epEi != null && kg) {
-    var origInp = document.getElementById('kg-' + _epDayKey + '-' + _epEi + '-' + _epCurrentSet);
-    if (origInp) { origInp.value = kg; origInp.dispatchEvent(new Event('change')); }
-  }
-
-  // Mark set done on original cards too
-  if (_epDayKey && _epEi != null) {
-    var pill = document.getElementById('set-' + _epDayKey + '-' + _epEi + '-' + _epCurrentSet);
-    if (pill) pill.classList.add('done');
-  }
-
   _epCurrentSet++;
-
-  if (_epCurrentSet >= _epTotalSets) {
-    // All done
-    _epBuildSets();
-    _epUpdateButton();
-    _epUpdateProgress();
-    // Log on original card
-    if (_epDayKey && _epEi != null) {
-      try { logExercise(_epDayKey, _epEi); } catch(e) {}
-    }
+  _epUpdateStats();
+  _epBuildKgTable();
+  if(_epCurrentSet>=_epTotalSets){
+    _epUpdatePlayBtn();
+    if(_epDayKey&&_epEi!=null) try{logExercise(_epDayKey,_epEi);}catch(e){}
   } else {
-    // Start rest timer
-    var restSecs = parseInt(_epEx.rest) || 90;
-    _epBuildSets();
-    _epUpdateProgress();
-    _epStartRest(restSecs);
+    _epStartRest(_epRestArr[_epCurrentSet-1]||90);
   }
 }
 
-function _epStartRest(secs) {
-  _epResting = true;
-  _epRestTotal = secs;
-  _epUpdateButton();
-
-  var wrap = document.getElementById('ep-timer-wrap');
-  var numEl = document.getElementById('ep-timer-num');
-  var subEl = document.getElementById('ep-timer-sub');
-  var circle = document.getElementById('ep-timer-circle');
-  if (!wrap || !numEl) return;
-
-  var circleLen = 2 * Math.PI * 44; // r=44
-  if (circle) { circle.style.strokeDasharray = circleLen; circle.style.strokeDashoffset = 0; }
-  wrap.style.display = 'flex';
-  if (subEl) subEl.textContent = 'Prossima: serie ' + (_epCurrentSet + 1);
-
-  var t = secs;
-  numEl.textContent = t + 's';
-  numEl.style.color = 'var(--teal)';
-
-  if (_epRestInterval) clearInterval(_epRestInterval);
-  _epRestInterval = setInterval(function() {
+function _epStartRest(secs){
+  _epResting=true;
+  _epUpdatePlayBtn();
+  // Show overlay on media
+  var ov=document.getElementById('ep-rest-overlay');
+  var numEl=document.getElementById('ep-rest-num');
+  var nextEl=document.getElementById('ep-rest-next');
+  if(ov) ov.classList.add('visible');
+  if(nextEl) nextEl.textContent='Prossima: serie '+(_epCurrentSet+1);
+  var t=secs;
+  if(numEl) numEl.textContent=t;
+  if(_epRestInterval) clearInterval(_epRestInterval);
+  _epRestInterval=setInterval(function(){
     t--;
-    if (numEl) {
-      numEl.textContent = t > 0 ? t + 's' : 'Go!';
-      if (t <= 5 && t > 0) numEl.style.color = 'var(--gold)';
-      else if (t <= 0) numEl.style.color = 'var(--green)';
-    }
-    if (circle) {
-      var offset = circleLen * (1 - (secs - t) / secs);
-      circle.style.strokeDashoffset = offset;
+    if(numEl){
+      numEl.textContent=t>0?t:'Go!';
+      numEl.style.color=t<=5&&t>0?'var(--gold)':t<=0?'var(--green)':'var(--teal)';
     }
     // Beep
-    if (t === 3 || t === 0) {
-      try {
-        var ctx = new (window.AudioContext || window.webkitAudioContext)();
-        var o = ctx.createOscillator(); var g = ctx.createGain();
-        o.connect(g); g.connect(ctx.destination);
-        o.frequency.value = t === 0 ? 1100 : 660; g.gain.value = 0.25;
-        o.start(); o.stop(ctx.currentTime + 0.18);
-      } catch(e) {}
+    if(t===3||t===0){
+      try{
+        var ctx=new(window.AudioContext||window.webkitAudioContext)();
+        var o=ctx.createOscillator();var g=ctx.createGain();
+        o.connect(g);g.connect(ctx.destination);
+        o.frequency.value=t===0?1100:660;g.gain.value=0.22;
+        o.start();o.stop(ctx.currentTime+0.18);
+      }catch(e){}
     }
-    if (t <= 0) {
-      clearInterval(_epRestInterval); _epRestInterval = null;
-      _epResting = false;
-      if (wrap) wrap.style.display = 'none';
-      _epUpdateButton();
+    if(t<=0){
+      clearInterval(_epRestInterval);_epRestInterval=null;
+      _epResting=false;
+      if(ov) ov.classList.remove('visible');
+      if(numEl){numEl.textContent=secs;numEl.style.color='';}
+      _epUpdatePlayBtn();
     }
-  }, 1000);
+  },1000);
 }
 
-function epSkipRest() {
-  if (_epRestInterval) { clearInterval(_epRestInterval); _epRestInterval = null; }
-  _epResting = false;
-  var wrap = document.getElementById('ep-timer-wrap');
-  if (wrap) wrap.style.display = 'none';
-  _epUpdateButton();
+function epSkipRest(){
+  if(_epRestInterval){clearInterval(_epRestInterval);_epRestInterval=null;}
+  _epResting=false;
+  var ov=document.getElementById('ep-rest-overlay');
+  if(ov) ov.classList.remove('visible');
+  _epUpdatePlayBtn();
 }
 
-function _epBuildSuggestions() {
-  var el = document.getElementById('ep-suggestions');
-  if (!el) return;
-  var ex = _epEx;
-  var suggestions = [];
+function epPrevSet(){
+  if(_epCurrentSet<=0) return;
+  if(_epResting) epSkipRest();
+  _epCurrentSet--;
+  _epUpdateStats();
+  _epUpdatePlayBtn();
+  _epBuildKgTable();
+}
 
-  // Load/weight tip
-  if (ex.load_tip) suggestions.push({ icon: '⚡', color: 'rgba(15,214,194,.15)', text: ex.load_tip, type: 'teal' });
+function epNextSet(){
+  if(_epCurrentSet>=_epTotalSets) return;
+  if(_epResting) epSkipRest();
+  _epCurrentSet++;
+  _epUpdateStats();
+  _epUpdatePlayBtn();
+  _epBuildKgTable();
+}
 
-  // PR suggestion
-  var prKey = 'pr_' + (ex.name || '');
-  var pr = SESSION && SESSION[prKey];
-  if (pr) {
-    var repsMin = parseInt((ex.reps || '10').toString().split('-')[0]) || 10;
-    var sug = Math.round(pr * (1 + repsMin * 0.025) * 4) / 4;
-    suggestions.push({ icon: '🏆', color: 'rgba(245,200,66,.15)', text: 'PR precedente: ' + pr + 'kg. Carico suggerito: ' + sug + 'kg per ' + repsMin + ' reps.', type: 'gold' });
+function epGoExercise(dir){
+  if(!_epDayKey||_epEi==null) return;
+  var dayIdx=currentDayIdx;
+  var exs=(SESSION&&SESSION.program&&SESSION.program.days&&SESSION.program.days[dayIdx]&&SESSION.program.days[dayIdx].exercises)||[];
+  var newEi=_epEi+dir;
+  if(newEi<0||newEi>=exs.length) return;
+  if(_epRestInterval){clearInterval(_epRestInterval);_epRestInterval=null;}
+  openExPlayer(exs[newEi],_epDayKey,newEi);
+}
+
+function epSaveCurrentKg(val){
+  if(_epDayKey&&_epEi!=null){
+    var orig=document.getElementById('kg-'+_epDayKey+'-'+_epEi+'-'+_epCurrentSet);
+    if(orig) orig.value=val;
   }
+}
 
-  // Tech notes
-  if (ex.notes) suggestions.push({ icon: '📋', color: 'rgba(91,94,244,.12)', text: ex.notes, type: 'accent' });
-  if (ex.desc) suggestions.push({ icon: '📖', color: 'rgba(255,255,255,.04)', text: ex.desc, type: '' });
+function epToggleView(tab){
+  _epActiveTab=tab;
+  // Update action buttons
+  ['video','notes','tips','kg'].forEach(function(t){
+    var btn=document.getElementById('ep-act-'+t);
+    if(btn) btn.classList.toggle('active',t===tab);
+  });
+  // Close all slides
+  ['notes','tips','kg'].forEach(function(t){
+    var sl=document.getElementById('ep-slide-'+t);
+    if(sl) sl.classList.remove('open');
+  });
+  if(tab!=='video'){
+    var sl=document.getElementById('ep-slide-'+tab);
+    if(sl) sl.classList.add('open');
+    if(tab==='kg') _epBuildKgTable();
+    if(tab==='notes') _epLoadNote();
+  }
+}
 
-  // Progression
-  if (ex.progression) suggestions.push({ icon: '📈', color: 'rgba(15,214,194,.08)', text: ex.progression, type: '' });
+function epToggleVol(){
+  // Just toggle mute on any iframe
+  var iframe=document.querySelector('#ep-media-content iframe');
+  if(!iframe) return;
+  // Can't control iframe audio cross-origin — open YT externally
+  var link=document.getElementById('ep-yt-link');
+  if(link&&link.href&&link.href!=='#') window.open(link.href,'_blank');
+}
 
+function _epBuildSuggestions(){
+  var el=document.getElementById('ep-suggestions');
+  if(!el) return;
+  var ex=_epEx;
+  var items=[];
+  // Weight tip
+  if(ex.load_tip) items.push({dot:'var(--teal)',text:ex.load_tip});
+  // PR
+  var prKey='pr_'+(ex.name||'');
+  var pr=SESSION&&SESSION[prKey];
+  if(pr){
+    var repsMin=parseInt((_epRepsArr[0]||10).toString())||10;
+    var sug=Math.round(pr*(1+repsMin*0.025)*4)/4;
+    items.push({dot:'var(--gold)',text:'PR precedente: '+pr+'kg — Carico suggerito per '+repsMin+' reps: '+sug+'kg'});
+  }
+  // Notes
+  if(ex.notes) items.push({dot:'var(--accent-xl)',text:ex.notes});
+  if(ex.desc) items.push({dot:'rgba(255,255,255,.3)',text:ex.desc});
+  if(ex.progression) items.push({dot:'var(--teal)',text:'Progressione: '+ex.progression});
   // RPE guide
-  if (ex.rpe) suggestions.push({ icon: '🎯', color: 'rgba(245,200,66,.08)', text: 'RPE ' + ex.rpe + ': ' + _epRpeGuide(ex.rpe), type: '' });
-
-  // Tempo guide
-  if (ex.tempo) {
-    var parts = ex.tempo.split('-');
-    if (parts.length === 4) suggestions.push({ icon: '⏱', color: 'rgba(91,94,244,.08)', text: 'Tempo ' + ex.tempo + ': ' + parts[0] + 's discesa · ' + parts[1] + 's pausa bassa · ' + parts[2] + 's salita · ' + parts[3] + 's pausa alta', type: '' });
+  if(ex.rpe) items.push({dot:'var(--gold)',text:'RPE '+ex.rpe+': '+_epRpeGuide(ex.rpe)});
+  // Tempo
+  if(ex.tempo){
+    var p=ex.tempo.split('-');
+    if(p.length===4) items.push({dot:'var(--accent-xl)',text:'Tempo '+ex.tempo+': '+p[0]+'s discesa · '+p[1]+'s pausa bassa · '+p[2]+'s salita · '+p[3]+'s pausa alta'});
   }
-
-  // Technique tip from RX info
-  var rx = getRXInfo ? getRXInfo(ex) : null;
-  if (rx && rx.tip) suggestions.push({ icon: '✓', color: 'rgba(45,212,160,.1)', text: 'Tecnica: ' + rx.tip, type: 'green' });
-
-  if (!suggestions.length) {
-    suggestions.push({ icon: '💪', color: 'rgba(91,94,244,.08)', text: 'Mantieni la tecnica corretta per tutto il set. Respira: espira nella fase concentrica, inspira nella fase eccentrica.', type: '' });
-  }
-
-  el.innerHTML = suggestions.map(function(s) {
-    return '<div class="ep-suggestion" onclick="this.classList.toggle(\'tapped\')">'
-      + '<div class="ep-suggestion-icon" style="background:' + s.color + ';font-size:13px">' + s.icon + '</div>'
-      + '<div style="flex:1;font-size:13px;color:var(--sub);line-height:1.55">' + s.text + '</div>'
-      + '</div>';
+  // RX tip
+  var rx=typeof getRXInfo==='function'?getRXInfo(ex):null;
+  if(rx&&rx.tip) items.push({dot:'var(--green)',text:'Tecnica RX: '+rx.tip});
+  if(!items.length) items.push({dot:'var(--accent-xl)',text:'Mantieni la tecnica corretta per tutto il set. Respira: espira nella fase concentrica, inspira nella fase eccentrica.'});
+  el.innerHTML=items.map(function(it){
+    return '<div class="ep-hint" onclick="this.classList.toggle('tapped')">'
+      +'<div class="ep-hint-dot" style="background:'+it.dot+'"></div>'
+      +'<div class="ep-hint-text">'+it.text+'</div>'
+      +'</div>';
   }).join('');
 }
 
-function _epRpeGuide(rpe) {
-  var n = parseInt(rpe);
-  if (n <= 6) return 'sforzo moderato, potresti fare ancora 4+ reps';
-  if (n === 7) return 'sforzo medio, potresti fare ancora 3 reps';
-  if (n === 8) return 'sforzo alto, potresti fare ancora 2 reps';
-  if (n === 9) return 'sforzo molto alto, potresti fare ancora 1 rep';
-  return 'massimo sforzo, non potresti fare un\'altra rep';
+function _epRpeGuide(rpe){
+  var n=parseInt(rpe);
+  if(n<=6) return 'sforzo moderato — potresti fare ancora 4+ reps';
+  if(n===7) return 'sforzo medio — potresti fare ancora 3 reps';
+  if(n===8) return 'sforzo alto — potresti fare ancora 2 reps';
+  if(n===9) return 'sforzo molto alto — potresti fare ancora 1 rep';
+  return 'massimo sforzo — non potresti fare un'altra rep';
 }
 
-function _epLoadNote() {
-  var inp = document.getElementById('ep-note-input');
-  if (!inp) return;
-  _epNoteKey = _epDayKey && _epEi != null ? 'ecp_exnote_' + (_epEx.name || '') + '_' + _epDayKey + '_' + _epEi : null;
-  if (_epNoteKey) {
-    inp.value = localStorage.getItem(_epNoteKey) || '';
-  } else {
-    // Also check for existing note in textarea
-    if (_epDayKey && _epEi != null) {
-      var orig = document.getElementById('note-' + _epDayKey + '-' + _epEi);
-      if (orig) inp.value = orig.value;
+function _epLoadNote(){
+  var inp=document.getElementById('ep-note-input');
+  if(!inp) return;
+  _epNoteKey=_epDayKey&&_epEi!=null?'ecp_exnote_'+(_epEx.name||'')+'_'+_epDayKey+'_'+_epEi:null;
+  if(_epNoteKey) inp.value=localStorage.getItem(_epNoteKey)||'';
+  if(_epDayKey&&_epEi!=null){
+    var orig=document.getElementById('note-'+_epDayKey+'-'+_epEi);
+    if(orig&&!inp.value) inp.value=orig.value||'';
+  }
+  inp.style.height='auto';
+  inp.style.height=Math.max(80,inp.scrollHeight)+'px';
+}
+
+function epSaveNote(val){
+  if(_epNoteKey) localStorage.setItem(_epNoteKey,val);
+  if(_epDayKey&&_epEi!=null){
+    var orig=document.getElementById('note-'+_epDayKey+'-'+_epEi);
+    if(orig) orig.value=val;
+  }
+}
+
+function _epBuildKgTable(){
+  var el=document.getElementById('ep-kg-table');
+  if(!el) return;
+  var html='';
+  for(var s=0;s<_epTotalSets;s++){
+    var isDone=s<_epCurrentSet;
+    var isCur=s===_epCurrentSet;
+    var prevKg='';
+    if(_epDayKey&&_epEi!=null){
+      var orig=document.getElementById('kg-'+_epDayKey+'-'+_epEi+'-'+s);
+      if(orig) prevKg=orig.value||'';
     }
+    var cls='ep-kg-row'+(isDone?' done':isCur?' current':'');
+    html+='<div class="'+cls+'">'
+      +'<div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.45);width:28px;flex-shrink:0">S'+(s+1)+'</div>'
+      +'<div style="flex:1;font-size:14px;font-weight:700;color:rgba(255,255,255,.6)">×'+(_epRepsArr[s]||10)+' reps</div>'
+      +'<input type="number" placeholder="kg" value="'+prevKg+'"'
+      +' style="width:70px;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.'+(isCur?'3':'1')+');border-radius:8px;padding:6px 10px;color:#fff;font-family:var(--font2);font-size:1rem;font-weight:700;text-align:center;outline:none"'
+      +' onchange="epSaveKgRow('+s+',this.value)">'
+      +(isDone?'<div style="color:var(--green);font-size:16px;margin-left:8px">✓</div>':'')
+      +'</div>';
   }
-  inp.style.height = 'auto';
-  inp.style.height = inp.scrollHeight + 'px';
+  el.innerHTML=html;
 }
 
-function epSaveNote(val) {
-  if (_epNoteKey) localStorage.setItem(_epNoteKey, val);
-  // Sync back to original textarea
-  if (_epDayKey && _epEi != null) {
-    var orig = document.getElementById('note-' + _epDayKey + '-' + _epEi);
-    if (orig) orig.value = val;
+function epSaveKgRow(s,val){
+  if(_epDayKey&&_epEi!=null){
+    var orig=document.getElementById('kg-'+_epDayKey+'-'+_epEi+'-'+s);
+    if(orig) orig.value=val;
+  }
+  // If current set, also update main input
+  if(s===_epCurrentSet){
+    var kgInp=document.getElementById('ep-kg-input');
+    if(kgInp) kgInp.value=val;
   }
 }
 
-function epSaveKg(s, val) {
-  // Sync to original set pill
-  if (_epDayKey && _epEi != null) {
-    var orig = document.getElementById('kg-' + _epDayKey + '-' + _epEi + '-' + s);
-    if (orig) { orig.value = val; }
+// ── Override openYTDirect ──
+function openYTDirect(name){
+  var ex=null;
+  if(SESSION&&SESSION.program&&currentDayIdx!=null){
+    var dayExs=((SESSION.program.days||[])[currentDayIdx]||{}).exercises||[];
+    ex=dayExs.find(function(e){return (e.name||'').toLowerCase()===(name||'').toLowerCase();});
   }
+  if(!ex) ex=(ALL_EXERCISES||[]).find(function(e){return (e.name||'').toLowerCase()===(name||'').toLowerCase();});
+  if(!ex) ex={name:name};
+  var ei=null;
+  if(SESSION&&SESSION.program&&currentDayIdx!=null){
+    var exs=((SESSION.program.days||[])[currentDayIdx]||{}).exercises||[];
+    for(var i=0;i<exs.length;i++){if((exs[i].name||'').toLowerCase()===(name||'').toLowerCase()){ei=i;break;}}
+  }
+  var dayKey=currentDayIdx!=null?'d'+currentDayIdx:null;
+  openExPlayer(ex,dayKey,ei);
 }
 
-// ── Override openYTDirect to open the new player when in session ──
-var _origOpenYTDirect = window.openYTDirect;
-function openYTDirect(name) {
-  // Find the exercise from the current program
-  var ex = null;
-  if (SESSION && SESSION.program && currentDayIdx != null) {
-    var dayExs = (SESSION.program.days || [])[currentDayIdx]?.exercises || [];
-    ex = dayExs.find(function(e) { return (e.name||'').toLowerCase() === (name||'').toLowerCase(); });
-  }
-  if (!ex) ex = (ALL_EXERCISES||[]).find(function(e) { return (e.name||'').toLowerCase() === (name||'').toLowerCase(); });
-  if (!ex) ex = { name: name };
-
-  // Find ei (exercise index in program)
-  var ei = null;
-  if (SESSION && SESSION.program && currentDayIdx != null) {
-    var exs = (SESSION.program.days || [])[currentDayIdx]?.exercises || [];
-    for (var i = 0; i < exs.length; i++) {
-      if ((exs[i].name||'').toLowerCase() === (name||'').toLowerCase()) { ei = i; break; }
+// ── Override openYT from library ──
+var _origOpenYT=window.openYT;
+function openYT(ex){
+  if(sessionActive&&ex&&ex.name){
+    var dayKey=currentDayIdx!=null?'d'+currentDayIdx:null;
+    var ei=null;
+    if(SESSION&&SESSION.program&&currentDayIdx!=null){
+      var exs=((SESSION.program.days||[])[currentDayIdx]||{}).exercises||[];
+      for(var i=0;i<exs.length;i++){if((exs[i].name||'').toLowerCase()===(ex.name||'').toLowerCase()){ei=i;break;}}
     }
-  }
-
-  var dayKey = currentDayIdx != null ? 'd' + currentDayIdx : null;
-  openExPlayer(ex, dayKey, ei);
-}
-
-// ── Also intercept openYT from library to open player ──
-var _origOpenYT = window.openYT;
-function openYT(ex) {
-  // In library context (no session) use original modal
-  // In workout context use the player
-  if (sessionActive && ex && ex.name) {
-    var dayKey = currentDayIdx != null ? 'd' + currentDayIdx : null;
-    var ei = null;
-    if (SESSION && SESSION.program && currentDayIdx != null) {
-      var exs = (SESSION.program.days || [])[currentDayIdx]?.exercises || [];
-      for (var i = 0; i < exs.length; i++) {
-        if ((exs[i].name||'').toLowerCase() === (ex.name||'').toLowerCase()) { ei = i; break; }
-      }
-    }
-    openExPlayer(ex, dayKey, ei);
-  } else if (_origOpenYT) {
+    openExPlayer(ex,dayKey,ei);
+  } else if(_origOpenYT){
     _origOpenYT(ex);
   }
 }
+
 
   _googleLoginMode = mode || 'login';
   // Su mobile il click sull'iframe Google non funziona
