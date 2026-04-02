@@ -397,7 +397,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
 .dash-main{flex:1;padding:24px;margin-left:220px;min-width:0;overflow-x:hidden;box-sizing:border-box}
 .dash-section{display:none}
 .dash-section.act{display:block}
-@media(max-width:768px){.dash-main{margin-left:0;padding:14px}}
+@media(max-width:768px){.dash-main{margin-left:0!important;padding:14px}}
 
 .trainer-sidebar{width:220px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);
   padding:14px 10px;position:fixed;top:var(--nav-h);left:0;
@@ -626,7 +626,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
 @media(max-width:768px){
   .dash-sidebar,.trainer-sidebar,.owner-sidebar{display:none}
   .mobile-nav{display:flex}
-  .dash-main,.trainer-main,.owner-main{margin-left:0;padding:16px;padding-bottom:72px}
+  .dash-main,.trainer-main,.owner-main{margin-left:0!important;padding:16px;padding-bottom:72px}
   .feats-grid{grid-template-columns:1fr}
   .stats-row{flex-wrap:wrap}
   .stat-item{min-width:50%}
@@ -1077,7 +1077,6 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
 /* ── Responsive: hide sidebar items text at narrow sidebar ── */
 @media(max-width:1100px){
   .dash-sidebar{width:190px}
-  .dash-main{margin-left:190px}
 }
 </style>
 
@@ -1382,10 +1381,10 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
     <div id="auth-login" class="card">
       <h2 style="font-family:var(--font2);margin-bottom:20px">Bentornato</h2>
       <div style="display:flex;flex-direction:column;gap:14px">
-        <div class="field"><label>Email</label><input class="inp" id="log-email" type="email" placeholder="tuaemail@example.com"></div>
-        <div class="field"><label>Password</label><input class="inp" id="log-pass" type="password" placeholder="••••••••"></div>
+        <div class="field"><label>Email</label><input class="inp" id="log-email" type="email" placeholder="tuaemail@example.com" autocomplete="email" inputmode="email" style="font-size:16px!important" onkeydown="if(event.key==='Enter')document.getElementById('log-pass').focus()"></div>
+        <div class="field"><label>Password</label><input class="inp" id="log-pass" type="password" placeholder="••••••••" autocomplete="current-password" style="font-size:16px!important" onkeydown="if(event.key==='Enter'){event.preventDefault();doLogin();}"></div>
         <div id="auth-err" style="color:var(--red);font-size:.85rem;display:none"></div>
-        <button class="btn btn-primary" style="width:100%" onclick="doLogin()">Accedi</button>
+        <button class="btn btn-primary" style="width:100%;padding:14px;font-size:15px" onclick="doLogin()">Accedi</button>
         <p style="text-align:center;margin:12px 0 0"><a onclick="showForgotPassword()" style="color:var(--accent);font-size:.85rem;cursor:pointer;text-decoration:underline">Hai dimenticato la password?</a></p>
         <p style="text-align:center;font-size:.82rem;color:var(--sub)">
           Non hai un account? <a onclick="switchAuthTab('register')" style="color:var(--accent);cursor:pointer">Registrati gratis</a>
@@ -1411,11 +1410,11 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
       <h2 style="font-family:var(--font2);margin-bottom:20px">Crea account gratuito</h2>
       <div style="display:flex;flex-direction:column;gap:14px">
         <div class="field-row c2">
-          <div class="field"><label>Nome</label><input class="inp" id="reg-name" placeholder="Mario"></div>
-          <div class="field"><label>Cognome</label><input class="inp" id="reg-surname" placeholder="Rossi"></div>
+          <div class="field"><label>Nome</label><input class="inp" id="reg-name" placeholder="Mario" autocomplete="given-name" style="font-size:16px!important"></div>
+          <div class="field"><label>Cognome</label><input class="inp" id="reg-surname" placeholder="Rossi" autocomplete="family-name" style="font-size:16px!important"></div>
         </div>
-        <div class="field"><label>Email</label><input class="inp" id="reg-email" type="email" placeholder="tuaemail@example.com"></div>
-        <div class="field"><label>Password</label><input class="inp" id="reg-pass" type="password" placeholder="min 6 caratteri"></div>
+        <div class="field"><label>Email</label><input class="inp" id="reg-email" type="email" placeholder="tuaemail@example.com" autocomplete="email" inputmode="email" style="font-size:16px!important"></div>
+        <div class="field"><label>Password</label><input class="inp" id="reg-pass" type="password" placeholder="min 6 caratteri" autocomplete="new-password" style="font-size:16px!important" onkeydown="if(event.key==='Enter'){event.preventDefault();doRegisterWithLegal();}"></div>
         <div id="auth-err2" style="color:var(--red);font-size:.85rem;display:none"></div>
                 <div style="background:rgba(245,200,66,.07);border:1px solid rgba(245,200,66,.2);border-radius:10px;padding:12px 14px;margin-bottom:8px">
           <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer">
@@ -1467,11 +1466,11 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
         <div style="font-family:var(--font2);font-weight:700;color:var(--teal);margin-bottom:4px">Rapido</div>
         <div style="font-size:.78rem;color:var(--sub);margin-bottom:10px">6 domande &bull; 1 minuto</div>
         <div style="font-size:.75rem;color:var(--sub);text-align:left;line-height:1.8;margin-bottom:12px">
-          &#10003; Obiettivo e livello<br>
-          &#10003; Frequenza settimanale<br>
-          &#10003; Eta, sesso, peso<br>
-          &#10003; Attrezzatura<br>
-          &#10003; Limitazioni fisiche
+          ✓ Obiettivo e livello<br>
+          ✓ Frequenza settimanale<br>
+          ✓ Eta, sesso, peso<br>
+          ✓ Attrezzatura<br>
+          ✓ Limitazioni fisiche
         </div>
         <button class="btn" style="width:100%;border-radius:50px;background:rgba(15,214,194,.12);border:1px solid rgba(15,214,194,.3);color:var(--teal);font-weight:600;font-size:.85rem">
           Inizia rapido &#9889;
@@ -1482,23 +1481,23 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
         style="cursor:pointer;border:2px solid transparent;transition:.2s;text-align:center;padding:22px 14px"
         onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-3px)'"
         onmouseleave="this.style.borderColor='transparent';this.style.transform='none'">
-        <div style="font-size:2rem;margin-bottom:6px">&#129504;</div>
+        <div style="font-size:2rem;margin-bottom:6px"></div>
         <div style="font-family:var(--font2);font-weight:700;color:var(--accent);margin-bottom:4px">Completo</div>
         <div style="font-size:.78rem;color:var(--sub);margin-bottom:10px">7 sezioni &bull; Ultra-personalizzato</div>
         <div style="font-size:.75rem;color:var(--sub);text-align:left;line-height:1.8;margin-bottom:12px">
-          &#10003; Tutto il questionario rapido<br>
-          &#10003; Massimali di forza<br>
-          &#10003; Anamnesi medica<br>
-          &#10003; Stile di vita e sonno<br>
-          &#10003; Obiettivi estetici e AI
+          ✓ Tutto il questionario rapido<br>
+          ✓ Massimali di forza<br>
+          ✓ Anamnesi medica<br>
+          ✓ Stile di vita e sonno<br>
+          ✓ Obiettivi estetici e AI
         </div>
         <button class="btn btn-primary" style="width:100%;border-radius:50px;font-weight:600;font-size:.85rem">
-          Questionario completo &#129504;
+          Questionario completo 
         </button>
       </div>
 
     </div>
-    <p style="text-align:center;font-size:.76rem;color:var(--muted)">&#128161; Puoi aggiornare i dati dalla dashboard in qualsiasi momento</p>
+    <p style="text-align:center;font-size:.76rem;color:var(--muted)">· Puoi aggiornare i dati dalla dashboard in qualsiasi momento</p>
   </div>
 
   <div id="onb-wizard" style="display:none">
@@ -1549,7 +1548,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
   <aside class="dash-sidebar">
     <div class="dash-sidebar-item act" onclick="showDashSection('home')" data-sec="home"><span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Home</div>
     <div class="dash-sidebar-item" onclick="showDashSection('schede')" data-sec="schede"><span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></span>Schede</div>
-    <div class="dash-sidebar-item" onclick="showDashSection('storico')" data-sec="storico"><span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 0 .5-4.5"/><polyline points="3 3 3 7 7 7"/></svg></span>Storico</div>
+    <div class="dash-sidebar-item" onclick="showDashSection('storico')" data-sec="storico"><span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 0 .5-4.5"/><polyline points="3 3 3 7 7 7"/></svg></span><span style="color:var(--sub);display:flex;align-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 0 .5-4.5"/><polyline points="3 3 3 7 7 7"/></svg></span>Storico</div>
     <div class="dash-sidebar-item" onclick="showDashSection('calendario')" data-sec="calendario"><span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>Calendario</div>
     <div class="dash-sidebar-item" onclick="showDashSection('dieta')" data-sec="dieta"><span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg></span>Dieta</div>
     <div class="dash-sidebar-item" onclick="showDashSection('sfide')" data-sec="sfide"><span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>Sfide</div>
@@ -1557,7 +1556,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
     <div class="dash-sidebar-item" onclick="showDashSection('dati')" data-sec="dati"><span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>Dati</div>
     <div class="dash-sidebar-item" onclick="showDashSection('piano')" data-sec="piano"><span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>Piano</div>
     <div style="border-top:1px solid var(--border2);margin-top:auto;padding-top:8px">
-    <div class="dash-sidebar-item" onclick="showDashSection('analysis')" data-sec="analysis"><span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></span>Analisi AI</div>
+    <div class="dash-sidebar-item" onclick="showDashSection('analysis')" data-sec="analysis"><span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></span><span style='color:var(--rose);display:inline-flex'><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></span> Analisi AI</div>
     <div class="dash-sidebar-item" onclick="showDashSection('checkin')" data-sec="checkin"><span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14l2 2 4-4"/></svg></span>Check-in</div>
     <div class="dash-sidebar-item" onclick="showDashSection('1rm')" data-sec="1rm"><span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><polyline points="22 12 18 12 15 20 9 4 6 12 2 12"/></svg></span>Calc 1RM</div>
     <div class="dash-sidebar-item" onclick="showDashSection('social')" data-sec="social"><span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Social</div>
@@ -1648,7 +1647,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
     <!-- Grid sezioni -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 16px 16px">
       <div class="mn-drawer-item" onclick="showDashSection('storico');closeMobileDrawer()">
-        <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 0 .5-4.5"/><polyline points="3 3 3 7 7 7"/></svg></div><span>Storico</span>
+        <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 0 .5-4.5"/><polyline points="3 3 3 7 7 7"/></svg></div><span><span style="color:var(--sub);display:flex;align-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 0 .5-4.5"/><polyline points="3 3 3 7 7 7"/></svg></span>Storico</span>
       </div>
       <div class="mn-drawer-item" onclick="showDashSection('calendario');closeMobileDrawer()">
         <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><span>Calendario</span>
@@ -1675,7 +1674,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
         <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><span>Social</span>
       </div>
       <div class="mn-drawer-item" onclick="showDashSection('analysis');closeMobileDrawer()">
-        <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div><span>Analisi AI</span>
+        <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div><span><span style='color:var(--rose);display:inline-flex'><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></span> Analisi AI</span>
       </div>
       <div class="mn-drawer-item" onclick="showDashSection('wearable');closeMobileDrawer()">
         <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"/><polyline points="12 9 12 12 13.5 13.5"/><path d="M16.51 17.35l-.35 3.83a2 2 0 0 1-2 1.82H9.83a2 2 0 0 1-2-1.82l-.35-3.83m.01-10.7l.35-3.83A2 2 0 0 1 9.83 1h4.35a2 2 0 0 1 2 1.82l.35 3.83"/></svg></div><span>Wearable</span>
@@ -1804,12 +1803,14 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
   <a class="nav-logo"><em>EliteCoach</em>Program.fit — <span style="color:var(--gold)">Owner</span></a>
   <div class="nav-right"><button class="btn-nav ghost btn-sm" onclick="showPage('pg-land')">← Esci</button></div>
 </nav>
-<div id="pg-owner-login" style="min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;padding:40px">
+<div id="pg-owner-login" style="min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;padding:40px 20px">
   <div class="card" style="max-width:360px;width:100%">
     <h3 style="font-family:var(--font2);margin-bottom:16px">Accesso Owner</h3>
     <div style="display:flex;flex-direction:column;gap:12px">
-      <input class="inp" id="owner-pw" type="password" placeholder="Password">
-      <button class="btn btn-primary" style="width:100%" onclick="doOwnerLogin()">Accedi</button>
+      <input class="inp" id="owner-pw" type="password" placeholder="Password owner" 
+        style="font-size:16px!important;padding:14px!important"
+        onkeydown="if(event.key==='Enter'){event.preventDefault();doOwnerLogin();}">
+      <button class="btn btn-primary" style="width:100%;padding:14px;font-size:15px" onclick="doOwnerLogin()">Accedi</button>
     </div>
   </div>
 </div>
@@ -3575,7 +3576,7 @@ async function owRefreshUsers(){
               +'<td style="color:var(--sub);font-size:.8rem">'+(u.join_date?String(u.join_date).slice(0,10):'-')+'</td>'
               +'<td><div style="display:flex;gap:6px">'
               +'<button class="btn btn-xs '+(u.pro?'btn-ghost':'btn-teal')+'" data-em="'+(u.email||'')+'" onclick="ownerTogglePro(this.dataset.em)">'+(u.pro?'Rimuovi PRO':'Attiva PRO')+'</button>'
-              +'<button class="btn btn-xs btn-danger" data-em="'+(u.email||'')+'" onclick="ownerDeleteUser(this.dataset.em)">&#128465; Elimina</button>'
+              +'<button class="btn btn-xs btn-danger" data-em="'+(u.email||'')+'" onclick="ownerDeleteUser(this.dataset.em)"> Elimina</button>'
               +'</div></td>'
               +'</tr>';
           }).join('')
@@ -3584,7 +3585,7 @@ async function owRefreshUsers(){
     }
     toast(users.length+' utenti caricati dal database','success');
   } catch(e){ toast('Errore: '+e.message,'error'); }
-  finally { if(btn){ btn.disabled=false; btn.textContent='&#128260; Aggiorna'; } }
+  finally { if(btn){ btn.disabled=false; btn.textContent=' Aggiorna'; } }
 }
 
 function renderOwnerSection(sec){
@@ -3807,13 +3808,13 @@ function renderOwnerSection(sec){
     var _sonnetBorder= _mS ? 'var(--accent)' : 'var(--border)';
     var _sonnetBg   = _mS ? 'rgba(91,94,244,.1)' : 'var(--bg2)';
     document.getElementById('os-ai').innerHTML =
-      '<h2 style="font-family:var(--font2);margin-bottom:20px">&#129302; Configurazione AI</h2>'
+      '<h2 style="font-family:var(--font2);margin-bottom:20px"> Configurazione AI</h2>'
 
       // Chiave API info
       +'<div class="card" style="margin-bottom:16px;border-left:3px solid var(--teal)">'
-      +'<h4 style="margin-bottom:8px">&#128273; Chiave API Anthropic</h4>'
+      +'<h4 style="margin-bottom:8px"> Chiave API Anthropic</h4>'
       +'<p style="font-size:.85rem;color:var(--sub);margin-bottom:8px">La chiave API &#232; configurata direttamente su Railway come variabile <code>ANTHROPIC_API_KEY</code>.</p>'
-      +'<div style="padding:10px;background:var(--bg2);border-radius:8px;font-size:.85rem;color:var(--teal)">&#10003; Configurata su Railway &#8594; Variables &#8594; ANTHROPIC_API_KEY</div>'
+      +'<div style="padding:10px;background:var(--bg2);border-radius:8px;font-size:.85rem;color:var(--teal)">✓ Configurata su Railway &#8594; Variables &#8594; ANTHROPIC_API_KEY</div>'
       +'</div>'
 
       // Modello
@@ -3823,12 +3824,12 @@ function renderOwnerSection(sec){
       +'<div data-model="claude-haiku-4-5-20251001" onclick="owSetModel(this.dataset.model)" style="padding:16px;border-radius:12px;border:2px solid '+_haikuBorder+';background:'+_haikuBg+';cursor:pointer">'
       +'<div style="font-weight:700;margin-bottom:4px">&#9889; Claude Haiku</div>'
       +'<div style="font-size:.8rem;color:var(--sub)">Veloce &#183; Economico &#183; 6-10s</div>'
-      +(_mH?'<div style="font-size:.75rem;color:var(--accent);margin-top:6px;font-weight:600">&#10003; ATTIVO</div>':'')
+      +(_mH?'<div style="font-size:.75rem;color:var(--accent);margin-top:6px;font-weight:600">✓ ATTIVO</div>':'')
       +'</div>'
       +'<div data-model="claude-sonnet-4-5" onclick="owSetModel(this.dataset.model)" style="padding:16px;border-radius:12px;border:2px solid '+_sonnetBorder+';background:'+_sonnetBg+';cursor:pointer">'
-      +'<div style="font-weight:700;margin-bottom:4px">&#129504; Claude Sonnet</div>'
+      +'<div style="font-weight:700;margin-bottom:4px"> Claude Sonnet</div>'
       +'<div style="font-size:.8rem;color:var(--sub)">Potente &#183; Preciso &#183; 20-30s</div>'
-      +(_mS?'<div style="font-size:.75rem;color:var(--accent);margin-top:6px;font-weight:600">&#10003; ATTIVO</div>':'')
+      +(_mS?'<div style="font-size:.75rem;color:var(--accent);margin-top:6px;font-weight:600">✓ ATTIVO</div>':'')
       +'</div></div></div>'
 
       // Funzionalità
@@ -3838,10 +3839,10 @@ function renderOwnerSection(sec){
 
       // Istruzioni sistema
       +'<div class="card">'
-      +'<h4 style="margin-bottom:8px">&#128221; Istruzioni Sistema AI Coach</h4>'
+      +'<h4 style="margin-bottom:8px"> Istruzioni Sistema AI Coach</h4>'
       +'<p style="font-size:.82rem;color:var(--sub);margin-bottom:10px">Definiscono la personalit&#224; e lo stile del coach per tutti gli utenti.</p>'
       +'<textarea id="ow-ai-system" class="inp" rows="10" style="width:100%;font-size:.84rem;line-height:1.6;font-family:monospace" placeholder="Istruzioni sistema...">'+_sys+'</textarea>'
-      +'<button onclick="owSaveSystem()" class="btn btn-primary" style="margin-top:10px;border-radius:50px;padding:10px 28px">&#128190; Salva istruzioni</button>'
+      +'<button onclick="owSaveSystem()" class="btn btn-primary" style="margin-top:10px;border-radius:50px;padding:10px 28px"> Salva istruzioni</button>'
       +'</div>';
   }
 }
@@ -6535,7 +6536,7 @@ function renderDashHome(){
       const nb = document.createElement('div');
       nb.className = 'notif-banner';
       nb.style.cssText = 'background:rgba(91,94,244,.08);border:1px solid rgba(91,94,244,.2);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:12px';
-      nb.innerHTML = '<span>bell</span><div style="flex:1;color:var(--sub)">Attiva le notifiche per non perdere il tuo streak!</div><button class="btn btn-primary btn-xs" onclick="enableNotifications();this.closest(\'.notif-banner\').remove()">Attiva</button><button class="btn btn-ghost btn-xs" onclick="this.closest(\'.notif-banner\').remove()">No</button>';
+      nb.innerHTML = '<span style="color:var(--accent)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span><div style="flex:1;color:var(--sub)">Attiva le notifiche per non perdere il tuo streak!</div><button class="btn btn-primary btn-xs" onclick="enableNotifications();this.closest(\'.notif-banner\').remove()">Attiva</button><button class="btn btn-ghost btn-xs" onclick="this.closest(\'.notif-banner\').remove()">No</button>';
       homeEl.insertBefore(nb, homeEl.firstChild);
     }
   }, 200);
@@ -6911,7 +6912,7 @@ function renderExerciseCard(ex, ei, dayKey){
     <!-- RX INFO (CrossFit) -->
     ${rxInfo ? `<div style="font-size:11px;padding:6px 10px;background:rgba(91,94,244,.08);border:1px solid rgba(91,94,244,.2);border-radius:6px;margin-bottom:6px;display:flex;gap:12px;flex-wrap:wrap">
       <span style="color:var(--accent-xl);font-weight:700">RX</span>
-      ${rxInfo.rx ? `<span style="color:var(--gold)">&#128293; ${rxInfo.rx}</span>` : ''}
+      ${rxInfo.rx ? `<span style="color:var(--gold)"> ${rxInfo.rx}</span>` : ''}
       ${rxInfo.scaled ? `<span style="color:var(--sub)">Scaled: ${rxInfo.scaled}</span>` : ''}
     </div>` : ''}
 
@@ -6931,7 +6932,7 @@ function renderExerciseCard(ex, ei, dayKey){
     </div>
 
     <!-- PROGRESSION TIP -->
-    ${ex.progression ? `<div style="font-size:10px;color:var(--muted);margin-top:5px;padding:4px 8px;background:var(--bg2);border-radius:4px">📈 ${ex.progression}</div>` : ''}
+    ${ex.progression ? `<div style="font-size:10px;color:var(--muted);margin-top:5px;padding:4px 8px;background:var(--bg2);border-radius:4px">${ex.progression}</div>` : ''}
 
     <!-- NOTE PERSONALI -->
     <div style="margin-top:6px">
@@ -7214,10 +7215,10 @@ function showRXInfo(dayKey, ei){
         <div style="font-size:.9rem;color:var(--sub)">${rxInfo.scaled}</div>
       </div>
       <div style="background:var(--bg2);border-radius:8px;padding:12px;font-size:.83rem;color:var(--sub)">
-        <span style="color:var(--teal);font-weight:600">&#128161; Cue tecnico:</span> ${rxInfo.tip}
+        <span style="color:var(--teal);font-weight:600">· Cue tecnico:</span> ${rxInfo.tip}
       </div>
       <div style="display:flex;gap:8px">
-        <button onclick="applyRXWeight('${dayKey}',${ei},'rx')" class="btn btn-primary btn-sm" style="flex:1;border-radius:50px">&#9989; Usa RX</button>
+        <button onclick="applyRXWeight('${dayKey}',${ei},'rx')" class="btn btn-primary btn-sm" style="flex:1;border-radius:50px">✓ Usa RX</button>
         <button onclick="applyRXWeight('${dayKey}',${ei},'scaled')" class="btn btn-sm" style="flex:1;border-radius:50px;background:rgba(91,94,244,.1);border:1px solid rgba(91,94,244,.3);color:var(--accent-xl)">Scaled</button>
         <button onclick="this.closest('.modal-bg').remove()" class="btn btn-ghost btn-sm" style="border-radius:50px">Chiudi</button>
       </div>
@@ -7412,7 +7413,7 @@ function _renderCalContent(){
   wrap.style.margin = '0';
   wrap.style.width = '100%';
   const heading = document.createElement('div');
-  heading.innerHTML = '<h2 style="font-family:var(--font2);margin-bottom:20px">&#128198; Calendario Allenamenti</h2>';
+  heading.innerHTML = '<h2 style="font-family:var(--font2);margin-bottom:20px;display:flex;align-items:center;gap:10px">"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>Calendario Allenamenti</h2>';
   const calDiv = document.createElement('div');
   calDiv.id = 'cal-container';
   wrap.appendChild(heading);
@@ -7465,7 +7466,7 @@ function buildCalendar(year, month){
   // Stats
   out += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">';
   out += '<div style="text-align:center;padding:12px;background:rgba(91,94,244,.08);border-radius:10px"><div style="font-size:1.5rem;font-weight:800;color:var(--accent)">' + totalSessions + '</div><div style="font-size:.75rem;color:var(--sub)">Sessioni</div></div>';
-  out += '<div style="text-align:center;padding:12px;background:rgba(15,214,194,.08);border-radius:10px"><div style="font-size:1.5rem;font-weight:800;color:var(--teal)">' + (SESSION&&SESSION.streak||0) + ' &#128293;</div><div style="font-size:.75rem;color:var(--sub)">Streak</div></div>';
+  out += '<div style="text-align:center;padding:12px;background:rgba(15,214,194,.08);border-radius:10px"><div style="font-size:1.5rem;font-weight:800;color:var(--teal)">' + (SESSION&&SESSION.streak||0) + ' </div><div style="font-size:.75rem;color:var(--sub)">Streak</div></div>';
   out += '<div style="text-align:center;padding:12px;background:rgba(245,200,66,.08);border-radius:10px"><div style="font-size:1.5rem;font-weight:800;color:var(--gold)">' + (totalVolume>0?Math.round(totalVolume/1000)+'t':'-') + '</div><div style="font-size:.75rem;color:var(--sub)">Volume</div></div>';
   out += '</div>';
 
@@ -7495,7 +7496,7 @@ function buildCalendar(year, month){
     out += '<span style="font-size:.82rem;font-weight:'+(isToday?'800':'600')+';color:'+numColor+'">'+day+'</span>';
     if(hasLog){
       out += '<span style="font-size:.55rem;color:var(--teal);text-align:center;line-height:1.2;margin-top:2px">'+focusS+'</span>';
-      out += '<span style="font-size:.6rem;margin-top:1px">&#128170;</span>';
+      out += '<span style="font-size:.6rem;margin-top:1px"></span>';
     }
     out += '</div>';
   }
@@ -7525,7 +7526,7 @@ function showCalDay(day, month, year){
   entries.forEach(function(entry){
     content += '<div class="card" style="margin-bottom:12px">';
     content += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">';
-    content += '<div style="font-size:1.6rem">&#128170;</div>';
+    content += '<div style="font-size:1.6rem"></div>';
     content += '<div><div style="font-family:var(--font2);font-weight:700">'+(entry.dayName||'Allenamento')+'</div>';
     content += '<div style="font-size:.8rem;color:var(--sub)">'+(entry.focus||'')+' &bull; '+new Date(entry.date).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})+'</div></div>';
     content += '<div style="margin-left:auto;text-align:right"><div style="font-size:.75rem;color:var(--sub)">Volume</div>';
@@ -7548,7 +7549,7 @@ function showCalDay(day, month, year){
   var modal = document.createElement('div');
   modal.id = 'cal-day-modal';
   modal.className = 'modal-overlay open';
-  modal.innerHTML = '<div class="modal" style="max-width:520px;width:95%;max-height:80vh;overflow-y:auto"><div class="modal-hd"><h3>&#128197; '+day+' '+monthNames[month]+' '+year+'</h3><button class="modal-close" onclick="document.getElementById(\'cal-day-modal\').remove()">&#10005;</button></div><div style="padding:0 4px">'+content+'</div></div>';
+  modal.innerHTML = '<div class="modal" style="max-width:520px;width:95%;max-height:80vh;overflow-y:auto"><div class="modal-hd"><h3> '+day+' '+monthNames[month]+' '+year+'</h3><button class="modal-close" onclick="document.getElementById(\'cal-day-modal\').remove()">×</button></div><div style="padding:0 4px">'+content+'</div></div>';
   modal.onclick = function(e){ if(e.target===modal) modal.remove(); };
   document.body.appendChild(modal);
 }
@@ -7683,7 +7684,7 @@ function renderDashStorico(){
   const prs=Object.entries(SESSION||{}).filter(([k])=>k.startsWith('pr_')).map(([k,v])=>({name:k.replace('pr_',''),kg:v}));
   document.getElementById('ds-storico').innerHTML=`
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
-      <h2 style="font-family:var(--font2)">Storico allenamenti</h2>
+      <h2 style="font-family:var(--font2)"<span style='color:var(--sub);display:inline-flex'><svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='12 8 12 12 14 14'/><path d='M3.05 11a9 9 0 1 0 .5-4.5'/><polyline points='3 3 3 7 7 7'/></svg></span> Storico allenamenti</h2>
       ${sessionActive?`<button class="btn btn-teal btn-sm" onclick="finishSession()">Fine sessione</button>`:''}
     </div>
     ${prs.length?`
@@ -7795,7 +7796,7 @@ function _renderStoricoContent(log){
   }).join('');
   var prHtml=prs.length?'<div class="card" style="margin-bottom:16px"><h4 style="margin-bottom:12px">Record Personali</h4><div class="grid4">'+prs.map(function(p){return'<div style="background:var(--bg3);border-radius:8px;padding:10px;text-align:center"><div style="font-size:.82rem;color:var(--sub)">'+p.name+'</div><div style="font-family:var(--font2);font-size:1.3rem;color:var(--gold);font-weight:700">'+p.kg+'kg</div></div>';}).join('')+'</div></div>':'';
   var logHtml=log.length?'<div class="card"><h4 style="margin-bottom:12px">Sessioni ('+log.length+')</h4>'+rows+'</div>':'<div class="card" style="text-align:center;padding:40px"><div style="font-size:3rem">📊</div><h3>Nessuna sessione ancora</h3><p style="color:var(--sub);margin:12px 0 20px">Completa il tuo primo allenamento!</p><button class="btn btn-primary" onclick="showDashSection(\'schede\')">Vai alle schede →</button></div>';
-  el.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px"><h2 style="font-family:var(--font2)">Storico</h2><span style="font-size:.8rem;color:var(--muted)">'+log.length+' sessioni</span></div>'+prHtml+logHtml;
+  el.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px"><h2 style="font-family:var(--font2);display:flex;align-items:center;gap:10px">"><span style="color:var(--sub);display:flex;align-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 0 .5-4.5"/><polyline points="3 3 3 7 7 7"/></svg></span>Storico</h2><span style="font-size:.8rem;color:var(--muted)">'+log.length+' sessioni</span></div>'+prHtml+logHtml;
 }
 
 function renderDashDieta(){
@@ -7812,14 +7813,14 @@ function renderDashDieta(){
 function _renderDietaContent(){
   const u = SESSION;
   document.getElementById('ds-dieta').innerHTML = `
-    <h2 style="font-family:var(--font2);margin-bottom:4px">&#129385; Dieta &amp; Nutrizione</h2>
+    <h2 style="font-family:var(--font2);margin-bottom:20px;display:flex;align-items:center;gap:10px"><span style="color:var(--teal);display:flex;align-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg></span>Dieta &amp; Nutrizione</h2>
     <p style="color:var(--sub);font-size:.85rem;margin-bottom:20px">Traccia i pasti, genera un piano AI, scopri ricette</p>
 
     <!-- TAB BAR -->
     <div style="display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap">
-      <button id="dtab-oggi"   onclick="dietTab('oggi')"   class="btn btn-sm" style="border-radius:50px;background:var(--accent);color:#fff;font-weight:700">&#128197; Oggi</button>
-      <button id="dtab-piano"  onclick="dietTab('piano')"  class="btn btn-sm" style="border-radius:50px;background:var(--bg2);color:var(--sub)">&#129504; Piano AI</button>
-      <button id="dtab-ricette" onclick="dietTab('ricette')" class="btn btn-sm" style="border-radius:50px;background:var(--bg2);color:var(--sub)">&#127859; Ricette</button>
+      <button id="dtab-oggi"   onclick="dietTab('oggi')"   class="btn btn-sm" style="border-radius:50px;background:var(--accent);color:#fff;font-weight:700">Oggi</button>
+      <button id="dtab-piano"  onclick="dietTab('piano')"  class="btn btn-sm" style="border-radius:50px;background:var(--bg2);color:var(--sub)">Piano AI</button>
+      <button id="dtab-ricette" onclick="dietTab('ricette')" class="btn btn-sm" style="border-radius:50px;background:var(--bg2);color:var(--sub)">Ricette</button>
     </div>
 
     <!-- TAB OGGI -->
@@ -7868,7 +7869,7 @@ function buildDietaOggi(u){
   categories.forEach(function(cat){
     const catMeals = getMealsFor(cat);
     const catKcal  = catMeals.reduce(function(a,m){ return a+(m.kcal||0); },0);
-    const icons    = {'Colazione':'&#9749;','Pranzo':'&#127859;','Cena':'&#127348;','Snack':'&#127822;'};
+    const icons    = {'Colazione':'','Pranzo':'','Cena':'','Snack':'&#127822;'};
     catHTML += '<div style="margin-bottom:12px">';
     catHTML += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">';
     catHTML += '<span style="font-weight:600;font-size:.88rem">'+icons[cat]+' '+cat+'</span>';
@@ -7879,7 +7880,7 @@ function buildDietaOggi(u){
         catHTML += '<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--bg2);border-radius:8px;margin-bottom:4px">';
         catHTML += '<span style="flex:1;font-size:.83rem">'+m.name+'</span>';
         catHTML += '<span style="color:var(--sub);font-size:.78rem">'+m.kcal+'kcal &bull; P:'+m.protein+'g C:'+m.carbs+'g F:'+m.fat+'g</span>';
-        catHTML += '<button class="btn btn-xs" style="color:var(--red);background:rgba(248,113,113,.1);border:none;border-radius:20px;padding:2px 8px;cursor:pointer" onclick="deleteMealReal('+realIdx+')">&#10005;</button></div>';
+        catHTML += '<button class="btn btn-xs" style="color:var(--red);background:rgba(248,113,113,.1);border:none;border-radius:20px;padding:2px 8px;cursor:pointer" onclick="deleteMealReal('+realIdx+')">×</button></div>';
       });
     } else {
       catHTML += '<div style="padding:7px 10px;background:var(--bg2);border-radius:8px;font-size:.8rem;color:var(--muted)">Nessun pasto aggiunto — clicca + per aggiungere</div>';
@@ -7889,19 +7890,19 @@ function buildDietaOggi(u){
 
   return '<div class="grid2" style="margin-bottom:16px">'
     +'<div class="card">'
-    +'<h4 style="margin-bottom:14px">&#128293; Riepilogo oggi</h4>'
+    +'<h4 style="margin-bottom:14px"> Riepilogo oggi</h4>'
     +'<div style="text-align:center;margin-bottom:14px">'
     +'<div style="font-family:var(--font2);font-size:2.8rem;font-weight:800;color:var(--accent)">'+kcal+'</div>'
     +'<div style="color:var(--sub);font-size:.82rem">/ '+goalKcal+' kcal obiettivo</div>'
     +'<div style="background:var(--bg2);border-radius:50px;height:8px;margin:10px 0;overflow:hidden"><div style="height:100%;width:'+kcalPct+'%;background:linear-gradient(90deg,var(--teal),var(--accent));border-radius:50px;transition:.4s"></div></div>'
     +'<div style="font-size:.78rem;color:var(--sub)">'+kcalPct+'% del fabbisogno</div></div>'
     +'<div style="display:flex;flex-direction:column;gap:7px">'
-    +'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:.8rem;width:70px">&#129385; Prot</span><div style="flex:1;background:var(--bg2);border-radius:50px;height:6px;overflow:hidden"><div style="height:100%;width:'+Math.min(prot/goalProt*100,100)+'%;background:var(--teal);border-radius:50px"></div></div><span style="font-size:.78rem;color:var(--sub);width:60px;text-align:right">'+prot+'g/'+goalProt+'g</span></div>'
-    +'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:.8rem;width:70px">&#127838; Carb</span><div style="flex:1;background:var(--bg2);border-radius:50px;height:6px;overflow:hidden"><div style="height:100%;width:'+Math.min(carbs/200*100,100)+'%;background:var(--accent);border-radius:50px"></div></div><span style="font-size:.78rem;color:var(--sub);width:60px;text-align:right">'+carbs+'g</span></div>'
+    +'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:.8rem;width:70px"> Prot</span><div style="flex:1;background:var(--bg2);border-radius:50px;height:6px;overflow:hidden"><div style="height:100%;width:'+Math.min(prot/goalProt*100,100)+'%;background:var(--teal);border-radius:50px"></div></div><span style="font-size:.78rem;color:var(--sub);width:60px;text-align:right">'+prot+'g/'+goalProt+'g</span></div>'
+    +'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:.8rem;width:70px"> Carb</span><div style="flex:1;background:var(--bg2);border-radius:50px;height:6px;overflow:hidden"><div style="height:100%;width:'+Math.min(carbs/200*100,100)+'%;background:var(--accent);border-radius:50px"></div></div><span style="font-size:.78rem;color:var(--sub);width:60px;text-align:right">'+carbs+'g</span></div>'
     +'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:.8rem;width:70px">&#129370; Grassi</span><div style="flex:1;background:var(--bg2);border-radius:50px;height:6px;overflow:hidden"><div style="height:100%;width:'+Math.min(fat/70*100,100)+'%;background:var(--gold);border-radius:50px"></div></div><span style="font-size:.78rem;color:var(--sub);width:60px;text-align:right">'+fat+'g</span></div>'
     +'</div></div>'
     +'<div class="card">'
-    +'<h4 style="margin-bottom:12px">&#43; Aggiungi alimento</h4>'
+    +'<h4 style="margin-bottom:12px">+ Aggiungi alimento</h4>'
     +'<div style="display:flex;flex-direction:column;gap:8px">'
     +'<select class="inp" id="food-cat"><option>Colazione</option><option>Pranzo</option><option>Cena</option><option>Snack</option></select>'
     +'<input class="inp" id="food-name" placeholder="Nome alimento (es. Pollo 200g)">'
@@ -7909,13 +7910,13 @@ function buildDietaOggi(u){
     +'<div class="field"><label>Proteine (g)</label><input class="inp" id="food-prot" type="number" placeholder="30"></div></div>'
     +'<div class="field-row c2"><div class="field"><label>Carboidrati (g)</label><input class="inp" id="food-carbs" type="number" placeholder="20"></div>'
     +'<div class="field"><label>Grassi (g)</label><input class="inp" id="food-fat" type="number" placeholder="8"></div></div>'
-    +'<button class="btn btn-primary btn-sm" onclick="addMealNew()" style="border-radius:50px">&#43; Aggiungi al diario</button>'
+    +'<button class="btn btn-primary btn-sm" onclick="addMealNew()" style="border-radius:50px">+ Aggiungi al diario</button>'
     +'<div style="border-top:1px solid var(--border);padding-top:8px;margin-top:2px">'
     +'<input class="inp" id="ai-food-input" placeholder="Oppure descrivi il pasto allAI...">'
-    +'<button class="btn btn-sm" style="width:100%;margin-top:6px;border-radius:50px;background:rgba(91,94,244,.12);border:1px solid rgba(91,94,244,.3);color:var(--accent)" onclick="scanFoodAI()">&#128269; Analizza con AI</button>'
+    +'<button class="btn btn-sm" style="width:100%;margin-top:6px;border-radius:50px;background:rgba(91,94,244,.12);border:1px solid rgba(91,94,244,.3);color:var(--accent)" onclick="scanFoodAI()"> Analizza con AI</button>'
     +'<div id="ai-food-result" style="margin-top:8px"></div></div>'
     +'</div></div></div>'
-    +'<div class="card"><h4 style="margin-bottom:14px">&#128197; Diario pasti di oggi</h4>'+catHTML+'</div>';
+    +'<div class="card"><h4 style="margin-bottom:14px"> Diario pasti di oggi</h4>'+catHTML+'</div>';
 }
 
 function buildDietaPiano(u){
@@ -7926,16 +7927,16 @@ function buildDietaPiano(u){
 
   if(!piano){
     return '<div class="card" style="text-align:center;padding:32px 20px">'
-      +'<div style="font-size:2.5rem;margin-bottom:12px">&#129504;</div>'
+      +'<div style="font-size:2.5rem;margin-bottom:12px"></div>'
       +'<h3 style="font-family:var(--font2);margin-bottom:8px">Piano alimentare AI</h3>'
       +'<p style="color:var(--sub);font-size:.88rem;margin-bottom:20px">Genera un piano alimentare settimanale personalizzato in base al tuo obiettivo (<strong>'+goal+'</strong>), tipo di dieta (<strong>'+diet+'</strong>) e fabbisogno calorico.</p>'
       +'<button class="btn btn-primary" onclick="generateDietPlan()" style="border-radius:50px;padding:12px 28px;font-size:.95rem">&#9889; Genera Piano AI</button>'
-      +'<div id="diet-plan-loading" style="display:none;margin-top:16px;color:var(--sub)">&#129504; Generando il piano personalizzato...</div>'
+      +'<div id="diet-plan-loading" style="display:none;margin-top:16px;color:var(--sub)"> Generando il piano personalizzato...</div>'
       +'</div>';
   }
 
   let out = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'
-    +'<h4>&#129385; Il tuo piano settimanale</h4>'
+    +'<h4> Il tuo piano settimanale</h4>'
     +'<button class="btn btn-sm btn-ghost" onclick="SESSION.dietPlan=null;updateUser(SESSION);saveSession(SESSION);buildDietaPiano(SESSION)" style="border-radius:50px">&#8635; Rigenera</button></div>';
 
   (piano.days||[]).forEach(function(day){
@@ -7944,18 +7945,18 @@ function buildDietaPiano(u){
     const meals = ['colazione','pranzo','cena','spuntino'];
     meals.forEach(function(m){
       if(day[m]){
-        const icons = {'colazione':'&#9749;','pranzo':'&#127859;','cena':'&#127348;','spuntino':'&#127822;'};
+        const icons = {'colazione':'','pranzo':'','cena':'','spuntino':'&#127822;'};
         out += '<div style="display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--border2)">';
         out += '<span style="font-size:.85rem;min-width:80px;color:var(--sub)">'+icons[m]+' '+m.charAt(0).toUpperCase()+m.slice(1)+'</span>';
         out += '<div style="flex:1"><div style="font-size:.85rem">'+day[m].pasto+'</div>';
-        if(day[m].kcal) out += '<div style="font-size:.75rem;color:var(--sub)">&#128293; '+day[m].kcal+'kcal &bull; P:'+day[m].prot+'g C:'+day[m].carb+'g</div>';
+        if(day[m].kcal) out += '<div style="font-size:.75rem;color:var(--sub)"> '+day[m].kcal+'kcal &bull; P:'+day[m].prot+'g C:'+day[m].carb+'g</div>';
         out += '</div></div>';
       }
     });
     out += '</div>';
   });
 
-  if(piano.note) out += '<div class="card" style="background:rgba(91,94,244,.06);border-color:rgba(91,94,244,.2)"><p style="font-size:.85rem;color:var(--sub)">&#128161; '+piano.note+'</p></div>';
+  if(piano.note) out += '<div class="card" style="background:rgba(91,94,244,.06);border-color:rgba(91,94,244,.2)"><p style="font-size:.85rem;color:var(--sub)">· '+piano.note+'</p></div>';
   return out;
 }
 
@@ -7966,7 +7967,7 @@ function buildDietaRicette(u){
   const hasRicette = u.ricette && u.ricette.length;
   if(!hasRicette){
     return '<div class="card" style="text-align:center;padding:32px 20px">'
-      +'<div style="font-size:2.5rem;margin-bottom:12px">&#127859;</div>'
+      +'<div style="font-size:2.5rem;margin-bottom:12px"></div>'
       +'<h3 style="font-family:var(--font2);margin-bottom:8px">Ricette personalizzate</h3>'
       +'<p style="color:var(--sub);font-size:.88rem;margin-bottom:20px">Genera ricette sane e gustose in base al tuo obiettivo e tipo di dieta.</p>'
       +'<button class="btn btn-primary" onclick="generateRicette()" style="border-radius:50px;padding:12px 28px">&#9889; Genera Ricette AI</button>'
@@ -7975,17 +7976,17 @@ function buildDietaRicette(u){
   }
 
   let out = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'
-    +'<h4>&#127859; Le tue ricette</h4>'
+    +'<h4> Le tue ricette</h4>'
     +'<button class="btn btn-sm btn-ghost" onclick="SESSION.ricette=null;updateUser(SESSION);saveSession(SESSION);renderDashDieta()" style="border-radius:50px">&#8635; Rigenera</button></div>';
 
   (u.ricette||[]).forEach(function(r){
     out += '<div class="card" style="margin-bottom:12px">';
     out += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">';
-    out += '<div style="font-size:1.6rem">'+( r.tipo==='colazione'?'&#9749;':r.tipo==='snack'?'&#127822;':'&#127859;')+'</div>';
+    out += '<div style="font-size:1.6rem">'+( r.tipo==='colazione'?'':r.tipo==='snack'?'&#127822;':'')+'</div>';
     out += '<div><div style="font-family:var(--font2);font-weight:700">'+r.nome+'</div>';
-    out += '<div style="font-size:.78rem;color:var(--sub)">'+r.tipo+' &bull; &#128293; '+r.kcal+'kcal &bull; &#8987; '+r.tempo+'</div></div></div>';
+    out += '<div style="font-size:.78rem;color:var(--sub)">'+r.tipo+' &bull;  '+r.kcal+'kcal &bull;  '+r.tempo+'</div></div></div>';
     out += '<div style="font-size:.83rem;color:var(--sub);margin-bottom:8px">&#129517; <strong>Ingredienti:</strong> '+r.ingredienti+'</div>';
-    out += '<div style="font-size:.83rem;color:var(--sub)">&#128221; <strong>Preparazione:</strong> '+r.preparazione+'</div>';
+    out += '<div style="font-size:.83rem;color:var(--sub)"> <strong>Preparazione:</strong> '+r.preparazione+'</div>';
     out += '<div style="display:flex;gap:10px;margin-top:8px;font-size:.76rem">';
     out += '<span style="background:rgba(15,214,194,.1);color:var(--teal);padding:3px 10px;border-radius:20px">P: '+r.prot+'g</span>';
     out += '<span style="background:rgba(91,94,244,.1);color:var(--accent);padding:3px 10px;border-radius:20px">C: '+r.carb+'g</span>';
@@ -8011,7 +8012,7 @@ function addMealNew(){
   SESSION.meals.push(meal);
   updateUser(SESSION);
   clearTimeout(window._userDataTimer); saveUserData().catch(function(){}); saveSession(SESSION);
-  toast('&#10003; '+meal.category+' aggiunta!','success');
+  toast('✓ '+meal.category+' aggiunta!','success');
   renderDashDieta();
 }
 
@@ -8364,10 +8365,10 @@ function _renderDatiContent(){
       +'<td style="padding:5px 0;color:var(--sub);font-size:.79rem">'+(w.date?new Date(w.date).toLocaleDateString('it-IT'):'—')+'</td>'
       +'<td style="text-align:right;font-weight:700;font-size:.84rem">'+parseFloat(w.kg||0).toFixed(1)+'kg</td>'
       +'<td style="text-align:right;color:'+dc+';font-size:.79rem">'+(d!='—'&&parseFloat(d)>0?'+':'')+d+(d!='—'?'kg':'')+'</td>'
-      +'<td><button onclick="deleteWeight('+(W.length-1-i)+')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.8rem">&#10005;</button></td></tr>';
+      +'<td><button onclick="deleteWeight('+(W.length-1-i)+')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.8rem">×</button></td></tr>';
   }).join('');
   var el=document.getElementById('ds-dati');
-  el.innerHTML='<h2 style="font-family:var(--font2);margin-bottom:4px">&#128200; I tuoi Progressi</h2>'
+  el.innerHTML='<h2 style="font-family:var(--font2);margin-bottom:20px;display:flex;align-items:center;gap:10px"><span style="color:var(--green);display:flex;align-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>I tuoi Progressi</h2>'
     +'<p style="font-size:.85rem;color:var(--sub);margin-bottom:16px">Peso, misure e parametri fisici</p>'
     +'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:16px">'
     +'<div class="card" style="text-align:center;padding:14px 8px"><div style="font-size:1.5rem;font-weight:800;color:var(--accent);font-family:var(--font2)">'+(wkg?wkg.toFixed(1)+'kg':'—')+'</div><div style="font-size:.7rem;color:var(--sub)">Peso attuale</div></div>'
@@ -8376,7 +8377,7 @@ function _renderDatiContent(){
     +'<div class="card" style="text-align:center;padding:14px 8px"><div style="font-size:1.5rem;font-weight:800;color:var(--gold);font-family:var(--font2)">'+(prot?prot+'g':'—')+'</div><div style="font-size:.7rem;color:var(--sub)">Proteine/giorno</div></div>'
     +'</div>'
     +'<div class="grid2" style="margin-bottom:16px">'
-    +'<div class="card"><h4 style="margin-bottom:12px">&#9878; Registra peso</h4>'
+    +'<div class="card"><h4 style="margin-bottom:12px">Registra peso</h4>'
     +'<div style="display:flex;gap:10px;align-items:flex-end;margin-bottom:14px">'
     +'<div class="field" style="flex:1"><label>Peso (kg)</label>'
     +'<input class="inp" id="w-input" type="number" step="0.1" placeholder="'+(wkg?wkg.toFixed(1):'75.0')+'" style="font-size:1.1rem;font-weight:700"></div>'
@@ -8393,12 +8394,12 @@ function _renderDatiContent(){
        +'<th style="text-align:right;font-size:.74rem">Var</th><th></th></tr></thead>'
        +'<tbody>'+wR+'</tbody></table></div>':'')
     +'</div>'
-    +'<div class="card"><h4 style="margin-bottom:12px">&#128101; Misure corporee</h4>'
+    +'<div class="card"><h4 style="margin-bottom:12px"> Misure corporee</h4>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">'+mH+'</div>'
-    +'<button class="btn btn-primary btn-sm" onclick="saveMeasures()" style="width:100%;border-radius:50px">&#128190; Salva misure</button>'
+    +'<button class="btn btn-primary btn-sm" onclick="saveMeasures()" style="width:100%;border-radius:50px"> Salva misure</button>'
     +(u.measuresDate?'<div style="margin-top:8px;font-size:.75rem;color:var(--sub);text-align:center">Ultima: '+new Date(u.measuresDate).toLocaleDateString('it-IT')+'</div>':'')
     +'</div></div>'
-    +'<div class="card"><h4 style="margin-bottom:12px">&#128100; Profilo fisico</h4>'
+    +'<div class="card"><h4 style="margin-bottom:12px"> Profilo fisico</h4>'
     +'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px">'+pH+'</div></div>';
 }
 function addWeight(){
@@ -8463,7 +8464,7 @@ function renderDashPiano(){
   if(!SESSION){ return; }
   const u=SESSION;
   document.getElementById('ds-piano').innerHTML=`
-    <h2 style="font-family:var(--font2);margin-bottom:20px">Il mio piano</h2>
+    <h2 style="font-family:var(--font2);margin-bottom:20px"><span style='color:var(--gold);display:inline-flex'><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span> Il mio piano</h2>
     <div class="grid2">
       <div class="price-card ${u.pro?'featured':''}">
         <div class="badge ${u.pro?'badge-teal':'badge-accent'}">${u.pro?'Pro ⭐ Attivo':'Free'}</div>
@@ -8525,7 +8526,7 @@ function renderDashWearable(){
   document.getElementById('ds-wearable').innerHTML = `
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
       <div>
-        <h2 style="font-family:var(--font2)">Wearable & Health</h2>
+        <h2 style="font-family:var(--font2);display:flex;align-items:center;gap:10px">"><span style="color:var(--teal);display:flex;align-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"/><polyline points="12 9 12 12 13.5 13.5"/><path d="M16.51 17.35l-.35 3.83a2 2 0 0 1-2 1.82H9.83a2 2 0 0 1-2-1.82l-.35-3.83m.01-10.7l.35-3.83A2 2 0 0 1 9.83 1h4.35a2 2 0 0 1 2 1.82l.35 3.83"/></svg></span>Wearable & Health</h2>
         <p style="font-size:12px;color:var(--sub);margin-top:3px">Collega i tuoi dispositivi e account social</p>
       </div>
       ${anyConnected ? `<div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--green)"><span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block"></span>Sincronizzato ${lastSync} — ${src}</div>` : ''}
@@ -11469,7 +11470,7 @@ function copyIGCaption() {
 
 // Meta Business API - post workout stats to Facebook Page/Instagram Business
 async function shareWorkoutToMeta(workoutName, duration, exercises) {
-  const text = `🏋️ Ho completato "${workoutName}" su EliteCoachProgram.fit!\n⏱ Durata: ${duration} minuti | 💪 ${exercises} esercizi\n#fitness #workout #personaltrainer #elitecoach`;
+  const text = `Ho completato "${workoutName}" su EliteCoachProgram.fit!\nDurata: ${duration} minuti | 💪 ${exercises} esercizi\n#fitness #workout #personaltrainer #elitecoach`;
   showShareModal(text);
 }
 
@@ -11488,10 +11489,10 @@ function showShareModal(text) {
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px;font-size:12px;color:var(--sub);line-height:1.7">${text.replace(/\n/g,'<br>')}</div>
       <div style="display:flex;flex-direction:column;gap:8px">
         <a href="${fbUrl}" target="_blank" class="btn btn-primary" style="gap:10px;text-decoration:none">
-          <span style="font-size:1.1rem">📘</span> Condividi su Facebook
+          <span style="display:inline-flex;align-items:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></span> Facebook
         </a>
         <button class="btn btn-ghost" onclick="shareToInstagram('',${JSON.stringify(text)});this.closest('.modal-bg').remove()" style="gap:10px">
-          <span style="font-size:1.1rem">📸</span> Condividi su Instagram
+          <span style="display:inline-flex;align-items:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></span> Instagram
         </button>
         <a href="${twUrl}" target="_blank" class="btn btn-ghost" style="gap:10px;text-decoration:none">
           <span style="font-size:1.1rem">𝕏</span> Condividi su X / Twitter
@@ -11542,12 +11543,12 @@ function showGarminSetupModal() {
       <div style="display:flex;flex-direction:column;gap:14px">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
           <div class="card" style="padding:14px;text-align:center">
-            <div style="font-size:1.8rem;margin-bottom:6px">📊</div>
+            <div style="margin-bottom:6px;display:flex;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--accent-l)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
             <div style="font-size:11px;font-weight:600;color:var(--text);margin-bottom:3px">Dati disponibili</div>
             <div style="font-size:10px;color:var(--sub)">Passi, HR, VO2max, Stress, Body Battery, Sonno, Attività</div>
           </div>
           <div class="card" style="padding:14px;text-align:center">
-            <div style="font-size:1.8rem;margin-bottom:6px">🔧</div>
+            <div style="margin-bottom:6px;display:flex;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--sub)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
             <div style="font-size:11px;font-weight:600;color:var(--text);margin-bottom:3px">Requisiti</div>
             <div style="font-size:10px;color:var(--sub)">Account Garmin Developer + Backend OAuth 1.0a</div>
           </div>
@@ -11723,7 +11724,7 @@ function renderDash1RM(){
   document.getElementById('ds-1rm').innerHTML = `
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
       <div>
-        <h2 style="font-family:var(--font2)">️ Calcolatore 1RM</h2>
+        <h2 style="font-family:var(--font2);display:flex;align-items:center;gap:10px">"><span style="color:var(--accent-l);display:flex;align-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="21"/><line x1="18" y1="3" x2="18" y2="21"/><line x1="3" y1="7" x2="9" y2="7"/><line x1="15" y1="7" x2="21" y2="7"/><line x1="3" y1="17" x2="9" y2="17"/><line x1="15" y1="17" x2="21" y2="17"/></svg></span>Calcolatore 1RM</h2>
         <p style="font-size:12px;color:var(--sub);margin-top:3px">Stima il tuo massimale e calcola i carichi per ogni intensità</p>
       </div>
     </div>
@@ -11748,7 +11749,7 @@ function renderDash1RM(){
         </div>
       </div>
       <div class="card" id="orm-result" style="display:flex;flex-direction:column;align-items:center;justify-content:center">
-        <div style="font-size:2.5rem;opacity:.3">🏋️</div>
+        <div style="opacity:.3;margin-bottom:8px;display:flex;justify-content:center"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="21"/><line x1="18" y1="3" x2="18" y2="21"/><line x1="3" y1="7" x2="9" y2="7"/><line x1="15" y1="7" x2="21" y2="7"/><line x1="3" y1="17" x2="9" y2="17"/><line x1="15" y1="17" x2="21" y2="17"/></svg></div>
         <p style="color:var(--muted);font-size:12px;margin-top:8px">Inserisci peso e reps per calcolare</p>
       </div>
     </div>
@@ -11877,7 +11878,7 @@ function renderDashSocial(){
   document.getElementById('ds-social').innerHTML = `
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
       <div>
-        <h2 style="font-family:var(--font2)">Community</h2>
+        <h2 style="font-family:var(--font2);display:flex;align-items:center;gap:10px">"><span style="color:var(--accent-l);display:flex;align-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Community</h2>
         <p style="font-size:12px;color:var(--sub);margin-top:3px">Feed, classifiche e sfide settimanali</p>
       </div>
     </div>
@@ -12024,13 +12025,13 @@ function renderDashExport(){
 
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:20px">
       <div class="card" style="text-align:center;cursor:pointer" onclick="exportProgramTXT()">
-        <div style="font-size:2rem;margin-bottom:8px">📋</div>
+        <div style="margin-bottom:8px;display:flex;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-l)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></div>
         <div style="font-weight:600;font-size:13px;margin-bottom:4px">Scheda (.txt)</div>
         <div style="font-size:11px;color:var(--sub)">Programma completo testuale</div>
         <button class="btn btn-primary btn-sm" style="margin-top:10px;width:100%">Scarica</button>
       </div>
       <div class="card" style="text-align:center;cursor:pointer" onclick="exportCSV()">
-        <div style="font-size:2rem;margin-bottom:8px">📊</div>
+        <div style="margin-bottom:8px;display:flex;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
         <div style="font-weight:600;font-size:13px;margin-bottom:4px">Storico (.csv)</div>
         <div style="font-size:11px;color:var(--sub)">Tutte le sessioni</div>
         <button class="btn btn-primary btn-sm" style="margin-top:10px;width:100%">Scarica</button>
@@ -12042,25 +12043,25 @@ function renderDashExport(){
         <button class="btn btn-primary btn-sm" style="margin-top:10px;width:100%">Scarica</button>
       </div>
       <div class="card" style="text-align:center;cursor:pointer" onclick="exportMacrosCSV()">
-        <div style="font-size:2rem;margin-bottom:8px">🥗</div>
+        <div style="margin-bottom:8px;display:flex;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg></div>
         <div style="font-weight:600;font-size:13px;margin-bottom:4px">Nutrizione (.csv)</div>
         <div style="font-size:11px;color:var(--sub)">Log pasti e macros</div>
         <button class="btn btn-primary btn-sm" style="margin-top:10px;width:100%">Scarica</button>
       </div>
       <div class="card" style="text-align:center;cursor:pointer" onclick="exportMeasuresCSV()">
-        <div style="font-size:2rem;margin-bottom:8px">📏</div>
+        <div style="margin-bottom:8px;display:flex;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 8.7l-8.6 8.6a2 2 0 0 1-2.8 0l-3.2-3.2a2 2 0 0 1 0-2.8l8.6-8.6a2 2 0 0 1 2.8 0l3.2 3.2a2 2 0 0 1 0 2.8z"/></svg></div>
         <div style="font-weight:600;font-size:13px;margin-bottom:4px">Misure (.csv)</div>
         <div style="font-size:11px;color:var(--sub)">Circonferenze corporee</div>
         <button class="btn btn-primary btn-sm" style="margin-top:10px;width:100%">Scarica</button>
       </div>
       <div class="card" style="text-align:center;cursor:pointer" onclick="exportDietaPDF()">
-        <div style="font-size:2rem;margin-bottom:8px">🥗</div>
+        <div style="margin-bottom:8px;display:flex;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg></div>
         <div style="font-weight:600;font-size:13px;margin-bottom:4px">Piano Dieta (.txt)</div>
         <div style="font-size:11px;color:var(--sub)">Piano alimentare AI completo</div>
         <button class="btn btn-primary btn-sm" style="margin-top:10px;width:100%">Scarica</button>
       </div>
       <div class="card" style="text-align:center;cursor:pointer" onclick="exportRicetteTXT()">
-        <div style="font-size:2rem;margin-bottom:8px">👨‍🍳</div>
+        <div style="margin-bottom:8px;display:flex;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg></div>
         <div style="font-weight:600;font-size:13px;margin-bottom:4px">Ricette AI (.txt)</div>
         <div style="font-size:11px;color:var(--sub)">Tutte le ricette generate</div>
         <button class="btn btn-primary btn-sm" style="margin-top:10px;width:100%">Scarica</button>
@@ -12076,42 +12077,42 @@ function renderDashExport(){
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
 
       <div class="card" style="cursor:pointer;transition:.2s;border:1px solid var(--border)" onclick="exportProgramTXT()">
-        <div style="font-size:2rem;margin-bottom:10px">📄</div>
+        <div style="margin-bottom:10px;display:flex;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
         <div style="font-family:var(--font2);font-size:14px;font-weight:700;margin-bottom:4px">Scheda allenamento</div>
         <div style="font-size:12px;color:var(--sub);margin-bottom:14px">Esporta il tuo programma completo in formato testo, pronto per la stampa</div>
         <span class="badge badge-accent">TXT</span>
       </div>
 
       <div class="card" style="cursor:pointer;transition:.2s;border:1px solid var(--border)" onclick="exportProgressCSV()">
-        <div style="font-size:2rem;margin-bottom:10px">📊</div>
+        <div style="margin-bottom:10px;display:flex;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
         <div style="font-family:var(--font2);font-size:14px;font-weight:700;margin-bottom:4px">Progressi peso</div>
         <div style="font-size:12px;color:var(--sub);margin-bottom:14px">Storico del tuo peso nel tempo, importabile in Excel o Google Sheets</div>
         <span class="badge badge-green">CSV</span>
       </div>
 
       <div class="card" style="cursor:pointer;transition:.2s;border:1px solid var(--border)" onclick="exportLogCSV()">
-        <div style="font-size:2rem;margin-bottom:10px">🗓️</div>
+        <div style="margin-bottom:10px;display:flex;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-l)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
         <div style="font-family:var(--font2);font-size:14px;font-weight:700;margin-bottom:4px">Log allenamenti</div>
         <div style="font-size:12px;color:var(--sub);margin-bottom:14px">Tutte le sessioni completate con data, durata ed esercizi</div>
         <span class="badge badge-green">CSV</span>
       </div>
 
       <div class="card" style="cursor:pointer;transition:.2s;border:1px solid var(--border)" onclick="exportMealsCSV()">
-        <div style="font-size:2rem;margin-bottom:10px">🥗</div>
+        <div style="margin-bottom:10px;display:flex;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg></div>
         <div style="font-family:var(--font2);font-size:14px;font-weight:700;margin-bottom:4px">Diario alimentare</div>
         <div style="font-size:12px;color:var(--sub);margin-bottom:14px">Tutti i pasti registrati con macro e calorie per ogni giorno</div>
         <span class="badge badge-green">CSV</span>
       </div>
 
       <div class="card" style="cursor:pointer;transition:.2s;border:1px solid var(--border)" onclick="exportFullJSON()">
-        <div style="font-size:2rem;margin-bottom:10px">💾</div>
+        <div style="margin-bottom:10px;display:flex;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></div>
         <div style="font-family:var(--font2);font-size:14px;font-weight:700;margin-bottom:4px">Backup completo</div>
         <div style="font-size:12px;color:var(--sub);margin-bottom:14px">Tutti i tuoi dati in formato JSON, per backup o migrazione</div>
         <span class="badge badge-gold">JSON</span>
       </div>
 
       <div class="card" style="cursor:pointer;transition:.2s;border:1px solid var(--border)" onclick="exportPRsCSV()">
-        <div style="font-size:2rem;margin-bottom:10px">🏆</div>
+        <div style="margin-bottom:10px;display:flex;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg></div>
         <div style="font-family:var(--font2);font-size:14px;font-weight:700;margin-bottom:4px">Record personali</div>
         <div style="font-size:12px;color:var(--sub);margin-bottom:14px">Tutti i tuoi PR con calcolo del 1RM stimato via formula Epley</div>
         <span class="badge badge-gold">CSV</span>
@@ -12378,7 +12379,7 @@ function renderDashCheckin(){
   document.getElementById('ds-checkin').innerHTML = `
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
       <div>
-        <h2 style="font-family:var(--font2)">Check-in Settimanale</h2>
+        <h2 style="font-family:var(--font2);display:flex;align-items:center;gap:10px">"><span style="color:var(--green);display:flex;align-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14l2 2 4-4"/></svg></span>Check-in settimanale</h2>
         <p style="font-size:12px;color:var(--sub);margin-top:3px">
           ${isDue ? '⚠️ Check-in in scadenza — rispondi per adattare il programma' : `Prossimo: tra ${7-daysSince} giorni`}
         </p>
@@ -12446,7 +12447,7 @@ function renderDashCheckin(){
       <div style="display:flex;flex-direction:column;gap:8px">
         ${checkins.slice(-5).reverse().map(c=>`
           <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 14px;display:flex;align-items:center;gap:12px">
-            <div style="font-size:1.3rem">${c.feeling>=8?'🌟':c.feeling>=5?'😊':'😓'}</div>
+            <div style="font-size:1.3rem">${c.feeling>=8?'★★★':c.feeling>=5?'★★':'★'}</div>
             <div style="flex:1">
               <div style="font-size:12px;font-weight:600;color:var(--text)">${c.date?new Date(c.date).toLocaleDateString('it-IT','it'):''}</div>
               <div style="font-size:11px;color:var(--muted)">Feeling: ${c.feeling||'?'}/10 · Sonno: ${c.sleep||'?'} · ${c.compliance==='all'?'100% sessioni':c.compliance==='most'?'75%':c.compliance==='half'?'50%':'<50%'}</div>
@@ -12605,7 +12606,7 @@ function openVideoAnalysis(){
                ondragover="event.preventDefault();this.style.borderColor='var(--accent)'"
                ondragleave="this.style.borderColor=''"
                ondrop="handleVADrop(event)">
-            <div id="va-preview" style="font-size:2.5rem;margin-bottom:8px">📷</div>
+            <div id="va-preview" style="margin-bottom:8px;display:flex;justify-content:center;opacity:.5"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
             <div style="font-size:12px;color:var(--muted)">Trascina qui o <span style="color:var(--accent-xl)">clicca per selezionare</span></div>
             <div style="font-size:11px;color:var(--muted);margin-top:4px">JPG, PNG, WEBP · max 5MB</div>
           </div>
@@ -12908,7 +12909,7 @@ function showQuickOnboarding(){
         <div class="field">
           <label>1. Qual è il tuo obiettivo?</label>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px" id="qo-goal">
-            ${[['💪 Massa muscolare','Ipertrofia'],['🔥 Dimagrimento','Dimagrimento'],['⚡ Forza','Forza'],['🌿 Benessere','Benessere generale']].map(([l,v])=>
+            ${[['Massa muscolare','Ipertrofia'],['Dimagrimento','Dimagrimento'],['Forza','Forza'],['Benessere','Benessere generale']].map(([l,v])=>
               `<button class="btn btn-ghost btn-sm" onclick="selectQO('goal','${v}',this)">${l}</button>`
             ).join('')}
           </div>
@@ -12917,7 +12918,7 @@ function showQuickOnboarding(){
         <div class="field">
           <label>2. Qual è il tuo livello?</label>
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:6px" id="qo-level">
-            ${[['🌱 Principiante','Principiante (0-1 anno)'],['Intermedio','Intermedio (1-3 anni)'],['💎 Avanzato','Avanzato (3+ anni)']].map(([l,v])=>
+            ${[['Principiante','Principiante (0-1 anno)'],['Intermedio','Intermedio (1-3 anni)'],['Avanzato','Avanzato (3+ anni)']].map(([l,v])=>
               `<button class="btn btn-ghost btn-sm" onclick="selectQO('level','${v}',this)" style="font-size:11px">${l}</button>`
             ).join('')}
           </div>
@@ -12932,7 +12933,7 @@ function showQuickOnboarding(){
           </div>
         </div>
 
-        <button class="btn btn-primary" onclick="submitQuickOnboarding()">🚀 Genera il mio programma →</button>
+        <button class="btn btn-primary" onclick="submitQuickOnboarding()">Genera il mio programma →</button>
         <p style="font-size:11px;color:var(--muted);text-align:center">
           <a onclick="this.closest('.modal-bg').remove();showPage('pg-onboard')" style="color:var(--accent-xl);cursor:pointer">
             Preferisco compilare il profilo completo →
@@ -12996,9 +12997,9 @@ function showWeeklyCheckinBanner(){
   `;
   banner.innerHTML = `
     <div style="display:flex;align-items:center;gap:12px">
-      <div style="font-size:2rem;flex-shrink:0">📋</div>
+      <div style="flex-shrink:0;display:flex;align-items:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-l)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></div>
       <div style="flex:1">
-        <div style="font-weight:700;font-size:13px;color:var(--text);margin-bottom:2px">Check-in settimanale in scadenza</div>
+        <div style="font-weight:700;font-size:13px;color:var(--text);margin-bottom:2px"><span style="color:var(--green);display:flex;align-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14l2 2 4-4"/></svg></span>Check-in settimanale in scadenza</div>
         <div style="font-size:11px;color:var(--sub)">Rispondi a 5 domande → l'AI adatta il programma</div>
       </div>
       <div style="display:flex;gap:6px;flex-shrink:0">
@@ -13205,7 +13206,7 @@ document.addEventListener('keydown',(e)=>{
 // 3. Push notifications + reminder allenamento
 // 4. Analisi video movimento con Claude Vision
 // 5. Progressione AI adattiva settimanale
-// 6. Check-in settimanale AI
+// 6. <span style="color:var(--green);display:flex;align-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14l2 2 4-4"/></svg></span>Check-in settimanale AI
 // 8. Onboarding rapido (già ridotto — ora con skip)
 // 9. Feed social interno + sfide di gruppo
 // 10. Export PDF/CSV dati
@@ -13247,8 +13248,8 @@ function scheduleWorkoutReminder(){
     if(msUntil > 0 && msUntil < 3600000){ // within 1 hour
       setTimeout(()=>{
         sendNotification(
-          '💪 È ora di allenarti!',
-          `Ciao ${SESSION?.name||'Atleta'}! Non perdere la sessione di oggi. 🔥 Streak: ${SESSION?.streak||0} giorni`,
+          'È ora di allenarti!',
+          `Ciao ${SESSION?.name||'Atleta'}! Non perdere la sessione di oggi. Streak: ${SESSION?.streak||0} giorni`,
           '💪', 'workout-reminder'
         );
       }, msUntil);
@@ -13262,9 +13263,9 @@ function scheduleWorkoutReminder(){
     if(checkinDue){
       setTimeout(()=>{
         sendNotification(
-          'Check-in settimanale',
+          '<span style="color:var(--green);display:flex;align-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14l2 2 4-4"/></svg></span>Check-in settimanale',
           'Rispondi a 3 domande veloci e l\'AI aggiorna il tuo programma!',
-          '📋', 'weekly-checkin'
+          '', 'weekly-checkin'
         );
       }, 5000);
     }
@@ -13300,7 +13301,7 @@ function renderNotificationSettings(){
               </label>`).join('')}
           </div>
         </div>
-        <button class="btn btn-sm btn-ghost" onclick="testNotification()">🔔 Test notifica</button>
+        <button class="btn btn-sm btn-ghost" onclick="testNotification()">Test notifica</button>
       </div>`:'<p style="font-size:12px;color:var(--sub)">Attiva per ricevere reminder agli allenamenti</p>'}
     </div>`;
 }
@@ -13332,7 +13333,7 @@ function saveNotifPref(){
 }
 
 function testNotification(){
-  sendNotification('💪 Test EliteCoachProgram!', 'Le notifiche funzionano correttamente 🎉', '💪');
+  sendNotification('Test EliteCoachProgram!', 'Le notifiche funzionano correttamente', '💪');
   toast('Notifica di test inviata!','success');
 }
 
@@ -13347,15 +13348,15 @@ function renderDashAnalysis(){
   if(!el)return;
   el.innerHTML=
     '<div style="max-width:1100px">'
-    +'<h2 style="font-family:var(--font2);margin-bottom:4px">&#129504; Analisi Esercizio AI</h2>'
+    +'<h2 style="font-family:var(--font2);margin-bottom:20px;display:flex;align-items:center;gap:10px"><span style="color:var(--rose);display:flex;align-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></span>Analisi AI</h2>'
     +'<p style="font-size:.85rem;color:var(--sub);margin-bottom:20px">Carica una foto del tuo esercizio — AI analizza postura, tecnica e ti fornisce feedback professionale</p>'
     +'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-bottom:16px">'
 
     +'<div class="card">'
-    +'<h4 style="margin-bottom:12px">&#128247; Carica immagine</h4>'
+    +'<h4 style="margin-bottom:12px"> Carica immagine</h4>'
     +'<div style="border:2px dashed var(--border);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:.2s;margin-bottom:12px" onclick="document.getElementById(\'analysis-file\').click()" onmouseenter="this.style.borderColor=\'var(--accent)\'" onmouseleave="this.style.borderColor=\'var(--border)\'">'
     +'<div id="analysis-preview" style="display:none;margin-bottom:8px"><img id="va-img-preview" style="max-width:100%;max-height:180px;border-radius:8px;object-fit:contain"></div>'
-    +'<div id="analysis-placeholder"><div style="font-size:2rem;margin-bottom:6px">&#128247;</div><div style="font-size:.84rem;color:var(--sub)">Clicca per caricare<br>JPG, PNG, screenshot</div></div>'
+    +'<div id="analysis-placeholder"><div style="font-size:2rem;margin-bottom:6px"></div><div style="font-size:.84rem;color:var(--sub)">Clicca per caricare<br>JPG, PNG, screenshot</div></div>'
     +'</div>'
     +'<input type="file" id="analysis-file" accept="image/*" style="display:none" onchange="previewAnalysis(this)">'
     +'<div class="field" style="margin-bottom:10px"><label>Esercizio</label>'
@@ -13369,16 +13370,16 @@ function renderDashAnalysis(){
     +'</select></div>'
     +'<div class="field" id="custom-ex-wrap" style="display:none;margin-bottom:10px"><label>Nome esercizio</label><input class="inp" id="custom-exercise" placeholder="Es. Bulgarian Split Squat"></div>'
     +'<div class="field" style="margin-bottom:12px"><label>Note aggiuntive (opzionale)</label><input class="inp" id="analysis-notes" placeholder="Es. mi sembra che il ginocchio collassi..."></div>'
-    +'<button class="btn btn-primary" id="btn-analyze" onclick="analyzeMovement()" style="width:100%;border-radius:50px;font-weight:700">&#129504; Analizza con AI</button>'
+    +'<button class="btn btn-primary" id="btn-analyze" onclick="analyzeMovement()" style="width:100%;border-radius:50px;font-weight:700"> Analizza con AI</button>'
     +'</div>'
 
     +'<div class="card" style="display:flex;flex-direction:column">'
-    +'<h4 style="margin-bottom:12px">&#128203; Feedback AI</h4>'
+    +'<h4 style="margin-bottom:12px"> Feedback AI</h4>'
     +'<div id="va-analysis-result" style="flex:1;min-height:200px;background:var(--bg2);border-radius:10px;padding:14px;font-size:.86rem;color:var(--sub);line-height:1.7">'
-    +'<div style="text-align:center;padding:30px 0;color:var(--muted)"><div style="font-size:2rem;margin-bottom:8px">&#129504;</div>Carica una foto e seleziona l\'esercizio per ricevere l\'analisi</div>'
+    +'<div style="text-align:center;padding:30px 0;color:var(--muted)"><div style="font-size:2rem;margin-bottom:8px"></div>Carica una foto e seleziona l\'esercizio per ricevere l\'analisi</div>'
     +'</div></div></div>'
 
-    +'<div class="card"><h4 style="margin-bottom:12px">&#128218; Storico analisi</h4>'
+    +'<div class="card"><h4 style="margin-bottom:12px"> Storico analisi</h4>'
     +'<div id="analysis-history">'
     +((SESSION&&SESSION.analysisHistory&&SESSION.analysisHistory.length)
       ? (SESSION.analysisHistory||[]).slice(0,5).map(function(a){
@@ -13491,7 +13492,7 @@ async function analyzeMovement(){
         +'<br><small style="color:var(--muted)">Verifica: immagine valida, connessione attiva, API key configurata.</small>'
         +'</div>';
     } finally {
-      if(btn){ btn.disabled = false; btn.textContent = '🤖 Analizza con AI →'; }
+      if(btn){ btn.disabled = false; btn.textContent = 'Analizza con AI →'; }
     }
   };
   reader.readAsDataURL(fileInput.files[0]);
@@ -13611,7 +13612,7 @@ function renderDashCheckin(){
   document.getElementById('ds-checkin').innerHTML = `
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
       <div>
-        <h2 style="font-family:var(--font2)">Check-in Settimanale</h2>
+        <h2 style="font-family:var(--font2);display:flex;align-items:center;gap:10px">"><span style="color:var(--green);display:flex;align-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14l2 2 4-4"/></svg></span>Check-in settimanale</h2>
         <p style="font-size:12px;color:var(--sub);margin-top:3px">
           ${isDue ? '⚠️ Check-in in scadenza!' : `Prossimo check-in tra ${7-daysSince} giorni`}
         </p>
@@ -13725,7 +13726,7 @@ async function submitCheckin(){
         model:'claude-sonnet-4-5',
         max_tokens:600,
         system:'Sei un coach personale empatico e motivante. Rispondi in italiano, conciso (max 120 parole), con un feedback personalizzato e un consiglio pratico per la settimana prossima.',
-        messages:[{role:'user',content:`Check-in settimanale di ${SESSION?.name||'l\'atleta'}:
+        messages:[{role:'user',content:`<span style="color:var(--green);display:flex;align-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14l2 2 4-4"/></svg></span>Check-in settimanale di ${SESSION?.name||'l\'atleta'}:
 - Umore: ${mood}/5
 - Sessioni completate: ${sessions} di ${SESSION?.program?.days?.length||3} previste
 - Qualità sonno: ${sleep}
@@ -13853,7 +13854,7 @@ function renderDashSocial(){
   const el = document.getElementById('ds-social');
   if(!el) return;
   el.innerHTML = `
-    <h2 style="font-family:var(--font2);margin-bottom:20px">Community</h2>
+    <h2 style="font-family:var(--font2);margin-bottom:20px;display:flex;align-items:center;gap:10px"><span style="color:var(--accent-l);display:flex;align-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Community</h2>
 
     <div class="grid2" style="margin-bottom:20px">
       <!-- Weekly Challenge -->
@@ -13947,7 +13948,7 @@ function getDemoFeedItems(){
     {id:1,user:'Marco R.',avatar:'M',type:'pr',text:'Nuovo PR allo squat: 120kg × 5! Tre mesi di duro lavoro, finalmente. 🏆',date:new Date(now-1800000).toISOString(),likes:12,likedBy:[]},
     {id:2,user:'Sara F.',avatar:'S',type:'workout',text:'Sessione Push completata ✅ 4 serie di panca a 60kg, sento i progressi ogni settimana!',date:new Date(now-7200000).toISOString(),likes:8,likedBy:[]},
     {id:3,user:'Luca M.',avatar:'L',type:'streak',text:'🔥 30 giorni di streak! Non ho saltato un allenamento in un mese intero. Questo è solo l\'inizio.',date:new Date(now-86400000).toISOString(),likes:24,likedBy:[]},
-    {id:4,user:'Giulia E.',avatar:'G',type:'checkin',text:'Check-in settimanale: 4/4 sessioni completate, sonno migliorato, -1.5kg. Il programma AI è una svolta! 🤖',date:new Date(now-172800000).toISOString(),likes:16,likedBy:[]},
+    {id:4,user:'Giulia E.',avatar:'G',type:'checkin',text:'<span style="color:var(--green);display:flex;align-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14l2 2 4-4"/></svg></span>Check-in settimanale: 4/4 sessioni completate, sonno migliorato, -1.5kg. Il programma AI è una svolta! 🤖',date:new Date(now-172800000).toISOString(),likes:16,likedBy:[]},
     {id:5,user:'Andrea T.',avatar:'A',type:'workout',text:'Prima volta che riesco a fare 5 trazioni consecutive! Partivo da zero 6 mesi fa 💪',date:new Date(now-259200000).toISOString(),likes:31,likedBy:[]},
     {id:6,user:'Martina B.',avatar:'M',type:'join',text:'Ho appena completato l\'onboarding! Obiettivo dimagrimento -10kg, il mio programma Full Body è pronto. Si inizia domani! 🚀',date:new Date(now-345600000).toISOString(),likes:5,likedBy:[]},
   ];
@@ -13986,7 +13987,7 @@ function renderDashExportContent(){
   const u = SESSION;
   return `
     <h2 style="font-family:var(--font2);margin-bottom:6px">Export & Analisi Video</h2>
-    <p style="font-size:12px;color:var(--sub);margin-bottom:20px">Esporta dati, schede e usa l'AI per analizzare la tua tecnica</p>
+    <p style="font-size:12px;color:var(--sub);margin-bottom:20px"><span style="color:var(--sub);display:flex;align-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>Esporta dati, schede e usa l'AI per analizzare la tua tecnica</p>
 
     <div class="grid2" style="margin-bottom:20px">
       <div class="card">
@@ -14250,6 +14251,10 @@ nav {
     padding-left: max(14px, env(safe-area-inset-left)) !important;
     padding-right: max(14px, env(safe-area-inset-right)) !important;
   }
+  /* Extra specificity to beat all other rules */
+  #dash-main, #pg-dash .dash-main { margin-left: 0 !important; }
+  #pg-trainer-dash .trainer-main { margin-left: 0 !important; }
+  #pg-owner .owner-main { margin-left: 0 !important; }
 
   #pg-land, #pg-auth, #pg-marketplace, #pg-trainer-login,
   #pg-trainer-reg, #pg-trainer-profile, #pg-onboard {
@@ -14383,7 +14388,7 @@ nav {
           <td>${ex.rpe||'—'}</td>
           <td class="note">${ex.notes||ex.load_tip||'—'}</td>
         </tr>
-        ${ex.progression?`<tr style="background:#f9f9ff"><td colspan="7" class="note" style="padding-left:20px">📈 ${ex.progression}</td></tr>`:''}`).join('')}
+        ${ex.progression?`<tr style="background:#f9f9ff"><td colspan="7" class="note" style="padding-left:20px">${ex.progression}</td></tr>`:''}`).join('')}
     </table>
     ${d.cooldown?`<div class="tip" style="background:#f3e5f5;border-left-color:#9c27b0;">🧘 <strong>Defaticamento:</strong> ${d.cooldown}</div>`:''}
   `).join('')}
@@ -14457,7 +14462,7 @@ function exportProgramText(){
       txt += '\n';
       if(ex.notes) txt += `   📝 ${ex.notes}\n`;
       if(ex.load_tip) txt += `   · ${ex.load_tip}\n`;
-      if(ex.progression) txt += `   📈 ${ex.progression}\n`;
+      if(ex.progression) txt += `   ${ex.progression}\n`;
     });
     if(d.cooldown) txt += `\nDefaticamento: ${d.cooldown}\n`;
     txt += '\n';
@@ -14758,7 +14763,7 @@ function checkWeeklyReminder(){
         <div style="display:flex;align-items:start;gap:10px">
           <span style="font-size:1.4rem">📋</span>
           <div>
-            <div style="font-weight:700;font-size:13px;margin-bottom:3px">Check-in settimanale</div>
+            <div style="font-weight:700;font-size:13px;margin-bottom:3px"><span style='color:var(--green);display:inline-flex'><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14l2 2 4-4"/></svg></span> <span style="color:var(--green);display:flex;align-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14l2 2 4-4"/></svg></span>Check-in settimanale</div>
             <div style="font-size:12px;color:var(--sub)">3 domande veloci e l'AI aggiorna il tuo programma</div>
             <div style="display:flex;gap:6px;margin-top:10px">
               <button class="btn btn-sm btn-primary" onclick="showDashSection('checkin');document.getElementById('checkin-banner')?.remove()">Fai il check-in →</button>
@@ -15036,7 +15041,7 @@ async function owSaveSystem(){
     <button onclick="document.getElementById('modal-privacy').classList.remove('open')" style="background:none;border:none;color:var(--sub);font-size:1.4rem;cursor:pointer">✕</button>
   </div>
   <div style="font-size:.88rem;line-height:1.75;color:var(--sub)">
-    <p style="margin-bottom:8px"><strong style="color:var(--text)">Titolare:</strong> EliteCoachProgram.fit &nbsp;|&nbsp; <strong style="color:var(--text)">Aggiornamento:</strong> Gennaio 2025 &nbsp;|&nbsp; <strong style="color:var(--text)">Contatto:</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a5d5d7ccd3c4c6dce5c0c9ccd1c0c6cac4c6cdd5d7cac2d7c4c88bc3ccd1">[email&#160;protected]</a></p>
+    <p style="margin-bottom:8px"><strong style="color:var(--text)">Titolare:</strong> EliteCoachProgram.fit &nbsp;|&nbsp; <strong style="color:var(--text)">Aggiornamento:</strong> Gennaio 2025 &nbsp;|&nbsp; <strong style="color:var(--text)">Contatto:</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a5d5d7ccd3c4c6dce5c0c9ccd1c0c6cac4c6cdd5d7cac2d7c4c88bc3ccd1">[email protected]</a></p>
     <h3 style="color:var(--text);margin:16px 0 8px;font-size:.95rem">1. Dati raccolti</h3>
     <ul style="margin:8px 0 12px 20px;display:flex;flex-direction:column;gap:4px">
       <li><strong>Dati identificativi:</strong> nome, cognome, email;</li>
@@ -15058,7 +15063,7 @@ async function owSaveSystem(){
     <h3 style="color:var(--text);margin:16px 0 8px;font-size:.95rem">5. Condivisione</h3>
     <p>I tuoi dati non sono venduti a terzi. Condivisi solo con trainer certificati sulla piattaforma (per i loro clienti), fornitori tecnici vincolati da accordi di riservatezza, e autorità nei casi di legge.</p>
     <h3 style="color:var(--text);margin:16px 0 8px;font-size:.95rem">6. I tuoi diritti (GDPR)</h3>
-    <p>Accesso, rettifica, cancellazione, limitazione, portabilità, opposizione. Contatta: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2454564d5245475d6441484d5041474b45474c54564b435645490a424d50">[email&#160;protected]</a></strong>. Puoi presentare reclamo al Garante (www.garanteprivacy.it).</p>
+    <p>Accesso, rettifica, cancellazione, limitazione, portabilità, opposizione. Contatta: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2454564d5245475d6441484d5041474b45474c54564b435645490a424d50">[email protected]</a></strong>. Puoi presentare reclamo al Garante (www.garanteprivacy.it).</p>
     <h3 style="color:var(--text);margin:16px 0 8px;font-size:.95rem">7. Sicurezza</h3>
     <p>HTTPS, hashing password, accesso limitato al personale autorizzato, backup crittografati.</p>
     <p style="font-size:.8rem;color:var(--muted);border-top:1px solid var(--border);padding-top:12px;margin-top:16px">Conforme al Regolamento UE 2016/679 (GDPR) e al D.Lgs. 196/2003.</p>
@@ -15091,7 +15096,7 @@ async function owSaveSystem(){
     <p>Vietato: condividere l'account; rivendere contenuti; accedere a sistemi non autorizzati; usare il servizio per scopi illegali; pubblicare contenuti offensivi nella sezione social.</p>
     <h3 style="color:var(--text);margin:16px 0 8px;font-size:.95rem">8. Legge Applicabile</h3>
     <p>Regolato dalla legge italiana. Foro competente: Milano, salvo diversa indicazione per consumatori UE che si avvalgono del foro del proprio domicilio.</p>
-    <p style="font-size:.8rem;color:var(--muted);border-top:1px solid var(--border);padding-top:12px;margin-top:16px">Contatto: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f19d9496909db1949d988594929e90929981839e9683909cdf979885">[email&#160;protected]</a></p>
+    <p style="font-size:.8rem;color:var(--muted);border-top:1px solid var(--border);padding-top:12px;margin-top:16px">Contatto: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f19d9496909db1949d988594929e90929981839e9683909cdf979885">[email protected]</a></p>
   </div>
 </div>
 </div>
@@ -15117,7 +15122,7 @@ async function owSaveSystem(){
     <p>Utilizziamo il localStorage del browser per salvare i tuoi dati di allenamento localmente. Non inviati a server esterni a meno che non si sia connessi a un account registrato.</p>
     <h3 style="color:var(--text);margin:16px 0 8px;font-size:.95rem">Cookie di Terze Parti</h3>
     <p>I video YouTube incorporati possono impostare cookie di Google LLC soggetti alla loro privacy policy.</p>
-    <p style="font-size:.8rem;color:var(--muted);border-top:1px solid var(--border);padding-top:12px;margin-top:16px">Contatto: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="365559595d5f5376535a5f4253555957555e4644595144575b18505f42">[email&#160;protected]</a></p>
+    <p style="font-size:.8rem;color:var(--muted);border-top:1px solid var(--border);padding-top:12px;margin-top:16px">Contatto: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="365559595d5f5376535a5f4253555957555e4644595144575b18505f42">[email protected]</a></p>
   </div>
 </div>
 </div>
@@ -15139,7 +15144,7 @@ async function owSaveSystem(){
 <!-- ── FORGOT PASSWORD MODAL ── -->
 <div id="forgot-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;padding:20px">
   <div style="background:var(--bg2);border-radius:16px;padding:32px;width:100%;max-width:400px">
-    <h3 style="font-family:var(--font2);margin:0 0 8px">&#128273; Password dimenticata</h3>
+    <h3 style="font-family:var(--font2);margin:0 0 8px"> Password dimenticata</h3>
     <p style="color:var(--sub);font-size:.85rem;margin:0 0 20px">Inserisci la tua email e ti mandiamo un link per reimpostare la password.</p>
     <input class="inp" id="forgot-email" type="email" placeholder="La tua email" style="width:100%;margin-bottom:12px">
     <div id="forgot-msg" style="display:none;padding:10px;border-radius:8px;font-size:.85rem;margin-bottom:12px"></div>
@@ -15154,14 +15159,14 @@ async function owSaveSystem(){
 <div id="pg-reset" style="display:none;position:fixed;inset:0;z-index:99999;background:#0d0d12;align-items:center;justify-content:center;padding:20px;overflow-y:auto">
   <div style="background:var(--bg2);border-radius:16px;padding:32px;width:100%;max-width:400px">
     <div style="text-align:center;margin-bottom:24px">
-      <div style="font-size:2.5rem">&#128273;</div>
+      <div style="font-size:2.5rem"></div>
       <h2 style="font-family:var(--font2);margin:8px 0 4px">Nuova Password</h2>
       <p style="color:var(--sub);font-size:.85rem;margin:0">Scegli una password sicura</p>
     </div>
     <input class="inp" id="reset-pass1" type="password" placeholder="Nuova password (min 6 caratteri)" style="width:100%;margin-bottom:10px">
     <input class="inp" id="reset-pass2" type="password" placeholder="Conferma password" style="width:100%;margin-bottom:12px">
     <div id="reset-msg" style="display:none;padding:10px;border-radius:8px;font-size:.85rem;margin-bottom:12px"></div>
-    <button class="btn btn-primary" style="width:100%" id="reset-btn" onclick="submitResetPassword()">&#10003; Salva nuova password</button>
+    <button class="btn btn-primary" style="width:100%" id="reset-btn" onclick="submitResetPassword()">✓ Salva nuova password</button>
     <p style="text-align:center;margin:16px 0 0">
       <a onclick="document.getElementById('pg-reset').style.display='none';showPage('pg-auth')" style="color:var(--accent);font-size:.85rem;cursor:pointer">&#8592; Torna al login</a>
     </p>
@@ -15208,7 +15213,7 @@ function showNotificationBanner(){
   btnSi.textContent='Attiva';
   btnSi.style.borderRadius='50px';
   btnSi.onclick=function(){requestNotificationPermission();b.remove();localStorage.setItem('ecp_notif_asked','1');};
-  b.innerHTML='<span style="font-size:1.4rem">&#128276;</span><div style="flex:1"><div style="font-size:.88rem;font-weight:600">Attiva le notifiche</div><div style="font-size:.75rem;color:var(--sub)">Promemoria allenamenti e traguardi</div></div>';
+  b.innerHTML='<span style="font-size:1.4rem"></span><div style="flex:1"><div style="font-size:.88rem;font-weight:600">Attiva le notifiche</div><div style="font-size:.75rem;color:var(--sub)">Promemoria allenamenti e traguardi</div></div>';
   var d=document.createElement('div');d.style.cssText='display:flex;gap:6px';
   d.appendChild(btnNo);d.appendChild(btnSi);b.appendChild(d);
   document.body.appendChild(b);
@@ -15407,7 +15412,7 @@ window.addEventListener('load', function() {
 
 function showTermsModal(){ showLegalModal('Termini di Servizio', '<p><strong>1. Servizio</strong> — EliteCoachProgram.fit fornisce programmi AI indicativi, non sostituiscono un professionista medico.</p><p><strong>2. Account</strong> — Sei responsabile della sicurezza del tuo account.</p><p><strong>3. Dati</strong> — I tuoi dati sono conservati su server EU sicuri e non vengono venduti.</p><p><strong>4. Responsabilità</strong> — Ti alleni sotto la tua responsabilità.</p><p><strong>5. Età</strong> — Servizio riservato a 16+ anni.</p>'); }
 function showPrivacyModal(){ showLegalModal('Privacy Policy', '<p><strong>Dati raccolti:</strong> Email, nome, dati fisici, sessioni allenamento.</p><p><strong>Uso:</strong> Esclusivamente per personalizzare il tuo programma.</p><p><strong>Storage:</strong> Railway EU con crittografia. Nessuna condivisione con terzi.</p><p><strong>Cancellazione:</strong> Scrivi a info@elitecoachprogram.fit per eliminare tutti i dati.</p>'); }
-function showLiberatoriaModal(){ showLegalModal('Liberatoria', '<p>Accettando dichiaro di:</p><p>&#10003; Essere in buona salute e non avere controindicazioni mediche.</p><p>&#10003; Assumermi la piena responsabilita per eventuali infortuni.</p><p>&#10003; Comprendere che i programmi AI sono suggerimenti, non sostituiscono un professionista.</p><p>&#10003; Avere almeno 16 anni.</p>'); }
+function showLiberatoriaModal(){ showLegalModal('Liberatoria', '<p>Accettando dichiaro di:</p><p>✓ Essere in buona salute e non avere controindicazioni mediche.</p><p>✓ Assumermi la piena responsabilita per eventuali infortuni.</p><p>✓ Comprendere che i programmi AI sono suggerimenti, non sostituiscono un professionista.</p><p>✓ Avere almeno 16 anni.</p>'); }
 function showLegalModal(title, content){
   var old = document.getElementById('legal-modal');
   if(old) old.remove();
@@ -15496,14 +15501,14 @@ function _buildNotifHTML(){
   var enabled = Notification.permission === 'granted';
   var cfg = JSON.parse(localStorage.getItem('ecp_notif_settings')||'{"workout_reminder":true,"reminder_hour":8,"reminder_min":0}');
   var statusHtml = enabled
-    ? '<div style="padding:10px;background:rgba(15,214,194,.08);border-radius:8px;margin-bottom:12px;font-size:.85rem;color:var(--teal)">Notifiche attive su questo dispositivo</div><button onclick="testNotification()" class="btn btn-ghost btn-sm" style="border-radius:50px;margin-bottom:12px">&#128276; Invia test</button>'
-    : '<div style="padding:10px;background:rgba(244,91,138,.08);border-radius:8px;margin-bottom:12px;font-size:.85rem;color:var(--sub)">Notifiche non attive</div><button onclick="enableNotifications()" class="btn btn-primary" style="border-radius:50px;margin-bottom:12px">Attiva notifiche &#128276;</button>';
+    ? '<div style="padding:10px;background:rgba(15,214,194,.08);border-radius:8px;margin-bottom:12px;font-size:.85rem;color:var(--teal)">Notifiche attive su questo dispositivo</div><button onclick="testNotification()" class="btn btn-ghost btn-sm" style="border-radius:50px;margin-bottom:12px"> Invia test</button>'
+    : '<div style="padding:10px;background:rgba(244,91,138,.08);border-radius:8px;margin-bottom:12px;font-size:.85rem;color:var(--sub)">Notifiche non attive</div><button onclick="enableNotifications()" class="btn btn-primary" style="border-radius:50px;margin-bottom:12px">Attiva notifiche </button>';
   var reminderBg = cfg.workout_reminder ? 'var(--accent)' : 'var(--bg3)';
   var reminderLeft = cfg.workout_reminder ? '23' : '3';
   var timeHtml = cfg.workout_reminder
     ? '<div style="display:flex;align-items:center;gap:10px;margin-top:8px"><span style="font-size:.85rem;color:var(--sub)">Ora:</span><input type="number" min="0" max="23" value="'+cfg.reminder_hour+'" id="notif-hour" class="inp" style="width:60px;text-align:center" onchange="saveNotifTime()"><span>:</span><input type="number" min="0" max="59" value="'+cfg.reminder_min+'" id="notif-min" class="inp" style="width:60px;text-align:center" onchange="saveNotifTime()"></div>'
     : '';
-  return '<div class="card" style="margin-bottom:16px"><h4 style="margin-bottom:12px">&#128276; Notifiche Push</h4>'+statusHtml+'</div>'
+  return '<div class="card" style="margin-bottom:16px"><h4 style="margin-bottom:12px"> Notifiche Push</h4>'+statusHtml+'</div>'
     +'<div class="card"><h4 style="margin-bottom:12px">&#9200; Promemoria Allenamento</h4>'
     +'<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">'
     +'<div id="notif-toggle" onclick="toggleNotifSetting_wr()" style="width:44px;height:24px;border-radius:12px;background:'+reminderBg+';position:relative;cursor:pointer;transition:.3s"><div style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:3px;left:'+reminderLeft+'px;transition:.3s"></div></div>'
@@ -15542,7 +15547,7 @@ function testNotification(){
 function renderDashNotifiche(){
   var el = document.getElementById('ds-notifiche');
   if(!el) return;
-  el.innerHTML = '<h2 style="font-family:var(--font2);margin-bottom:20px">&#128276; Notifiche</h2><div id="notif-settings-container"></div>';
+  el.innerHTML = '<h2 style="font-family:var(--font2);margin-bottom:20px"> Notifiche</h2><div id="notif-settings-container"></div>';
   renderNotifSettings();
 }
 
