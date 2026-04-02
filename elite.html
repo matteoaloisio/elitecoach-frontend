@@ -961,14 +961,9 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
             <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:var(--border)"></div>
           </div>
           <div id="g-signin-btn-auth" style="display:flex;justify-content:center;width:100%"></div>
-          <button class="btn btn-ghost" style="width:100%;gap:10px;justify-content:center" onclick="socialLogin('apple')">
-            <svg width="18" height="18" viewBox="0 0 814 1000"><path fill="currentColor" d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-43.4-150.3-109.2C67.3 771 0 636 0 507.2 0 325.5 119.8 229.4 238.8 229.4c68 0 124.5 44.5 166.3 44.5 39.2 0 104.2-47.4 178.6-47.4 28.4 0 133.4 2.6 198.3 99.4zm-234.6-181c31.1-36.9 53.1-88.1 53.1-139.3 0-7.1-.6-14.3-1.9-20.1-50.6 1.9-110.8 33.7-147.1 75.8-28.5 32.4-55.1 83.6-55.1 135.5 0 7.8 1.3 15.6 1.9 18.1 3.2.6 8.4 1.3 13.6 1.3 45.4 0 102.5-30.4 135.5-71.3z"/></svg>
-            Continua con Apple
-          </button>
-          <button class="btn btn-ghost" style="width:100%;gap:10px;justify-content:center" onclick="socialLogin('facebook')">
-            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-            Continua con Facebook
-          </button>
+            <p style="font-size:.72rem;color:var(--muted);text-align:center;margin:6px 0 0;line-height:1.5">Accedendo accetti i nostri <a href="javascript:void(0)" onclick="showTermsModal()" style="color:var(--accent)">Termini</a> e <a href="javascript:void(0)" onclick="showPrivacyModal()" style="color:var(--accent)">Privacy Policy</a></p>
+          
+          
         </div>
       </div>
     </div>
@@ -996,6 +991,12 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
           </label>
         </div>
         <button class="btn btn-primary" style="width:100%" onclick="doRegisterWithLegal()">Crea account gratis →</button>
+        <div style="display:flex;align-items:center;gap:10px;margin:12px 0;color:var(--sub);font-size:.8rem">
+          <div style="flex:1;height:1px;background:var(--border)"></div>
+          <span>oppure registrati con</span>
+          <div style="flex:1;height:1px;background:var(--border)"></div>
+        </div>
+        <div id="g-signin-btn-register" style="display:flex;justify-content:center;width:100%"></div>
       </div>
     </div>
   </div>
@@ -2520,7 +2521,13 @@ function showPage(id, sub){
   if(!pg) return;
   pg.classList.add('on');
   window.scrollTo(0,0);
-  if(id==='pg-auth') switchAuthTab(sub||'login');
+  if(id==='pg-auth'){
+    switchAuthTab(sub||'login');
+    // Re-inizializza il bottone Google Sign-In
+    setTimeout(function(){
+      if(typeof initGoogleSignIn === 'function') initGoogleSignIn();
+    }, 200);
+  }
   if(id==='pg-marketplace') renderMarketplace();
   if(id==='pg-owner'){ const s=SESSION; } // keep state
   if(id==='pg-dash') renderDashboard();
@@ -2662,6 +2669,7 @@ async function saveUserData() {
       checkins:         SESSION.checkins || [],
       cal_events:       calEvents,
       coach_config:     SESSION.coachConfig || {},
+      coach_history:    (SESSION.coachHistory || []).slice(-50),
       personal_records: Object.keys(prs).length > 0 ? prs : null,
       exercise_data:    Object.keys(exerciseData).length > 0 ? exerciseData : null,
       points:           SESSION.points || 0,
@@ -2702,6 +2710,7 @@ async function loadUserFromSupabase() {
       if(d.ricette && d.ricette.length) SESSION.ricette = d.ricette;
       if(d.checkins && d.checkins.length) SESSION.checkins = d.checkins;
       if(d.coach_config)               SESSION.coachConfig = d.coach_config;
+      if(d.coach_history && d.coach_history.length) SESSION.coachHistory = d.coach_history;
       if(d.points > 0)                 SESSION.points   = d.points;
       if(d.streak > 0)                 SESSION.streak   = d.streak;
       if(d.last_workout)               SESSION.lastWorkout = d.last_workout;
@@ -4949,7 +4958,7 @@ const QUICK_STEPS = [
     {type:'number',label:'Eta *',key:'age',required:true,placeholder:'28'},
     {type:'select',label:'Sesso *',key:'sex',required:true,
      options:['Maschile','Femminile','Altro']},
-    {type:'number',label:'Peso (kg) *',key:'weight',required:true,placeholder:'75'},
+    {type:'number',label:'Peso (kg) *',key:'weight',required:true,hint:'Inserisci il tuo peso attuale in kg. Serve per calcolare i macronutrienti e i carichi di lavoro ottimali.',placeholder:'75'},
     {type:'number',label:'Altezza (cm)',key:'height',placeholder:'175'},
   ]},
   { id:'q3', title:'Attrezzatura e Limitazioni', fields:[
@@ -4981,10 +4990,11 @@ function startFullOnb(){
 // ─── ONBOARDING ───────────────────────────────────────────
 const ONBOARD_STEPS = [
   { id:'obj', title:'Obiettivo & Livello', fields:[
-    {type:'select',label:'Obiettivo principale *',key:'goal',required:true,options:['Dimagrimento','Ipertrofia','Forza','Atletismo','Benessere generale','Powerlifting','Riabilitazione','Ricomposizione corporea','Fitness femminile','Glutei e Gambe','Post-parto e Recupero','Cardio e Resistenza aerobica','HIIT e Fat burning','CrossFit e WOD','Flessibilita e Mobilita','Endurance sportiva','Triathlon','Calistenia']},
+    {type:'select',label:'Obiettivo principale *',key:'goal',required:true,hint:'Scegli l\'obiettivo principale. Puoi sempre cambiarlo in seguito. Dimagrimento = perdere grasso. Ipertrofia = aumentare massa muscolare. Forza = sollevare pesi più pesanti.',options:['Dimagrimento','Ipertrofia','Forza','Atletismo','Benessere generale','Powerlifting','Riabilitazione','Ricomposizione corporea','Fitness femminile','Glutei e Gambe','Post-parto e Recupero','Cardio e Resistenza aerobica','HIIT e Fat burning','CrossFit e WOD','Flessibilita e Mobilita','Endurance sportiva','Triathlon','Calistenia']},
     {type:'select',label:'Obiettivo secondario',key:'goal2',options:['Nessuno','Migliorare mobilita','Prevenire infortuni','Aumentare stamina','Migliorare postura','Ridurre dolori cronici','Aumentare massa']},
-    {type:'select',label:'Livello *',key:'level',required:true,options:['Principiante (0-1 anno)','Intermedio (1-3 anni)','Avanzato (3+ anni)','Atleta agonista']},
+    {type:'select',label:'Livello *',key:'level',required:true,hint:'Principiante = meno di 1 anno di allenamento costante. Intermedio = 1-3 anni. Avanzato = 3+ anni con programmazione strutturata.',options:['Principiante (0-1 anno)','Intermedio (1-3 anni)','Avanzato (3+ anni)','Atleta agonista']},
     {type:'select',label:'Frequenza allenamenti/settimana *',key:'freq',required:true,options:['2 giorni','3 giorni','4 giorni','5 giorni','6 giorni','Ogni giorno']},
+    {type:'select',label:'Tipologia di allenamento preferita',key:'split_type',hint:'PPL = Push/Pull/Legs (petto-spalle-tricipiti / schiena-bicipiti / gambe). UL = Upper/Lower (busto / gambe). BRO SPLIT = un muscolo al giorno. FULL BODY = tutto il corpo ogni sessione. Se non sai, scegli "Consigliato dall\'AI".',options:['Consigliato dall\'AI','PPL - Push Pull Legs','Upper Lower (UL)','Bro Split (1 muscolo/giorno)','Full Body','Arnold Split (3 giorni)','Push Pull (2 giorni)','5/3/1 Wendler','PHUL (Power Hypertrophy)','PHAT (Power Hypertrophy Adaptive)','GVT - German Volume Training','Periodizzazione Ondulata','DUP - Daily Undulating Periodization','HST - Hypertrophy Specific Training','Calistenia / Street Workout','CrossFit / Functional Fitness','Circuit Training','HIIT','Cardio + Tonificazione','Yoga e Mobilità','Powerlifting (SBD)']},
     {type:'select',label:'Durata sessione disponibile *',key:'session_duration',required:true,options:['30-45 minuti','45-60 minuti','60-90 minuti','90-120 minuti','120+ minuti']},
     {type:'select',label:'Urgenza del risultato',key:'urgency',options:['Nessuna fretta (6-12 mesi)','Media (3-6 mesi)','Alta (1-3 mesi)','Evento specifico']},
     {type:'select',label:'Recupero tra le serie (preferenza)',key:'rest_pref',options:['Breve (30-60s — alta densita)','Normale (60-120s — ipertrofia)','Lungo (2-4 min — forza)','Variabile (come il programma indica)']},
@@ -5017,7 +5027,7 @@ const ONBOARD_STEPS = [
   ]},
   { id:'equip', title:'Attrezzatura e Ambiente', fields:[
     {type:'checkbox-group',label:'Dove ti alleni *',key:'gym',required:true,options:['Palestra completa','Casa con manubri','Palestra con bilanciere','Box CrossFit','Piscina','Calisthenics park','Solo corpo libero','Allaria aperta']},
-    {type:'checkbox-group',label:'Attrezzi disponibili',key:'equipment',options:['Bilanciere e pesi','Manubri','Macchine guidate','Cavi e pulegge','Kettlebell','Anelli o TRX','Barra trazioni','Vogatore','Tapis roulant o Cyclette','Nessuno']},
+    {type:'checkbox-group',label:'Attrezzi disponibili',key:'equipment',hint:'Palestra completa = bilancieri, manubri, macchine. Solo manubri = allenamento a casa con manubri. Corpo libero = nessun attrezzo.',options:['Bilanciere e pesi','Manubri','Macchine guidate','Cavi e pulegge','Kettlebell','Anelli o TRX','Barra trazioni','Vogatore','Tapis roulant o Cyclette','Nessuno']},
     {type:'select',label:'Accesso alla piscina',key:'pool',options:['No','Si 1-2 volte settimana','Si 3+ volte settimana']}
   ]},
   { id:'lifestyle', title:'Nutrizione e Recovery', fields:[
@@ -5090,16 +5100,18 @@ function renderOnbStep(){
 }
 
 function renderOnbField(f){
-  if(f.type==='select') return `<div class="field"><label>${f.label}</label>
+  var hintHtml = f.hint ? `<div style="background:rgba(91,94,244,.08);border:1px solid rgba(91,94,244,.2);border-radius:8px;padding:8px 12px;margin-bottom:6px;font-size:.78rem;color:var(--sub);line-height:1.5">
+    <span style="color:var(--accent);font-weight:700">💡 </span>${f.hint}</div>` : '';
+  if(f.type==='select') return `<div class="field"><label>${f.label}</label>${hintHtml}
     <select class="inp" id="onb-${f.key}">
       <option value="">Seleziona...</option>
       ${f.options.map(o=>`<option value="${o}">${o}</option>`).join('')}
     </select></div>`;
-  if(f.type==='number') return `<div class="field"><label>${f.label}</label>
+  if(f.type==='number') return `<div class="field"><label>${f.label}</label>${hintHtml}
     <input class="inp" type="number" id="onb-${f.key}" placeholder="${f.placeholder||''}"></div>`;
-  if(f.type==='textarea') return `<div class="field"><label>${f.label}</label>
+  if(f.type==='textarea') return `<div class="field"><label>${f.label}</label>${hintHtml}
     <textarea class="inp" id="onb-${f.key}" placeholder="${f.placeholder||''}"></textarea></div>`;
-  if(f.type==='checkbox-group') return `<div class="field"><label>${f.label}</label>
+  if(f.type==='checkbox-group') return `<div class="field"><label>${f.label}</label>${hintHtml}
     <div style="display:flex;flex-wrap:wrap;gap:8px">
       ${f.options.map(o=>`<label style="display:flex;align-items:center;gap:6px;cursor:pointer;background:var(--bg3);
         border:1px solid var(--border2);padding:7px 12px;border-radius:8px;font-size:.85rem">
@@ -6234,28 +6246,56 @@ function renderDay(idx){
     <!-- WARMUP: AI suggestion + ramping fisso -->
     <div style="margin-bottom:12px">
       ${day.warmup ? `
-      <div style="background:rgba(15,214,194,.06);border:1px solid rgba(15,214,194,.15);border-radius:10px;padding:11px 14px;margin-bottom:8px;display:flex;align-items:start;gap:10px">
-        <span style="font-size:1.1rem;flex-shrink:0">🔥</span>
-        <div><div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Riscaldamento AI</div>
-        <p style="font-size:12px;color:var(--sub)">${day.warmup}</p></div>
+      <div style="background:rgba(15,214,194,.06);border:1px solid rgba(15,214,194,.15);border-radius:10px;padding:11px 14px;margin-bottom:8px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span style="font-size:1.1rem">🔥</span>
+          <div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.5px">Riscaldamento AI</div>
+          <a href="https://www.youtube.com/results?search_query=riscaldamento+palestra+${encodeURIComponent(day.focus||'')}" target="_blank" rel="noopener" style="margin-left:auto;font-size:10px;color:var(--accent);text-decoration:none;background:rgba(91,94,244,.1);padding:3px 8px;border-radius:12px">▶ Video</a>
+        </div>
+        <p style="font-size:12px;color:var(--sub);margin:0">${day.warmup}</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+          ${(day.warmup||'').toLowerCase().includes('treadmill') || (day.warmup||'').toLowerCase().includes('cyclette') ? '' : ''}
+          <a href="https://www.youtube.com/results?search_query=band+pull+apart+exercise" target="_blank" rel="noopener" style="font-size:10px;color:var(--sub);background:var(--bg3);padding:2px 8px;border-radius:10px;text-decoration:none">▶ Band Pull-Apart</a>
+          <a href="https://www.youtube.com/results?search_query=scapular+push+ups+warmup" target="_blank" rel="noopener" style="font-size:10px;color:var(--sub);background:var(--bg3);padding:2px 8px;border-radius:10px;text-decoration:none">▶ Scapular Push-Up</a>
+          <a href="https://www.youtube.com/results?search_query=hip+circles+warmup+mobility" target="_blank" rel="noopener" style="font-size:10px;color:var(--sub);background:var(--bg3);padding:2px 8px;border-radius:10px;text-decoration:none">▶ Hip Circles</a>
+          <a href="https://www.youtube.com/results?search_query=arm+circles+shoulder+warmup" target="_blank" rel="noopener" style="font-size:10px;color:var(--sub);background:var(--bg3);padding:2px 8px;border-radius:10px;text-decoration:none">▶ Arm Circles</a>
+        </div>
       </div>` : ''}
       <!-- RAMPING FISSO -->
       <details style="background:rgba(245,200,66,.05);border:1px solid rgba(245,200,66,.2);border-radius:10px;padding:10px 14px">
         <summary style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px">
-          <span>⚡</span> Riscaldamento Ramping (sempre disponibile)
+          <span>⚡</span> Riscaldamento con Ramping — Alternativo
           <span style="margin-left:auto;font-size:10px;color:var(--muted);font-weight:400;text-transform:none">Tocca per aprire</span>
         </summary>
         <div style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.8">
-          <p style="margin-bottom:8px;color:var(--text);font-weight:600">Metodo Ramping — come si fa:</p>
-          <div style="display:flex;flex-direction:column;gap:4px">
-            <div style="display:flex;gap:10px"><span style="color:var(--muted);min-width:32px">Set 1</span><span>Barra vuota (o peso minimo) × 10 reps — attivazione</span></div>
-            <div style="display:flex;gap:10px"><span style="color:var(--muted);min-width:32px">Set 2</span><span>50% del carico lavorativo × 8 reps</span></div>
-            <div style="display:flex;gap:10px"><span style="color:var(--muted);min-width:32px">Set 3</span><span>70% del carico lavorativo × 5 reps</span></div>
-            <div style="display:flex;gap:10px"><span style="color:var(--muted);min-width:32px">Set 4</span><span>85% del carico lavorativo × 3 reps</span></div>
-            <div style="display:flex;gap:10px"><span style="color:var(--gold);min-width:32px">Work</span><span style="color:var(--gold);font-weight:600">100% — inizia le serie lavorative</span></div>
+          <div style="background:rgba(245,200,66,.08);border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:11px;color:var(--gold)">
+            💡 <strong>Cos'è il Ramping?</strong> È un riscaldamento alternativo dove arrivi al tuo peso di lavoro aumentando gradualmente il carico. Ogni set è più pesante del precedente. Serve per preparare muscoli e sistema nervoso prima delle serie vere.
           </div>
-          <p style="margin-top:8px;color:var(--muted);font-size:11px">Esempio Squat a 80kg: barra×10 → 40kg×8 → 56kg×5 → 68kg×3 → 80kg lavoro</p>
-          <p style="margin-top:4px;color:var(--muted);font-size:11px">Riposo tra i set di ramping: 60–90s. Totale: ~8 minuti.</p>
+          <p style="margin-bottom:8px;color:var(--text);font-weight:600">Come si fa — esempio con Squat a 80kg:</p>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:center;gap:10px;background:var(--bg3);padding:6px 10px;border-radius:6px">
+              <span style="background:var(--bg2);color:var(--muted);min-width:32px;text-align:center;padding:2px 4px;border-radius:4px;font-size:10px">Set 1</span>
+              <span>Solo barra (20kg) × 10 reps <span style="color:var(--muted);font-size:10px">— senti il movimento</span></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;background:var(--bg3);padding:6px 10px;border-radius:6px">
+              <span style="background:var(--bg2);color:var(--muted);min-width:32px;text-align:center;padding:2px 4px;border-radius:4px;font-size:10px">Set 2</span>
+              <span>40kg × 8 reps <span style="color:var(--muted);font-size:10px">— 50% del carico finale</span></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;background:var(--bg3);padding:6px 10px;border-radius:6px">
+              <span style="background:var(--bg2);color:var(--muted);min-width:32px;text-align:center;padding:2px 4px;border-radius:4px;font-size:10px">Set 3</span>
+              <span>56kg × 5 reps <span style="color:var(--muted);font-size:10px">— 70% del carico finale</span></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;background:var(--bg3);padding:6px 10px;border-radius:6px">
+              <span style="background:var(--bg2);color:var(--muted);min-width:32px;text-align:center;padding:2px 4px;border-radius:4px;font-size:10px">Set 4</span>
+              <span>68kg × 3 reps <span style="color:var(--muted);font-size:10px">— 85% del carico finale</span></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.3);padding:6px 10px;border-radius:6px">
+              <span style="background:var(--gold);color:#000;min-width:32px;text-align:center;padding:2px 4px;border-radius:4px;font-size:10px;font-weight:700">GO!</span>
+              <span style="color:var(--gold);font-weight:600">80kg — Inizia le serie di lavoro vere</span>
+            </div>
+          </div>
+          <p style="margin-top:8px;color:var(--muted);font-size:11px">⏱ Pausa tra i set di ramping: 60-90 secondi. Tempo totale: circa 8 minuti.</p>
+          <p style="margin-top:4px;color:var(--muted);font-size:11px">📌 Usa questo metodo quando non hai un riscaldamento AI specifico, o come alternativa prima dei grandi esercizi (Squat, Panca, Stacco).</p>
         </div>
       </details>
     </div>
@@ -6328,6 +6368,17 @@ function renderExerciseCard(ex, ei, dayKey){
 
   const logKey = `ecp_weights_${SESSION?.email||'x'}_${dayKey}_${ei}`;
   const prevWeights = JSON.parse(localStorage.getItem(logKey)||'[]');
+  // PR carico automatico: se non ci sono pesi precedenti, usa il PR salvato
+  var prKey = (ex.actual_name||ex.name||'').toLowerCase().replace(/[^a-z0-9]/g,'_');
+  var exData = (SESSION.exercise_data||{})[prKey] || (SESSION.exercise_data||{})[ex.name] || null;
+  var prWeight = exData ? (exData.best_weight || exData.max_weight || null) : null;
+  // Se il PR è salvato, calcola il carico suggerito per le reps attuali
+  var suggestedWeight = null;
+  if(prWeight && !prevWeights.length){
+    var repsNum = parseInt((ex.reps||'10').toString().split('-')[0]) || 10;
+    // Formula Epley inversa: peso × (1 + reps/30) = 1RM, quindi: peso = 1RM / (1 + reps/30)
+    suggestedWeight = Math.round(prWeight / (1 + repsNum/30) / 2.5) * 2.5;
+  }
 
   // Alternativa e RX
   const altKey = `ecp_alt_${SESSION?.email||'x'}_${dayKey}_${ei}`;
@@ -6370,6 +6421,7 @@ function renderExerciseCard(ex, ei, dayKey){
     <!-- NOTES + LOAD TIP -->
     ${displayEx.notes||ex.notes ? `<div class="ex-advanced" style="font-size:11px;color:var(--sub);margin-bottom:6px;padding:6px 8px;background:var(--bg2);border-radius:6px;border-left:2px solid var(--accent)">📝 ${displayEx.notes||ex.notes}</div>` : ''}
     ${displayEx.load_tip||ex.load_tip ? `<div class="ex-advanced" style="font-size:11px;color:var(--teal);margin-bottom:6px;padding:5px 8px;background:rgba(15,214,194,.06);border-radius:6px;border-left:2px solid var(--teal)">💡 ${displayEx.load_tip||ex.load_tip}</div>` : ''}
+    ${prWeight && !prevWeights.length ? `<div style="font-size:11px;color:var(--gold);margin-bottom:6px;padding:5px 8px;background:rgba(245,200,66,.08);border-radius:6px;border-left:2px solid var(--gold);display:flex;gap:8px;align-items:center"><span>🏆</span><span>PR: <strong>${prWeight}kg</strong> — Carico suggerito per ${(ex.reps||'10').toString().split('-')[0]} reps: <strong>${suggestedWeight}kg</strong></span></div>` : ''}
 
     <!-- RX INFO (CrossFit) -->
     ${rxInfo ? `<div style="font-size:11px;padding:6px 10px;background:rgba(91,94,244,.08);border:1px solid rgba(91,94,244,.2);border-radius:6px;margin-bottom:6px;display:flex;gap:12px;flex-wrap:wrap">
@@ -6385,7 +6437,7 @@ function renderExerciseCard(ex, ei, dayKey){
         return `<div class="set-pill" id="set-${dayKey}-${ei}-${s}" onclick="toggleSet('${dayKey}',${ei},${s})">
           <span style="font-size:10px;color:var(--muted);min-width:16px">S${s+1}</span>
           <input type="number" class="builder-ex-inp" style="width:42px;font-size:11px"
-            placeholder="${prev||'kg'}" id="kg-${dayKey}-${ei}-${s}"
+            placeholder="${prev || (suggestedWeight ? suggestedWeight+'kg (PR)' : 'kg')}" id="kg-${dayKey}-${ei}-${s}"
             value="${prev||''}"
             onclick="event.stopPropagation()" onchange="saveSetWeight('${dayKey}',${ei},${s},this.value)">
           <span style="font-size:10px;color:var(--muted)">×${displayEx.reps||ex.reps||'10'}</span>
@@ -8060,8 +8112,8 @@ function renderDashWearable(){
           ${w.apple ? '<div class="wearable-connected">Connesso e sincronizzato</div>' : ''}
         </div>
         ${w.apple
-          ? `<button class="btn btn-sm btn-danger" onclick="toggleWearable('Apple Health')">Disconnetti</button>`
-          : `<button class="btn btn-sm btn-primary" onclick="connectAppleHealth()">Connetti</button>`}
+          ? ``
+          : ``}
       </div>
       <!-- Garmin -->
       <div class="wearable-card">
@@ -8218,6 +8270,39 @@ function aiCoachQuick(q){
   var i=document.getElementById('ai-coach-inp');
   if(i&&q){i.value=q;sendAICoach();}
 }
+
+// Sync AI Coach history con Railway
+async function saveCoachHistoryToRailway(){
+  if(!SESSION||!SESSION.email||!_authToken) return;
+  try {
+    var msgs = JSON.parse(localStorage.getItem('ecp_coach_msgs_'+(SESSION.email||''))||'[]');
+    SESSION.coachMessages = msgs.length;
+    SESSION.coachHistory = msgs.slice(-50); // ultimi 50 messaggi
+    clearTimeout(window._coachSyncTimer);
+    window._coachSyncTimer = setTimeout(function(){
+      saveUserData().catch(function(){});
+    }, 2000);
+  } catch(e){ console.warn('saveCoachHistory:', e.message); }
+}
+
+// Carica storia chat dal server quando si apre AI Coach
+async function loadCoachHistoryFromRailway(){
+  if(!SESSION||!SESSION.email||!_authToken) return;
+  try {
+    // La storia è già in SESSION.coachHistory caricata da loadUserFromSupabase
+    var history = SESSION.coachHistory || [];
+    if(history.length > 0){
+      var key = 'ecp_coach_msgs_' + SESSION.email;
+      var existing = JSON.parse(localStorage.getItem(key)||'[]');
+      // Usa quella più lunga tra locale e server
+      if(history.length > existing.length){
+        localStorage.setItem(key, JSON.stringify(history));
+        console.log('AI Coach: caricati', history.length, 'messaggi dal server');
+      }
+    }
+  } catch(e){ console.warn('loadCoachHistory:', e.message); }
+}
+
 function saveCoachConfig(){
   if(!SESSION)return;
   SESSION.coachConfig={
@@ -10498,27 +10583,7 @@ async function signInWithGoogle() {
   }
 }
 
-// ─── GOOGLE OAUTH via SUPABASE per TRAINER ───────────────────────
-async function signInWithGoogleTrainer() {
-  toast('Accedi con email e password', 'info');
-  showPage('pg-auth');
-  return;
-  try {
-    const sb = getSupabase();
-    if (!sb) { toast('Connessione in corso...', ''); setTimeout(signInWithGoogleTrainer, 600); return; }
-    const { data, error } = await sb.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: window.location.origin + '/?oauth=google_trainer',
-        queryParams: { access_type: 'offline', prompt: 'consent' }
-      }
-    });
-    if (error) throw error;
-  } catch(e) {
-    console.error('Google Trainer OAuth error:', e);
-    toast('Google Login non disponibile. Usa email/password.', 'error');
-  }
-}
+
 
 // ─── CHECK OAUTH CALLBACK al ritorno dal redirect ─────────────────
 async function checkOAuthCallback() {
@@ -10748,9 +10813,7 @@ function showAppleHealthInstructions() {
             HKHealthStore().requestAuthorization(...)
           </code>
         </div>
-        <button class="btn btn-teal" onclick="simulateWearableConnect('Apple Health');this.closest('.modal-bg').remove()">
-          🧪 Usa dati simulati (demo)
-        </button>
+        
       </div>
     </div>`;
   modal.onclick = e => { if (e.target === modal) modal.remove(); };
@@ -11498,6 +11561,18 @@ function renderDashExport(){
         <div style="font-size:11px;color:var(--sub)">Circonferenze corporee</div>
         <button class="btn btn-primary btn-sm" style="margin-top:10px;width:100%">Scarica</button>
       </div>
+      <div class="card" style="text-align:center;cursor:pointer" onclick="exportDietaPDF()">
+        <div style="font-size:2rem;margin-bottom:8px">🥗</div>
+        <div style="font-weight:600;font-size:13px;margin-bottom:4px">Piano Dieta (.txt)</div>
+        <div style="font-size:11px;color:var(--sub)">Piano alimentare AI completo</div>
+        <button class="btn btn-primary btn-sm" style="margin-top:10px;width:100%">Scarica</button>
+      </div>
+      <div class="card" style="text-align:center;cursor:pointer" onclick="exportRicetteTXT()">
+        <div style="font-size:2rem;margin-bottom:8px">👨‍🍳</div>
+        <div style="font-weight:600;font-size:13px;margin-bottom:4px">Ricette AI (.txt)</div>
+        <div style="font-size:11px;color:var(--sub)">Tutte le ricette generate</div>
+        <button class="btn btn-primary btn-sm" style="margin-top:10px;width:100%">Scarica</button>
+      </div>
       <div class="card" style="text-align:center;cursor:pointer;opacity:.6">
         <div style="font-size:2rem;margin-bottom:8px">📄</div>
         <div style="font-weight:600;font-size:13px;margin-bottom:4px">PDF (.pdf)</div>
@@ -11568,6 +11643,87 @@ function downloadFile(content, filename, type='text/plain'){
   a.href = url; a.download = filename; a.click();
   URL.revokeObjectURL(url);
   toast(`✅ ${filename} scaricato!`,'success');
+}
+
+
+function exportDietaPDF(){
+  var u = SESSION;
+  if(!u || !u.dietPlan){
+    toast('Nessun piano dieta generato. Vai in Dieta → Genera Piano.','error');
+    return;
+  }
+  var plan = u.dietPlan;
+  var txt = '═══════════════════════════════════════\n';
+  txt += '   PIANO ALIMENTARE — EliteCoachProgram.fit\n';
+  txt += '═══════════════════════════════════════\n\n';
+  txt += 'Utente: ' + (u.name||'') + ' ' + (u.surname||'') + '\n';
+  txt += 'Data: ' + new Date().toLocaleDateString('it-IT') + '\n\n';
+  if(plan.days && Array.isArray(plan.days)){
+    plan.days.forEach(function(day, i){
+      txt += '─────────────────────────────\n';
+      txt += 'GIORNO ' + (i+1) + (day.name ? ' — ' + day.name : '') + '\n';
+      txt += '─────────────────────────────\n';
+      if(day.meals && Array.isArray(day.meals)){
+        day.meals.forEach(function(meal){
+          txt += '\n' + (meal.name||'Pasto') + ':\n';
+          if(meal.foods && Array.isArray(meal.foods)){
+            meal.foods.forEach(function(f){ txt += '  • ' + f + '\n'; });
+          } else if(typeof meal.foods === 'string') {
+            txt += '  ' + meal.foods + '\n';
+          }
+          if(meal.kcal) txt += '  Kcal: ' + meal.kcal + '\n';
+          if(meal.proteine) txt += '  Proteine: ' + meal.proteine + 'g\n';
+        });
+      } else {
+        txt += JSON.stringify(day, null, 2) + '\n';
+      }
+      txt += '\n';
+    });
+  } else {
+    txt += typeof plan === 'string' ? plan : JSON.stringify(plan, null, 2);
+  }
+  var blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'piano_dieta_elitecoach.txt';
+  a.click();
+  toast('Piano dieta scaricato! ✅','success');
+}
+
+function exportRicetteTXT(){
+  var ricette = (SESSION && SESSION.ricette) || [];
+  if(!ricette.length){
+    toast('Nessuna ricetta generata. Vai in Dieta → Genera Ricette.','error');
+    return;
+  }
+  var txt = '═══════════════════════════════════════\n';
+  txt += '   RICETTE AI — EliteCoachProgram.fit\n';
+  txt += '═══════════════════════════════════════\n\n';
+  txt += 'Generate il: ' + new Date().toLocaleDateString('it-IT') + '\n';
+  txt += 'Numero ricette: ' + ricette.length + '\n\n';
+  ricette.forEach(function(r, i){
+    txt += '─────────────────────────────\n';
+    txt += (i+1) + '. ' + (r.nome||r.name||'Ricetta') + '\n';
+    txt += '─────────────────────────────\n';
+    if(r.ingredienti||r.ingredients){
+      txt += 'Ingredienti:\n';
+      var ing = r.ingredienti||r.ingredients;
+      if(Array.isArray(ing)) ing.forEach(function(i){ txt += '  • ' + i + '\n'; });
+      else txt += '  ' + ing + '\n';
+    }
+    if(r.preparazione||r.preparation){
+      txt += '\nPreparazione:\n' + (r.preparazione||r.preparation) + '\n';
+    }
+    if(r.kcal) txt += '\nKcal: ' + r.kcal + '\n';
+    if(r.proteine) txt += 'Proteine: ' + r.proteine + 'g\n';
+    txt += '\n';
+  });
+  var blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'ricette_elitecoach.txt';
+  a.click();
+  toast('Ricette scaricate! ✅','success');
 }
 
 function exportProgramTXT(){
@@ -12544,7 +12700,7 @@ document.addEventListener('keydown',(e)=>{
 // ═══════════════════════════════════════════════════════════════════
 
 // ── 3. PUSH NOTIFICATIONS ────────────────────────────────────────
-async function requestNotificationPermission(){
+async function requestNotificationPermission_old(){
   if(!('Notification' in window)){ toast('Browser non supporta notifiche','error'); return false; }
   if(Notification.permission === 'granted') return true;
   if(Notification.permission === 'denied'){ toast('Notifiche bloccate — abilita dalle impostazioni browser','error'); return false; }
@@ -12763,6 +12919,8 @@ async function analyzeMovement(){
   reader.onload = async e => {
     const base64    = e.target.result.split(',')[1];
     const mediaType = fileInput.files[0].type || 'image/jpeg';
+    if(!_authToken) _authToken = localStorage.getItem('ecp_token');
+    if(!_authToken){ if(contentDiv) contentDiv.innerHTML='<p style="color:var(--red)">Devi essere loggato.</p>'; return; }
     try {
       const resp = await apiFetch('/api/ai',{
         method: 'POST',
@@ -12787,6 +12945,7 @@ async function analyzeMovement(){
       }
 
       const data = await resp.json();
+      if(!resp.ok){ throw new Error('Errore ' + resp.status + ' — rieffettua il login'); }
       if(data.error) throw new Error(data.error.message || JSON.stringify(data.error));
 
       const text = (data.content||[]).find(b=>b.type==='text')?.text || 'Analisi non disponibile.';
@@ -14708,9 +14867,13 @@ function initGoogleSignIn() {
     callback: handleGoogleCredential,
     auto_select: false,
     cancel_on_tap_outside: true,
+    context: 'signin',
+    ux_mode: 'popup',
   });
   // Renderizza bottone in tutti i div g-signin-btn presenti
-  document.querySelectorAll('#g-signin-btn, #g-signin-btn-auth').forEach(function(el) {
+  document.querySelectorAll('#g-signin-btn, #g-signin-btn-auth, #g-signin-btn-register').forEach(function(el) {
+    if(!el) return;
+    el.innerHTML = ''; // pulisci prima di re-render
     google.accounts.id.renderButton(el, {
       theme: 'outline',
       size: 'large',
@@ -14768,6 +14931,148 @@ async function handleGoogleCredential(response) {
 window.addEventListener('load', function() {
   setTimeout(initGoogleSignIn, 500);
 });
+
+
+function showTermsModal(){ showLegalModal('Termini di Servizio', '<p><strong>1. Servizio</strong> — EliteCoachProgram.fit fornisce programmi AI indicativi, non sostituiscono un professionista medico.</p><p><strong>2. Account</strong> — Sei responsabile della sicurezza del tuo account.</p><p><strong>3. Dati</strong> — I tuoi dati sono conservati su server EU sicuri e non vengono venduti.</p><p><strong>4. Responsabilità</strong> — Ti alleni sotto la tua responsabilità.</p><p><strong>5. Età</strong> — Servizio riservato a 16+ anni.</p>'); }
+function showPrivacyModal(){ showLegalModal('Privacy Policy', '<p><strong>Dati raccolti:</strong> Email, nome, dati fisici, sessioni allenamento.</p><p><strong>Uso:</strong> Esclusivamente per personalizzare il tuo programma.</p><p><strong>Storage:</strong> Railway EU con crittografia. Nessuna condivisione con terzi.</p><p><strong>Cancellazione:</strong> Scrivi a info@elitecoachprogram.fit per eliminare tutti i dati.</p>'); }
+function showLiberatoriaModal(){ showLegalModal('Liberatoria', '<p>Accettando dichiaro di:</p><p>&#10003; Essere in buona salute e non avere controindicazioni mediche.</p><p>&#10003; Assumermi la piena responsabilita per eventuali infortuni.</p><p>&#10003; Comprendere che i programmi AI sono suggerimenti, non sostituiscono un professionista.</p><p>&#10003; Avere almeno 16 anni.</p>'); }
+function showLegalModal(title, content){
+  var old = document.getElementById('legal-modal');
+  if(old) old.remove();
+  var modal = document.createElement('div');
+  modal.id = 'legal-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:99998;display:flex;align-items:center;justify-content:center;padding:20px';
+  var closeBtn = document.createElement('button');
+  closeBtn.className = 'btn btn-primary';
+  closeBtn.style.cssText = 'width:100%;margin-top:20px;border-radius:50px';
+  closeBtn.textContent = 'Ho capito';
+  closeBtn.onclick = function(){ modal.remove(); };
+  var inner = document.createElement('div');
+  inner.style.cssText = 'background:var(--bg2);border-radius:16px;padding:28px;width:100%;max-width:500px;max-height:80vh;overflow-y:auto';
+  inner.innerHTML = '<h3 style="font-family:var(--font2);margin:0 0 16px">'+title+'</h3><div style="font-size:.85rem;color:var(--sub);line-height:1.7">'+content+'</div>';
+  inner.appendChild(closeBtn);
+  modal.appendChild(inner);
+  document.body.appendChild(modal);
+}
+
+
+// ════ SISTEMA NOTIFICHE ════
+var _notifEnabled = false;
+var _notifScheduled = {};
+
+async function initNotifications(){
+  if(!('Notification' in window)) return;
+  _notifEnabled = Notification.permission === 'granted';
+  if(_notifEnabled) scheduleWorkoutReminders();
+}
+
+async function enableNotifications(){
+  if(!('Notification' in window)){ toast('Browser non supporta notifiche push','error'); return false; }
+  if(Notification.permission === 'granted'){
+    _notifEnabled = true; toast('Notifiche gia attive','success');
+    scheduleWorkoutReminders(); renderNotifSettings(); return true;
+  }
+  if(Notification.permission === 'denied'){
+    toast('Notifiche bloccate. Abilitale dalle impostazioni browser','error'); return false;
+  }
+  var perm = await Notification.requestPermission();
+  if(perm === 'granted'){
+    _notifEnabled = true; localStorage.setItem('ecp_notif_enabled','1');
+    toast('Notifiche attivate! 🔔','success');
+    scheduleWorkoutReminders(); renderNotifSettings(); return true;
+  }
+  toast('Permesso notifiche negato','error'); return false;
+}
+
+function sendNotification(title, body){
+  if(!_notifEnabled || Notification.permission !== 'granted') return;
+  try {
+    var n = new Notification(title, {body:body, icon:'/favicon.ico', tag:'ec-'+Date.now()});
+    n.onclick = function(){ window.focus(); n.close(); };
+    setTimeout(function(){ n.close(); }, 6000);
+  } catch(e){}
+}
+
+function scheduleWorkoutReminders(){
+  if(!_notifEnabled) return;
+  var cfg = JSON.parse(localStorage.getItem('ecp_notif_settings')||'{}');
+  if(!cfg.workout_reminder) return;
+  Object.values(_notifScheduled).forEach(function(t){ clearTimeout(t); });
+  _notifScheduled = {};
+  var now = new Date();
+  var next = new Date(); next.setHours(cfg.reminder_hour||8, cfg.reminder_min||0, 0, 0);
+  if(next <= now) next.setDate(next.getDate()+1);
+  var delay = next.getTime()-now.getTime();
+  _notifScheduled['workout'] = setTimeout(function(){
+    var nm = SESSION?(SESSION.name||'Atleta'):'Atleta';
+    sendNotification('Ora di allenarti, '+nm+'!', 'Il tuo programma EliteCoach ti aspetta.');
+    setTimeout(scheduleWorkoutReminders, 1000);
+  }, delay);
+}
+
+function notifyWorkoutComplete(dayName, volume){
+  if(!_notifEnabled) return;
+  sendNotification('Allenamento completato!', (dayName||'Sessione')+' - Volume: '+(volume||0)+'kg. Ottimo lavoro!');
+}
+
+function notifyStreak(streak){
+  if(!_notifEnabled || streak < 3) return;
+  sendNotification('Streak '+streak+' giorni!', 'Stai costruendo un abitudine vincente. Continua cosi!');
+}
+
+function _buildNotifHTML(){
+  var enabled = Notification.permission === 'granted';
+  var cfg = JSON.parse(localStorage.getItem('ecp_notif_settings')||'{"workout_reminder":true,"reminder_hour":8,"reminder_min":0}');
+  var statusHtml = enabled
+    ? '<div style="padding:10px;background:rgba(15,214,194,.08);border-radius:8px;margin-bottom:12px;font-size:.85rem;color:var(--teal)">Notifiche attive su questo dispositivo</div><button onclick="testNotification()" class="btn btn-ghost btn-sm" style="border-radius:50px;margin-bottom:12px">&#128276; Invia test</button>'
+    : '<div style="padding:10px;background:rgba(244,91,138,.08);border-radius:8px;margin-bottom:12px;font-size:.85rem;color:var(--sub)">Notifiche non attive</div><button onclick="enableNotifications()" class="btn btn-primary" style="border-radius:50px;margin-bottom:12px">Attiva notifiche &#128276;</button>';
+  var reminderBg = cfg.workout_reminder ? 'var(--accent)' : 'var(--bg3)';
+  var reminderLeft = cfg.workout_reminder ? '23' : '3';
+  var timeHtml = cfg.workout_reminder
+    ? '<div style="display:flex;align-items:center;gap:10px;margin-top:8px"><span style="font-size:.85rem;color:var(--sub)">Ora:</span><input type="number" min="0" max="23" value="'+cfg.reminder_hour+'" id="notif-hour" class="inp" style="width:60px;text-align:center" onchange="saveNotifTime()"><span>:</span><input type="number" min="0" max="59" value="'+cfg.reminder_min+'" id="notif-min" class="inp" style="width:60px;text-align:center" onchange="saveNotifTime()"></div>'
+    : '';
+  return '<div class="card" style="margin-bottom:16px"><h4 style="margin-bottom:12px">&#128276; Notifiche Push</h4>'+statusHtml+'</div>'
+    +'<div class="card"><h4 style="margin-bottom:12px">&#9200; Promemoria Allenamento</h4>'
+    +'<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">'
+    +'<div id="notif-toggle" onclick="toggleNotifSetting_wr()" style="width:44px;height:24px;border-radius:12px;background:'+reminderBg+';position:relative;cursor:pointer;transition:.3s"><div style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:3px;left:'+reminderLeft+'px;transition:.3s"></div></div>'
+    +'<span style="font-size:.88rem">Promemoria giornaliero</span></div>'+timeHtml+'</div>';
+}
+
+function renderNotifSettings(){
+  var el = document.getElementById('notif-settings-container');
+  if(!el) return;
+  el.innerHTML = _buildNotifHTML();
+}
+
+function toggleNotifSetting_wr(){
+  var cfg = JSON.parse(localStorage.getItem('ecp_notif_settings')||'{}');
+  cfg.workout_reminder = !cfg.workout_reminder;
+  localStorage.setItem('ecp_notif_settings',JSON.stringify(cfg));
+  if(cfg.workout_reminder) scheduleWorkoutReminders();
+  renderNotifSettings();
+}
+
+function saveNotifTime(){
+  var h = parseInt(document.getElementById('notif-hour')?.value||'8');
+  var m = parseInt(document.getElementById('notif-min')?.value||'0');
+  var cfg = JSON.parse(localStorage.getItem('ecp_notif_settings')||'{}');
+  cfg.reminder_hour = Math.min(23,Math.max(0,h));
+  cfg.reminder_min  = Math.min(59,Math.max(0,m));
+  localStorage.setItem('ecp_notif_settings',JSON.stringify(cfg));
+  scheduleWorkoutReminders(); toast('Orario salvato','success');
+}
+
+function testNotification(){
+  sendNotification('Test EliteCoach', 'Le notifiche funzionano su questo dispositivo!');
+  toast('Notifica test inviata','success');
+}
+
+function renderDashNotifiche(){
+  var el = document.getElementById('ds-notifiche');
+  if(!el) return;
+  el.innerHTML = '<h2 style="font-family:var(--font2);margin-bottom:20px">&#128276; Notifiche</h2><div id="notif-settings-container"></div>';
+  renderNotifSettings();
+}
 
 </script>
 </body></html>
