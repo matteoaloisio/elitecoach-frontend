@@ -1120,7 +1120,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
 <!-- HERO -->
 <section class="hero">
   <div class="hero-badge"><div class="dot"></div> AI-Powered · Personalizzato · 700+ Esercizi</div>
-  <h1 id="hh1">Il tuo coach AI<br><span class="grad" id="hh2">che ti trasforma davvero</span></h1>
+  <h1 id="hh1">Il tuo coach AI<br><span class="grad" id="hh2">personalizzato con AI</span></h1>
   <p class="hero-sub" id="hsub">Programmi personalizzati con intelligenza artificiale, trainer certificati e tracciamento avanzato dei progressi.</p>
   <div class="hero-btns">
     <button class="btn btn-xl btn-primary" onclick="showPage('pg-auth','register')" id="hcta">Crea il tuo programma gratis →</button>
@@ -2894,38 +2894,38 @@ function getSupabase(){
 let TR_SESSION = null;   // current trainer
 let LIB_PAGE = 0;        // exercise library pagination
 let LIB_FILTERED = [];   // filtered exercise list
-const LIB_PAGE_SIZE = 120;
+const LIB_PAGE_SIZE = 60;
 let wodTimerInterval = null;
 let wodTimerState = { running:false, time:0, phase:'work', round:0 };
 let restTimerInterval = null;
 
 // ─── TRANSLATIONS ────────────────────────────────────────
 const TR = {
-  it:{nav_login:'Accedi',nav_cta:'Inizia gratis →',hero_h1:'Il tuo coach AI',hero_h1b:'che ti trasforma davvero',
+  it:{nav_login:'Accedi',nav_cta:'Inizia gratis →',hero_h1:'Il tuo coach AI',hero_h1b:'personalizzato con AI',
     hero_sub:'Programmi personalizzati, trainer certificati, tracking avanzato.',
     hero_cta:'Crea il tuo programma gratis →',hero_cta2:'Trova un Trainer',
     hero_note:'✓ Gratis per sempre · ✓ Nessuna carta · ✓ Cancella quando vuoi',
     toast_fill:'Compila tutti i campi',toast_saved:'Salvato!',toast_err:'Errore',
     toast_pro_active:'Piano Pro attivato!'},
-  en:{nav_login:'Login',nav_cta:'Start free →',hero_h1:'Your AI coach',hero_h1b:'that truly transforms you',
+  en:{nav_login:'Login',nav_cta:'Start free →',hero_h1:'Your AI coach',hero_h1b:'personalized with AI',
     hero_sub:'Personalized programs, certified trainers, advanced tracking.',
     hero_cta:'Create your free program →',hero_cta2:'Find a Trainer',
     hero_note:'✓ Free forever · ✓ No card required · ✓ Cancel anytime',
     toast_fill:'Fill all fields',toast_saved:'Saved!',toast_err:'Error',
     toast_pro_active:'Pro plan activated!'},
-  es:{nav_login:'Entrar',nav_cta:'Comenzar gratis →',hero_h1:'Tu entrenador AI',hero_h1b:'que te transforma de verdad',
+  es:{nav_login:'Entrar',nav_cta:'Comenzar gratis →',hero_h1:'Tu entrenador AI',hero_h1b:'personalizado con IA',
     hero_sub:'Programas personalizados, entrenadores certificados, seguimiento avanzado.',
     hero_cta:'Crea tu programa gratis →',hero_cta2:'Encuentra un Entrenador',
     hero_note:'✓ Gratis para siempre · ✓ Sin tarjeta · ✓ Cancela cuando quieras',
     toast_fill:'Rellena todos los campos',toast_saved:'¡Guardado!',toast_err:'Error',
     toast_pro_active:'Plan Pro activado!'},
-  fr:{nav_login:'Connexion',nav_cta:'Commencer →',hero_h1:'Ton coach IA',hero_h1b:'qui te transforme vraiment',
+  fr:{nav_login:'Connexion',nav_cta:'Commencer →',hero_h1:'Ton coach IA',hero_h1b:'personnalisé avec IA',
     hero_sub:'Programmes personnalisés, coachs certifiés, suivi avancé.',
     hero_cta:'Créer mon programme gratuit →',hero_cta2:'Trouver un Coach',
     hero_note:'✓ Gratuit à vie · ✓ Sans CB · ✓ Annulez quand vous voulez',
     toast_fill:'Remplissez tous les champs',toast_saved:'Enregistré!',toast_err:'Erreur',
     toast_pro_active:'Plan Pro activé!'},
-  de:{nav_login:'Anmelden',nav_cta:'Kostenlos starten →',hero_h1:'Dein KI-Trainer',hero_h1b:'der wirklich transformiert',
+  de:{nav_login:'Anmelden',nav_cta:'Kostenlos starten →',hero_h1:'Dein KI-Trainer',hero_h1b:'personalisiert mit AI',
     hero_sub:'Personalisierte Programme, zertifizierte Trainer, fortschrittliches Tracking.',
     hero_cta:'Kostenloses Programm erstellen →',hero_cta2:'Trainer finden',
     hero_note:'✓ Für immer kostenlos · ✓ Keine Karte · ✓ Jederzeit kündigen',
@@ -4732,8 +4732,8 @@ function initExercises(){
       if(!ALL_EXERCISES.find(e=>e.name===ex.name)) ALL_EXERCISES.push(ex);
     }
   });
-  LIB_FILTERED = [...ALL_EXERCISES];
-  console.log('Exercise library initialized:', ALL_EXERCISES.length, '(custom:', customs.length, ')');
+  LIB_FILTERED = limitPerCat([...ALL_EXERCISES], 5);
+  console.log('Exercise library initialized:', ALL_EXERCISES.length, '(shown:', LIB_FILTERED.length, ', custom:', customs.length, ')');
 }
 
 // YOUTUBE LINKS (verified, high views)
@@ -5285,18 +5285,30 @@ function buildYTSearchPanel(exName){
 }
 
 // ─── LIBRARY UI ───────────────────────────────────────────
+function limitPerCat(list, perCat){
+  const counts = {};
+  return list.filter(ex => {
+    const cat = ex.cat || 'Altro';
+    counts[cat] = (counts[cat] || 0) + 1;
+    return counts[cat] <= perCat;
+  });
+}
+
 function filterLibrary(){
   const search=(document.getElementById('lib-search')?.value||'').toLowerCase();
   const cat=(document.getElementById('lib-cat')?.value||'').toLowerCase();
   const equip=(document.getElementById('lib-equip')?.value||'').toLowerCase();
   const level=(document.getElementById('lib-level')?.value||'').toLowerCase();
-  LIB_FILTERED = ALL_EXERCISES.filter(ex=>{
+  let filtered = ALL_EXERCISES.filter(ex=>{
     if(search && !ex.name.toLowerCase().includes(search) && !(ex.muscles||ex.muscle||'').toLowerCase().includes(search) && !(ex.cat||'').toLowerCase().includes(search) && !(ex.equip||'').toLowerCase().includes(search)) return false;
     if(cat && (ex.cat||'').toLowerCase()!==cat) return false;
     if(equip && (ex.equip||'').toLowerCase()!==equip) return false;
     if(level && (ex.level||'').toLowerCase()!==level) return false;
     return true;
   });
+  // No active filters → cap at 5 per category (≈60 total)
+  const hasFilter = search || cat || equip || level;
+  LIB_FILTERED = hasFilter ? filtered : limitPerCat(filtered, 5);
   LIB_PAGE = 0;
   renderLibGrid();
 }
@@ -5353,10 +5365,8 @@ function renderLibGrid(){
     const equip = ex.equip || '';
     const exJSON = JSON.stringify(ex).replace(/"/g,"'").replace(/'/g,"&apos;");
     return `<div class="lib-card lc2" onclick="openYT(${exJSON})" style="cursor:pointer;position:relative;overflow:hidden;border-radius:14px;background:var(--card);border:1px solid var(--border2);transition:.22s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column">
-      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${cfg.color}"></div>
-      <div style="height:88px;display:flex;align-items:center;justify-content:center;background:${cfg.bg};position:relative;flex-shrink:0">
-        <span style="color:${cfg.color};opacity:.85;filter:drop-shadow(0 2px 8px ${cfg.color}44)">${cfg.emoji}</span>
-        ${ytUrl?`<div style="position:absolute;bottom:7px;right:7px;width:22px;height:22px;border-radius:50%;background:rgba(248,113,113,.9);display:flex;align-items:center;justify-content:center;color:#fff">${YT_SVG}</div>`:''}
+      <div style="height:88px;display:flex;align-items:center;justify-content:center;background:#000;position:relative;flex-shrink:0">
+        <svg width="44" height="44" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#FF0000"/><polygon points="10,8 18,12 10,16" fill="#fff"/></svg>
       </div>
       <div style="padding:11px 13px 13px;flex:1;display:flex;flex-direction:column;gap:3px">
         <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:${cfg.color};opacity:.9">${ex.cat||''}</div>
@@ -8137,7 +8147,7 @@ function renderDashSfide(){
     {id:'meal10',name:'Tracker pro',emoji:'🍃',desc:'Registra 10 pasti',pts:100,check:()=>(u.meals||[]).length>=10},
     {id:'pts500',name:'500 punti',emoji:'⭐',desc:'Accumula 500 punti',pts:0,check:()=>(u.points||0)>=500},
     {id:'pts1000',name:'Elite',emoji:'♛',desc:'Raggiungi 1000 punti',pts:0,check:()=>(u.points||0)>=1000},
-    {id:'log5',name:'5 sessioni',emoji:'5×' allenamenti',pts:150,check:()=>(u.log||[]).length>=5},
+    {id:'log5',name:'5 sessioni',emoji:'🏅',desc:'Completa 5 allenamenti',pts:150,check:()=>(u.log||[]).length>=5},
     {id:'log20',name:'20 sessioni',emoji:'20×',desc:'Completa 20 allenamenti',pts:400,check:()=>(u.log||[]).length>=20},
     {id:'body',name:'Dati fisici',emoji:'📋',desc:'Inserisci i tuoi dati fisici',pts:30,check:()=>!!(u.profile?.height)},
     {id:'photo',name:'Foto progresso',emoji:'📷',desc:'Carica la prima foto progresso',pts:50,check:()=>(u.photos||[]).length>=1},
@@ -10060,7 +10070,7 @@ function getAIModel(){ return localStorage.getItem('ecp_ai_model')||'claude-haik
 
 const STRIPE_PUBLIC_KEY = 'pk_test_YOUR_STRIPE_PUBLISHABLE_KEY';
 // Backend URL — replace when you deploy the backend
-const BACKEND_URL = 'https://your-backend.railway.app';
+const BACKEND_URL = window.ELITE_SERVER_URL || 'https://elitecoach-server-production.up.railway.app';
 
 // Pricing config — update Product/Price IDs from Stripe Dashboard
 const STRIPE_PRICES = {
@@ -10658,7 +10668,7 @@ function addCustomEx(){
   saveCustomExercises(customs);
   // Also add to ALL_EXERCISES in memory
   if(typeof ALL_EXERCISES !== 'undefined') ALL_EXERCISES.push(ex);
-  if(typeof LIB_FILTERED !== 'undefined') LIB_FILTERED = [...ALL_EXERCISES];
+  if(typeof LIB_FILTERED !== 'undefined') LIB_FILTERED = limitPerCat([...ALL_EXERCISES], 5);
   toast('Esercizio aggiunto! ✅','success');
   renderOwnerExercises();
   // Refresh library if visible
@@ -10721,7 +10731,7 @@ function saveEditEx(idx){
     if(ei>=0) Object.assign(ALL_EXERCISES[ei], updated);
   }
   toast('Esercizio aggiornato! ✅','success');
-  if(typeof LIB_FILTERED !== 'undefined') LIB_FILTERED = [...(ALL_EXERCISES||[])];
+  if(typeof LIB_FILTERED !== 'undefined') LIB_FILTERED = limitPerCat([...(ALL_EXERCISES||[])], 5);
   renderOwnerExercises();
   renderLibGrid();
 }
@@ -10742,7 +10752,7 @@ function deleteCustomEx(idx){
     const ei = ALL_EXERCISES.findIndex(e=>e.name===exName&&e.custom);
     if(ei>=0) ALL_EXERCISES.splice(ei,1);
   }
-  if(typeof LIB_FILTERED !== 'undefined') LIB_FILTERED = [...(ALL_EXERCISES||[])];
+  if(typeof LIB_FILTERED !== 'undefined') LIB_FILTERED = limitPerCat([...(ALL_EXERCISES||[])], 5);
   toast('Esercizio eliminato');
   renderOwnerExercises();
   renderLibGrid();
@@ -13095,7 +13105,7 @@ addEventListener('DOMContentLoaded', ()=>{
   // Init exercises PRIMA di setLang
   initExercises();
   setLang(LANG);
-  LIB_FILTERED = [...ALL_EXERCISES];
+  LIB_FILTERED = limitPerCat([...ALL_EXERCISES], 5);
   LIB_PAGE = 0;
   renderLibGrid();
   
@@ -14082,24 +14092,11 @@ function exportProgramPDF(){
     .warmup{background:#fff3e0;border-left:4px solid #ff9800;padding:10px;border-radius:0 6px 6px 0;margin-bottom:12px;font-size:13px}
     @media print{@page{margin:20mm} button{display:none}}
   
-/* ── MOBILE PALESTRA ───────────────────────────────────────── */
-@media (max-width: 600px) {
-  .workout-exercise { padding: 14px 12px !important; }
-  .ex-header > div:nth-child(2) > div:first-child { font-size: 15px !important; font-weight:700 !important; }
-  .set-pill { padding: 10px 6px !important; min-width: 70px !important; border-radius: 10px !important; }
-  .set-pill input[type="number"] { width: 52px !important; font-size: 16px !important; height: 38px !important; text-align:center; }
-  .ex-sets-row { gap: 8px !important; flex-wrap: wrap !important; }
-  #btn-complete-workout { width: 100% !important; font-size: 1.05rem !important; padding: 16px !important; }
-  .card { padding: 14px 12px !important; }
-  .btn-xs { padding: 7px 10px !important; font-size: .78rem !important; }
-  .ex-note-input { font-size: 14px !important; padding: 8px 10px !important; }
-}
-input[type="number"], input[type="text"], select, textarea { font-size: 16px; }
-@media (min-width: 601px) {
-  input[type="number"], input[type="text"], select, textarea { font-size: inherit; }
-}
+/* ══════════════════════════════════════════════════════════
+   MOBILE DEFINITIVO — EliteCoachProgram.fit
+   ══════════════════════════════════════════════════════════ */
 
-/* ── iPHONE 15 PRO MAX — Safe area + Dynamic Island ────────── */
+/* ── Safe area variables ── */
 :root {
   --sat: env(safe-area-inset-top, 0px);
   --sar: env(safe-area-inset-right, 0px);
@@ -14107,308 +14104,246 @@ input[type="number"], input[type="text"], select, textarea { font-size: 16px; }
   --sal: env(safe-area-inset-left, 0px);
 }
 
-/* Nav: rispetta Dynamic Island */
-nav, .nav {
-  padding-top: max(12px, var(--sat)) !important;
-  padding-left: max(16px, var(--sal)) !important;
-  padding-right: max(16px, var(--sar)) !important;
-}
-
-/* Bottom tab bar: rispetta home indicator */
-.dash-nav, .bottom-nav {
-  padding-bottom: max(8px, var(--sab)) !important;
-  padding-left: max(4px, var(--sal)) !important;
-  padding-right: max(4px, var(--sar)) !important;
-}
-
-/* Contenuto principale: non va sotto la nav */
-.dash-main, #pg-dash > .dash-body {
-  padding-bottom: calc(80px + var(--sab)) !important;
-}
-
-/* Sidebar su mobile: sempre nascosta */
-@media (max-width: 768px) {
-  .dash-sidebar { display: none !important; }
-  .dash-main, .main-content { 
-    margin-left: 0 !important; 
-    padding-left: max(12px, var(--sal)) !important;
-    padding-right: max(12px, var(--sar)) !important;
-  }
-}
-
-/* Notifiche/Toast: sopra la safe area */
-.toast-container, #toast-wrap {
-  bottom: max(80px, calc(70px + var(--sab))) !important;
-  left: max(16px, var(--sal)) !important;
-  right: max(16px, var(--sar)) !important;
-  z-index: 9999 !important;
-}
-
-/* Modal: rispetta safe area */
-.modal-bg { 
-  padding: max(16px, var(--sat)) max(16px, var(--sar)) max(16px, var(--sab)) max(16px, var(--sal)) !important;
-}
-.modal {
-  max-height: calc(90vh - var(--sat) - var(--sab)) !important;
-  overflow-y: auto !important;
-}
-
-/* Input kg: abbastanza grandi per le dita su Pro Max */
-@media (max-width: 430px) {
-  .set-pill input[type="number"] {
-    width: 58px !important;
-    height: 42px !important;
-    font-size: 17px !important;
-    font-weight: 700 !important;
-  }
-  .set-pill {
-    padding: 10px 8px !important;
-    min-width: 76px !important;
-  }
-  /* Header navigazione */
-  .nav-logo { font-size: 1.1rem !important; }
-  .nav-right .btn-nav { font-size: .8rem !important; padding: 6px 10px !important; }
-  
-  /* Bottoni azione grande */
-  .btn-primary { min-height: 44px !important; }
-  
-  /* Day selector tabs */
-  .day-tab { 
-    padding: 8px 12px !important; 
-    font-size: .82rem !important;
-    min-width: 70px !important;
-  }
-  
-  /* Esercizi più spaziosi */
-  .workout-exercise { 
-    padding: 16px 14px !important; 
-    margin-bottom: 2px !important;
-  }
-  
-  /* Bottone completa */
-  #btn-complete-workout {
-    width: 100% !important;
-    padding: 18px !important;
-    font-size: 1.1rem !important;
-    border-radius: 16px !important;
-  }
-}
-
-/* Previeni overflow orizzontale */
-body, html { 
-  overflow-x: hidden !important; 
+/* ── Global overflow prevention ── */
+html, body {
+  overflow-x: hidden !important;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 * { box-sizing: border-box; }
 
-/* ── NAV MOBILE ─────────────────────────────────────────────── */
+/* ── Input: prevent iOS zoom (font must be ≥16px) ── */
+input, select, textarea {
+  font-size: 16px;
+  -webkit-appearance: none;
+}
+@media (min-width: 769px) {
+  input, select, textarea { font-size: inherit; }
+}
+
+/* ── Nav: respect Dynamic Island / notch ── */
+nav {
+  padding-top: max(10px, env(safe-area-inset-top)) !important;
+  padding-left: max(16px, env(safe-area-inset-left)) !important;
+  padding-right: max(16px, env(safe-area-inset-right)) !important;
+}
+
+/* ── Nav desktop/mobile toggle ── */
 .nav-desktop { display: flex; }
 .nav-mobile-right { display: none; }
-@media (max-width: 700px) {
-  .nav-desktop { display: none !important; }
-  .nav-mobile-right {
-    display: flex !important;
-    align-items: center;
-    gap: 8px;
-  }
-  nav { padding: 0 16px; padding-top: max(0px, env(safe-area-inset-top)); }
-  #mobile-menu {
-    padding-top: 8px;
-    padding-left: max(16px, env(safe-area-inset-left));
-    padding-right: max(16px, env(safe-area-inset-right));
-  }
-  /* Nascondi theme switcher e lang-bar nella nav su mobile */
-  .theme-switcher, .lang-bar { display: none !important; }
-}
 
-@media (max-width: 600px) {
-  #cookie-banner { padding: 10px 14px; padding-bottom: max(10px, env(safe-area-inset-bottom)); }
-  #cookie-banner p { font-size: .78rem; }
-  #cookie-banner button { font-size: .75rem; padding: 7px 12px; }
-}
-
-/* ── CALENDARIO: fix layout full-width ──────────────────── */
-#ds-calendario {
-  width: 100% !important;
-  min-width: 0 !important;
-  overflow-x: hidden !important;
-}
-#ds-calendario .card {
-  width: 100% !important;
-  box-sizing: border-box !important;
-}
-/* Griglia 7 colonne: larghezza minima per celle su mobile */
-@media (max-width: 500px) {
-  #ds-calendario [style*="grid-template-columns:repeat(7,1fr)"] {
-    gap: 2px !important;
-  }
-  #ds-calendario [style*="min-height:54px"] {
-    min-height: 42px !important;
-    padding: 4px 2px !important;
-  }
-  #ds-calendario [style*="font-size:.82rem"] {
-    font-size: .75rem !important;
-  }
-}
-/* Fix contenitore sezione dashboard */
-.dash-section.act {
-  width: 100% !important;
-  min-width: 0 !important;
-}
-
-/* ════════════════════════════════════════════════════════
-   MOBILE APP — EliteCoachProgram.fit
-   iPhone 15 Pro Max ready
-   ════════════════════════════════════════════════════════ */
-
-/* Bottom tab bar */
+/* ── Bottom tab bar ── */
 .mobile-nav {
   display: none;
   position: fixed;
   bottom: 0; left: 0; right: 0;
   z-index: 400;
-  background: rgba(10,10,20,.97);
+  background: rgba(8, 8, 16, .97);
   backdrop-filter: blur(20px) saturate(1.8);
   -webkit-backdrop-filter: blur(20px) saturate(1.8);
   border-top: 1px solid var(--border);
-  padding: 6px 0 max(8px, env(safe-area-inset-bottom));
+  padding: 6px max(0px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(0px, env(safe-area-inset-left));
   flex-direction: row;
   align-items: stretch;
   box-shadow: 0 -4px 24px rgba(0,0,0,.4);
 }
-
 .mobile-nav-item {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  padding: 4px 2px;
+  gap: 3px;
+  padding: 5px 2px;
   color: var(--muted);
   cursor: pointer;
   transition: color .15s, transform .1s;
-  font-size: 10px;
-  font-weight: 500;
-  min-width: 0;
   -webkit-tap-highlight-color: transparent;
+  min-width: 0;
 }
-.mobile-nav-item:active { transform: scale(.92); }
+.mobile-nav-item:active { transform: scale(.9); }
 .mobile-nav-item.act { color: var(--accent-xl); }
-.mobile-nav-item .mn-ico { font-size: 1.25rem; line-height: 1; }
-.mobile-nav-item span { font-size: 9px; white-space: nowrap; overflow: hidden; max-width: 100%; text-align: center; }
+.mobile-nav-item .mn-ico {
+  width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+}
+.mobile-nav-item .mn-ico svg { width: 22px; height: 22px; }
+.mobile-nav-item span {
+  font-size: 9px; font-weight: 500;
+  white-space: nowrap; overflow: hidden;
+  max-width: 100%; text-align: center;
+}
 
-/* Drawer items grid */
+/* ── Drawer items ── */
 .mn-drawer-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 14px 8px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 7px; padding: 14px 8px;
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: 14px;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 11px; font-weight: 500;
   color: var(--sub);
-  font-weight: 500;
   transition: background .15s, transform .1s;
   -webkit-tap-highlight-color: transparent;
   text-align: center;
 }
 .mn-drawer-item:active { transform: scale(.94); background: var(--bg3); }
-.mn-drawer-item div { font-size: 1.5rem; line-height: 1; }
-.mn-drawer-item span { font-size: 11px; }
+.mn-drawer-item div { display: flex; align-items: center; justify-content: center; }
+.mn-drawer-item div svg { width: 22px; height: 22px; }
 
+/* ── Toast: always above mobile nav ── */
+#toast {
+  bottom: max(88px, calc(80px + env(safe-area-inset-bottom))) !important;
+}
+
+/* ══════════════════════════════
+   BREAKPOINT 768px — tablet/mobile
+   ══════════════════════════════ */
 @media (max-width: 768px) {
-  /* Mostra bottom nav */
+  /* Show bottom nav */
   .mobile-nav { display: flex !important; }
 
-  /* Nascondi sidebar desktop */
-  .dash-sidebar,
-  .trainer-sidebar,
-  .owner-sidebar { display: none !important; }
+  /* Hide desktop sidebars */
+  .dash-sidebar, .trainer-sidebar, .owner-sidebar { display: none !important; }
 
-  /* Main content: no margin sinistra, padding bottom per tab bar */
-  .dash-main,
-  .trainer-main,
-  .owner-main {
+  /* Hide desktop nav, show mobile */
+  .nav-desktop { display: none !important; }
+  .nav-mobile-right { display: flex !important; align-items: center; gap: 8px; }
+  .theme-switcher, .lang-bar { display: none !important; }
+
+  /* Main content areas */
+  .dash-main, .trainer-main, .owner-main {
     margin-left: 0 !important;
-    padding: 12px 14px !important;
-    padding-bottom: calc(80px + env(safe-area-inset-bottom)) !important;
-    padding-top: calc(var(--nav-h) + 8px) !important;
+    padding: 14px max(14px, env(safe-area-inset-right)) calc(84px + env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left)) !important;
+    padding-top: calc(var(--nav-h) + 10px) !important;
   }
 
-  /* Nav superiore: rispetta Dynamic Island */
-  nav {
-    padding-top: max(10px, env(safe-area-inset-top)) !important;
-    padding-left: max(14px, env(safe-area-inset-left)) !important;
-    padding-right: max(14px, env(safe-area-inset-right)) !important;
-    height: auto !important;
-    min-height: var(--nav-h);
-  }
+  /* Dynamic nav height */
   :root { --nav-h: calc(52px + env(safe-area-inset-top, 0px)); }
+  nav { height: auto !important; min-height: var(--nav-h); }
 
-  /* Cards: padding ridotto */
+  /* Cards */
   .card { padding: 14px 12px !important; }
 
-  /* Tabelle: scroll orizzontale */
-  .data-table-wrap { overflow-x: auto !important; }
-  table { min-width: 480px; }
-
-  /* Grid adattivi */
-  .grid4 { grid-template-columns: repeat(2,1fr) !important; }
-  .grid3 { grid-template-columns: repeat(2,1fr) !important; }
+  /* Grids */
+  .grid4 { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+  .grid3 { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+  .grid2 { grid-template-columns: 1fr !important; gap: 10px !important; }
   .field-row.c2, .field-row.c3 { grid-template-columns: 1fr !important; }
 
-  /* Input: 16px per evitare zoom iOS */
-  input, select, textarea { font-size: 16px !important; }
+  /* Exercise library grid: 2 col */
+  .lib-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
 
-  /* Bottoni full-width su mobile */
+  /* Pricing: 1 col */
+  .pricing-grid { grid-template-columns: 1fr !important; max-width: 420px !important; }
+
+  /* Trainer marketplace: 1 col */
+  #marketplace-grid.grid3 { grid-template-columns: 1fr !important; }
+
+  /* H2 smaller */
+  h2 { font-size: 1.25rem !important; }
+  .sec-title { font-size: clamp(22px, 6vw, 34px) !important; }
+
+  /* Day tabs: horizontal scroll */
+  .day-tabs-row {
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    padding-bottom: 4px !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .day-tab { display: inline-block !important; white-space: nowrap !important; }
+
+  /* Tables: horizontal scroll */
+  .data-table-wrap, .users-table-wrap { overflow-x: auto !important; }
+
+  /* Workout exercise */
+  .workout-exercise { padding: 14px 12px !important; }
+  .set-pill { padding: 10px 6px !important; min-width: 70px !important; border-radius: 10px !important; }
+  .set-pill input[type="number"] { width: 54px !important; height: 40px !important; font-size: 16px !important; text-align: center; }
+  .ex-sets-row { gap: 8px !important; flex-wrap: wrap !important; }
   #btn-complete-workout { width: 100% !important; padding: 16px !important; font-size: 1.05rem !important; }
 
-  /* Set pill più grandi */
-  .set-pill input[type="number"] {
-    width: 56px !important;
-    height: 40px !important;
-    font-size: 16px !important;
-  }
-
-  /* Toast: sopra il tab bar */
-  #toast-container, .toast-wrap, [id*="toast"] {
-    bottom: calc(80px + env(safe-area-inset-bottom) + 8px) !important;
-  }
-
-  /* Modal: rispetta safe area */
+  /* Modal: slide up from bottom on mobile */
   .modal-bg { align-items: flex-end !important; padding: 0 !important; }
   .modal {
     border-radius: 20px 20px 0 0 !important;
-    max-height: calc(90vh - env(safe-area-inset-top)) !important;
+    max-height: calc(92vh - env(safe-area-inset-top)) !important;
     overflow-y: auto !important;
     padding-bottom: max(20px, env(safe-area-inset-bottom)) !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
 
-  /* Sezione schede: day tabs scroll orizzontale */
-  .day-tabs-row { overflow-x: auto !important; white-space: nowrap !important; padding-bottom: 4px !important; }
-  .day-tab { display: inline-block !important; white-space: nowrap !important; }
+  /* Check-in: 5 col grid stays */
+  .checkin-option-grid { grid-template-columns: repeat(5, 1fr) !important; gap: 6px !important; }
+  .checkin-option { padding: 9px 4px !important; font-size: 12px !important; }
 
-  /* Header h2 più piccolo */
-  h2 { font-size: 1.3rem !important; }
+  /* Wearable: 1 col */
+  .wearable-metrics-row { grid-template-columns: 1fr !important; }
+
+  /* Sfide badge grid */
+  .badge-grid { grid-template-columns: repeat(3, 1fr) !important; }
+
+  /* Calendar */
+  #ds-calendario { width: 100% !important; min-width: 0 !important; overflow-x: hidden !important; }
+
+  /* Chat trainer layout: single col */
+  .chat-trainer-layout { grid-template-columns: 1fr !important; }
+  .chat-contact-list { border-right: none !important; border-bottom: 1px solid var(--border); max-height: 200px; overflow-y: auto; }
+
+  /* Stats cards */
+  .stat-card { padding: 14px 12px !important; }
+  .sc-val, .stat-num, .kpi-val { font-size: 22px !important; }
+
+  /* Dieta header */
+  .dieta-header { flex-direction: column !important; }
+  .dieta-kcal-big { font-size: 40px !important; }
+
+  /* AI Coach chip row: horizontal scroll */
+  #ai-sugg {
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px !important;
+  }
+  .aicoach-chip { flex-shrink: 0; }
 }
 
-/* iPhone 15 Pro Max specifico */
+/* ══════════════════════════════
+   BREAKPOINT 430px — iPhone Pro
+   ══════════════════════════════ */
 @media (max-width: 430px) {
-  .dash-main, .trainer-main { padding: 10px 10px !important; padding-bottom: calc(82px + env(safe-area-inset-bottom)) !important; }
-  .set-pill { padding: 8px 6px !important; min-width: 68px !important; }
-  .btn-xs { padding: 7px 8px !important; font-size: .77rem !important; }
-  .grid4 { grid-template-columns: repeat(2,1fr) !important; gap: 8px !important; }
-  .stat-num { font-size: 1.6rem !important; }
+  .dash-main, .trainer-main, .owner-main {
+    padding: 10px 10px calc(86px + env(safe-area-inset-bottom)) 10px !important;
+  }
+  .set-pill { padding: 8px 5px !important; min-width: 66px !important; }
+  .set-pill input[type="number"] { width: 56px !important; height: 42px !important; font-size: 17px !important; font-weight: 700 !important; }
+  .grid4 { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
+  .lib-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 6px !important; }
+  .badge-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .btn-xl { padding: 14px 24px !important; font-size: 15px !important; }
+  .hero h1 { font-size: 2rem !important; letter-spacing: -.5px !important; }
+  .stats-row { flex-wrap: wrap !important; }
+  .stat-item { min-width: 50% !important; }
+  .checkin-option { font-size: 11px !important; padding: 8px 2px !important; }
+  .mn-drawer-item { padding: 12px 6px !important; }
 }
 
-/* Previeni overflow globale */
-body { overflow-x: hidden !important; -webkit-overflow-scrolling: touch; }
-* { box-sizing: border-box; }
+/* ── Calendar 7-col on tiny screens ── */
+@media (max-width: 390px) {
+  #ds-calendario .cal-grid,
+  [style*="grid-template-columns:repeat(7,1fr)"] { gap: 1px !important; }
+  .cal-day { min-height: 38px !important; padding: 3px 2px !important; font-size: 10px !important; }
+  .cal-day-num { font-size: 10px !important; }
+}
+
+/* ── Workout exercise palestra ── */
+@media (max-width: 600px) {
+  .ex-header > div:nth-child(2) > div:first-child { font-size: 15px !important; font-weight: 700 !important; }
+  .btn-xs { padding: 7px 10px !important; font-size: .78rem !important; }
+}
 </style></head><body>
   <div style="display:flex;align-items:center;justify-content:space-between">
     <h1>💪 ${p.name}</h1>
