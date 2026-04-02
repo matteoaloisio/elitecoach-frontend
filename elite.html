@@ -2674,6 +2674,7 @@ async function saveUserData() {
       measures:         SESSION.measures || {},
       diet_plan:        SESSION.dietPlan || null,
       ricette:          SESSION.ricette || [],
+      photos:           SESSION.photos || [],
       checkins:         SESSION.checkins || [],
       cal_events:       calEvents,
       coach_config:     SESSION.coachConfig || {},
@@ -2716,6 +2717,8 @@ async function loadUserFromSupabase() {
       if(d.measures)                   SESSION.measures = d.measures;
       if(d.diet_plan)                  SESSION.dietPlan = d.diet_plan;
       if(d.ricette && d.ricette.length) SESSION.ricette = d.ricette;
+      if(d.photos && d.photos.length)  SESSION.photos = d.photos;
+      if(d.cal_events && d.cal_events.length) SESSION.cal_events = d.cal_events;
       if(d.checkins && d.checkins.length) SESSION.checkins = d.checkins;
       if(d.coach_config)               SESSION.coachConfig = d.coach_config;
       if(d.coach_history && d.coach_history.length) SESSION.coachHistory = d.coach_history;
@@ -5386,7 +5389,24 @@ async function generateAIProgram(){
             rpe:        ex.intensity||ex.rpe                 || 'RPE 8',
             tempo:      ex.tempo                             || '',
             notes:      ex.technique_notes||ex.notes         || '',
-            load_tip:   ex.load_recommendation||ex.load_tip  || '',
+            load_tip:   (function(){
+              var base = ex.load_recommendation || ex.load_tip || '';
+              var prs  = (SESSION && (SESSION.personalRecords || SESSION.exerciseData)) || {};
+              var name = (ex.name || '').trim();
+              var pr   = prs[name] || null;
+              if(!pr && name){
+                var key = name.toLowerCase().replace(/[^a-z0-9]/g,'_');
+                pr = prs[key] || SESSION['pr_'+key] || null;
+              }
+              if(pr && pr.weight){
+                var sug = Math.round(pr.weight * 0.80 / 2.5) * 2.5;
+                var prStr = '🏆 PR: '+pr.weight+'kg × '+(pr.reps||'1')+'reps';
+                if(pr.date) prStr += ' ('+new Date(pr.date).toLocaleDateString('it-IT')+')';
+                prStr += ' → Suggerito: ~'+sug+'kg';
+                return prStr + (base ? ' | '+base : '');
+              }
+              return base;
+            })(),
             progression:ex.progression_rule||ex.progression  || '',
             technique:  (ex.technique==='normal'?'normale':ex.technique) || 'normale',
             yt:         ex.yt_query
@@ -14773,6 +14793,58 @@ async function owSaveSystem(){
 </div>
 
 <script>
+// ════ NOTIFICHE COMPLETE ════
+async function requestNotificationPermission(){
+  if(!('Notification' in window)){ toast('Browser non supporta notifiche','error'); return false; }
+  if(Notification.permission==='granted') return true;
+  if(Notification.permission==='denied'){ toast('Notifiche bloccate — abilitale dal browser','error'); return false; }
+  try{
+    var p = await Notification.requestPermission();
+    if(p==='granted'){ toast('Notifiche attivate ✅','success'); showLocalNotification('EliteCoachProgram.fit','Notifiche attivate!'); return true; }
+    return false;
+  }catch(e){ return false; }
+}
+function showLocalNotification(title,body){
+  if(!('Notification' in window)||Notification.permission!=='granted') return;
+  try{
+    if('serviceWorker' in navigator && navigator.serviceWorker.controller){
+      navigator.serviceWorker.controller.postMessage({type:'SHOW_NOTIFICATION',title:title,body:body});
+    } else {
+      new Notification(title,{body:body,icon:'/favicon.ico',tag:'ec-'+Date.now()});
+    }
+  }catch(e){}
+}
+function notifyNewPR(name,weight,reps){
+  showLocalNotification('🏆 PR! '+name, weight+'kg × '+reps+' reps');
+  toast('🏆 PR: '+name+' '+weight+'kg!','success');
+}
+function showNotificationBanner(){
+  if(document.getElementById('notif-banner')) return;
+  var b=document.createElement('div');
+  b.id='notif-banner';
+  b.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9998;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;max-width:360px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.3)';
+  var btnNo=document.createElement('button');
+  btnNo.textContent='No';
+  btnNo.style.cssText='padding:6px 12px;border-radius:50px;border:1px solid #444;background:transparent;color:#888;cursor:pointer;font-size:.75rem';
+  btnNo.onclick=function(){b.remove();localStorage.setItem('ecp_notif_asked','1');};
+  var btnSi=document.createElement('button');
+  btnSi.className='btn btn-primary btn-sm';
+  btnSi.textContent='Attiva';
+  btnSi.style.borderRadius='50px';
+  btnSi.onclick=function(){requestNotificationPermission();b.remove();localStorage.setItem('ecp_notif_asked','1');};
+  b.innerHTML='<span style="font-size:1.4rem">&#128276;</span><div style="flex:1"><div style="font-size:.88rem;font-weight:600">Attiva le notifiche</div><div style="font-size:.75rem;color:var(--sub)">Promemoria allenamenti e traguardi</div></div>';
+  var d=document.createElement('div');d.style.cssText='display:flex;gap:6px';
+  d.appendChild(btnNo);d.appendChild(btnSi);b.appendChild(d);
+  document.body.appendChild(b);
+  setTimeout(function(){if(b.parentNode)b.remove();},8000);
+}
+async function initNotificationSystem(){
+  if(!localStorage.getItem('ecp_notif_asked')&&'Notification' in window&&Notification.permission==='default'){
+    setTimeout(showNotificationBanner,30000);
+  }
+}
+
+
 // ════ RECUPERO PASSWORD ════
 function showForgotPassword(){
   var m=document.getElementById('forgot-modal');
