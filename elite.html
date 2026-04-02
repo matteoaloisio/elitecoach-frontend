@@ -1396,6 +1396,12 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
           </div>
           <div style="position:relative">
           <div id="g-signin-btn-auth" style="display:flex;justify-content:center;width:100%"></div>
+          <!-- Fallback button mobile-friendly -->
+          <button id="g-btn-auth-fallback" onclick="showGoogleTermsModal('login')" 
+            style="display:none;width:100%;padding:11px 16px;border-radius:8px;border:1px solid var(--border2);background:var(--bg2);color:var(--text);font-size:14px;font-weight:500;cursor:pointer;align-items:center;justify-content:center;gap:10px">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            Continua con Google
+          </button>
           <div id="g-terms-overlay-auth" onclick="showGoogleTermsModal('login')" 
                style="position:absolute;inset:0;cursor:pointer;z-index:10;background:transparent"></div>
         </div>
@@ -1436,6 +1442,12 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
         </div>
         <div style="position:relative">
           <div id="g-signin-btn-register" style="display:flex;justify-content:center;width:100%"></div>
+          <!-- Fallback mobile -->
+          <button id="g-btn-reg-fallback" onclick="showGoogleTermsModal('register')"
+            style="display:none;width:100%;padding:11px 16px;border-radius:8px;border:1px solid var(--border2);background:var(--bg2);color:var(--text);font-size:14px;font-weight:500;cursor:pointer;align-items:center;justify-content:center;gap:10px">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            Continua con Google
+          </button>
           <div id="g-terms-overlay-reg" onclick="showGoogleTermsModal('register')" 
                style="position:absolute;inset:0;cursor:pointer;z-index:10;background:transparent"></div>
         </div>
@@ -7869,7 +7881,7 @@ function buildDietaOggi(u){
   categories.forEach(function(cat){
     const catMeals = getMealsFor(cat);
     const catKcal  = catMeals.reduce(function(a,m){ return a+(m.kcal||0); },0);
-    const icons    = {'Colazione':'','Pranzo':'','Cena':'','Snack':'&#127822;'};
+    const icons    = {'Colazione':'','Pranzo':'','Cena':'','Snack':''};
     catHTML += '<div style="margin-bottom:12px">';
     catHTML += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">';
     catHTML += '<span style="font-weight:600;font-size:.88rem">'+icons[cat]+' '+cat+'</span>';
@@ -7913,10 +7925,10 @@ function buildDietaOggi(u){
     +'<button class="btn btn-primary btn-sm" onclick="addMealNew()" style="border-radius:50px">+ Aggiungi al diario</button>'
     +'<div style="border-top:1px solid var(--border);padding-top:8px;margin-top:2px">'
     +'<input class="inp" id="ai-food-input" placeholder="Oppure descrivi il pasto allAI...">'
-    +'<button class="btn btn-sm" style="width:100%;margin-top:6px;border-radius:50px;background:rgba(91,94,244,.12);border:1px solid rgba(91,94,244,.3);color:var(--accent)" onclick="scanFoodAI()"> Analizza con AI</button>'
+    +'<button class="btn btn-sm" style="width:100%;margin-top:6px;border-radius:50px;background:rgba(91,94,244,.12);border:1px solid rgba(91,94,244,.3);color:var(--accent)" onclick="scanFoodAI()">Analizza con AI</button>'
     +'<div id="ai-food-result" style="margin-top:8px"></div></div>'
     +'</div></div></div>'
-    +'<div class="card"><h4 style="margin-bottom:14px"> Diario pasti di oggi</h4>'+catHTML+'</div>';
+    +'<div class="card"><h4 style="margin-bottom:14px">Diario pasti di oggi</h4>'+catHTML+'</div>';
 }
 
 function buildDietaPiano(u){
@@ -13370,7 +13382,7 @@ function renderDashAnalysis(){
     +'</select></div>'
     +'<div class="field" id="custom-ex-wrap" style="display:none;margin-bottom:10px"><label>Nome esercizio</label><input class="inp" id="custom-exercise" placeholder="Es. Bulgarian Split Squat"></div>'
     +'<div class="field" style="margin-bottom:12px"><label>Note aggiuntive (opzionale)</label><input class="inp" id="analysis-notes" placeholder="Es. mi sembra che il ginocchio collassi..."></div>'
-    +'<button class="btn btn-primary" id="btn-analyze" onclick="analyzeMovement()" style="width:100%;border-radius:50px;font-weight:700"> Analizza con AI</button>'
+    +'<button class="btn btn-primary" id="btn-analyze" onclick="analyzeMovement()" style="width:100%;border-radius:50px;font-weight:700">Analizza con AI</button>'
     +'</div>'
 
     +'<div class="card" style="display:flex;flex-direction:column">'
@@ -14063,7 +14075,7 @@ function renderDashExportContent(){
             <img id="analysis-preview-img" style="max-height:260px;border-radius:10px;border:1px solid var(--border2)">
           </div>
           <button class="btn btn-primary" style="align-self:start" onclick="analyzeMovement()">
-            🤖 Analizza con AI →
+            🤖Analizza con AI →
           </button>
         </div>
       </div>
@@ -15142,15 +15154,20 @@ async function owSaveSystem(){
 </div>
 
 <!-- ── FORGOT PASSWORD MODAL ── -->
-<div id="forgot-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;padding:20px">
-  <div style="background:var(--bg2);border-radius:16px;padding:32px;width:100%;max-width:400px">
-    <h3 style="font-family:var(--font2);margin:0 0 8px"> Password dimenticata</h3>
-    <p style="color:var(--sub);font-size:.85rem;margin:0 0 20px">Inserisci la tua email e ti mandiamo un link per reimpostare la password.</p>
-    <input class="inp" id="forgot-email" type="email" placeholder="La tua email" style="width:100%;margin-bottom:12px">
+<div id="forgot-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9999;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--bg2);border-radius:20px;padding:28px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.5)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <h3 style="font-family:var(--font2);margin:0;font-size:1.1rem">Password dimenticata</h3>
+      <button onclick="closeForgotPassword()" style="background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%">✕</button>
+    </div>
+    <p style="color:var(--sub);font-size:.85rem;margin:0 0 18px;line-height:1.5">Inserisci la tua email e ti mandiamo un link per reimpostare la password.</p>
+    <input class="inp" id="forgot-email" type="email" placeholder="La tua email" autocomplete="email" inputmode="email"
+      style="width:100%;margin-bottom:12px;font-size:16px!important"
+      onkeydown="if(event.key==='Enter'){event.preventDefault();submitForgotPassword();}">
     <div id="forgot-msg" style="display:none;padding:10px;border-radius:8px;font-size:.85rem;margin-bottom:12px"></div>
     <div style="display:flex;gap:10px">
-      <button class="btn btn-ghost" style="flex:1" onclick="closeForgotPassword()">Annulla</button>
-      <button class="btn btn-primary" style="flex:1" id="forgot-btn" onclick="submitForgotPassword()">Invia link</button>
+      <button class="btn btn-ghost" style="flex:1;min-height:44px" onclick="closeForgotPassword()">Annulla</button>
+      <button class="btn btn-primary" style="flex:1;min-height:44px" id="forgot-btn" onclick="submitForgotPassword()">Invia link</button>
     </div>
   </div>
 </div>
@@ -15333,18 +15350,34 @@ function initGoogleSignIn() {
     context: 'signin',
     ux_mode: 'popup',
   });
-  // Renderizza bottone in tutti i div g-signin-btn presenti
+  // Renderizza bottone Google in tutti i container
   document.querySelectorAll('#g-signin-btn, #g-signin-btn-auth, #g-signin-btn-register').forEach(function(el) {
     if(!el) return;
-    el.innerHTML = ''; // pulisci prima di re-render
+    el.innerHTML = '';
     google.accounts.id.renderButton(el, {
       theme: 'outline',
       size: 'large',
-      width: el.parentElement ? (el.parentElement.offsetWidth || 320) : 320,
+      width: Math.min((el.parentElement ? el.parentElement.offsetWidth : 320) || 320, 400),
       text: 'continue_with',
       locale: 'it',
     });
   });
+  // Fallback: se dopo 2s l'iframe non è presente (mobile Safari blocca), mostra bottone nativo
+  setTimeout(function(){
+    var pairs = [
+      ['#g-signin-btn-auth iframe', 'g-btn-auth-fallback'],
+      ['#g-signin-btn-register iframe', 'g-btn-reg-fallback'],
+    ];
+    pairs.forEach(function(pair){
+      var iframe = document.querySelector(pair[0]);
+      var fallback = document.getElementById(pair[1]);
+      if(!iframe && fallback){
+        fallback.style.display = 'flex';
+      } else if(iframe && fallback){
+        fallback.style.display = 'none';
+      }
+    });
+  }, 2000);
 }
 
 async function handleGoogleCredential(response) {
@@ -15556,6 +15589,8 @@ function renderDashNotifiche(){
 var _googleLoginMode = 'login';
 function showGoogleTermsModal(mode){
   _googleLoginMode = mode || 'login';
+  // Su mobile il click sull'iframe Google non funziona
+  // Mostriamo il modale termini e poi usiamo google.accounts.id.prompt()
   document.getElementById('google-terms-modal').style.display = 'flex';
 }
 
@@ -15571,22 +15606,30 @@ async function acceptGoogleTermsAndLogin(){
     return;
   }
 
-  // Caso B: rimuovi overlay e clicca sul bottone Google reale
+  // Caso B: rimuovi overlay e usa prompt() - funziona su mobile
   var overlayReg = document.getElementById('g-terms-overlay-reg');
   var overlayAuth = document.getElementById('g-terms-overlay-auth');
-  if(_googleLoginMode === 'register'){
-    if(overlayReg) overlayReg.style.display = 'none';
-    var gBtn = document.querySelector('#g-signin-btn-register iframe');
-    if(gBtn) gBtn.click();
-    else if(typeof google !== 'undefined') google.accounts.id.prompt();
-    setTimeout(function(){ if(overlayReg) overlayReg.style.display = 'block'; window._googleTermsAccepted=false; }, 10000);
-  } else {
-    if(overlayAuth) overlayAuth.style.display = 'none';
-    var gBtnA = document.querySelector('#g-signin-btn-auth iframe');
-    if(gBtnA) gBtnA.click();
-    else if(typeof google !== 'undefined') google.accounts.id.prompt();
-    setTimeout(function(){ if(overlayAuth) overlayAuth.style.display = 'block'; window._googleTermsAccepted=false; }, 10000);
+  if(overlayReg) overlayReg.style.display = 'none';
+  if(overlayAuth) overlayAuth.style.display = 'none';
+
+  if(typeof google !== 'undefined' && google.accounts){
+    // Prima prova a cliccare il bottone reale
+    var sel = _googleLoginMode === 'register' ? '#g-signin-btn-register iframe' : '#g-signin-btn-auth iframe';
+    var iframe = document.querySelector(sel);
+    if(iframe){
+      iframe.click();
+    } else {
+      // Fallback: usa prompt one-tap
+      google.accounts.id.prompt();
+    }
   }
+
+  // Ripristina overlay dopo 15 secondi
+  setTimeout(function(){
+    if(overlayReg) overlayReg.style.display = 'block';
+    if(overlayAuth) overlayAuth.style.display = 'block';
+    window._googleTermsAccepted = false;
+  }, 15000);
 }
 
 </script>
