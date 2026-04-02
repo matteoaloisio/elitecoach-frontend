@@ -172,6 +172,18 @@ select.inp option,.form-select option{background:var(--bg2)}
 .field-row.c2{grid-template-columns:1fr 1fr}
 .field-row.c3{grid-template-columns:1fr 1fr 1fr}
 
+/* ─── UTILITY GRIDS ─── */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+
+/* ─── MOBILE UTILITIES ─── */
+@media(max-width:768px){
+  .hide-mobile{display:none!important}
+  #dash-user-name{display:none!important}
+  #dash-pro-badge{display:none!important}
+}
+
 /* ─── CARDS ─── */
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px}
 .card:hover{border-color:var(--border2)}
@@ -1102,8 +1114,10 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
   </div>
   <!-- MOBILE nav-right -->
   <div class="nav-mobile-right">
-    <button class="btn-nav primary" style="font-size:.82rem;padding:8px 14px;border-radius:50px" onclick="showPage('pg-auth','register')">Inizia gratis →</button>
-    <button class="btn-nav ghost" onclick="toggleMobileMenu()" id="hamburger-btn" style="font-size:1.3rem;padding:6px 10px;line-height:1">☰</button>
+    <button class="btn-nav primary" id="nav-cta-mobile" style="font-size:.82rem;padding:8px 14px;border-radius:50px" onclick="showPage('pg-auth','register')">Inizia gratis →</button>
+    <button class="btn-nav ghost" onclick="toggleMobileMenu()" id="hamburger-btn" style="padding:6px 10px;line-height:1;display:flex;align-items:center">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
   </div>
 </nav>
 <!-- MOBILE MENU DROPDOWN -->
@@ -1525,7 +1539,10 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
   <div class="nav-right" style="gap:8px">
     <span id="dash-user-name" style="color:var(--sub);font-size:.85rem"></span>
     <div id="dash-pro-badge" style="display:none"><span class="badge badge-teal">PRO</span></div>
-    <button class="btn-nav ghost btn-sm" onclick="doLogout()" style="display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Esci</button>
+    <button class="btn-nav ghost btn-sm" onclick="doLogout()" style="display:flex;align-items:center;gap:6px">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <span class="hide-mobile">Esci</span>
+    </button>
   </div>
 </nav>
 <div class="dash-layout">
@@ -6446,66 +6463,67 @@ function renderDashHome(){
   const thisWeek=log.filter(l=>{ const d=new Date(l.date); const now=new Date(); return (now-d)<7*24*3600*1000; }).length;
   const proBadge=u.pro?'<span class="badge badge-teal">PRO</span>':'';
   document.getElementById('ds-home').innerHTML=`
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap">
-      <div class="avatar" style="width:52px;height:52px;font-size:1.2rem">${(u.name||'U')[0]}</div>
-      <div>
-        <h2 style="font-family:var(--font2)">Ciao ${u.name}!  ${proBadge}</h2>
-        <p style="color:var(--sub);font-size:.85rem">${today}</p>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:10px">
+      <div style="display:flex;align-items:center;gap:12px;min-width:0">
+        <div class="avatar" style="width:46px;height:46px;font-size:1.1rem;flex-shrink:0">${(u.name||'U')[0]}</div>
+        <div style="min-width:0">
+          <div style="font-family:var(--font2);font-size:1.1rem;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap">Ciao ${u.name}! ${proBadge}</div>
+          <div style="color:var(--sub);font-size:.78rem;margin-top:1px">${today}</div>
+        </div>
       </div>
-      <div style="margin-left:auto;display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn btn-primary btn-sm" onclick="showDashSection('schede')" style="display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>Allenati ora</button>
-        ${!u.pro?`<button class="btn btn-teal btn-sm" onclick="openPayModal()">Attiva Pro</button>`:''}
-      </div>
+      <button class="btn btn-primary btn-sm" onclick="showDashSection('schede')" style="flex-shrink:0;display:flex;align-items:center;gap:5px;white-space:nowrap">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>Allenati ora
+      </button>
     </div>
-    <div class="grid4" style="margin-bottom:24px">
-      <div class="card" style="text-align:center">
-        <div style="margin-bottom:8px;display:flex;justify-content:center;color:var(--gold)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-        <div class="stat-num">${streak}</div>
-        <div class="stat-lbl">Giorni streak</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px">
+      <div class="card" style="text-align:center;padding:16px 10px">
+        <div style="margin-bottom:6px;display:flex;justify-content:center;color:var(--gold)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <div style="font-family:var(--font2);font-size:1.8rem;font-weight:800;line-height:1">${streak}</div>
+        <div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:4px">Giorni streak</div>
       </div>
-      <div class="card" style="text-align:center">
-        <div style="margin-bottom:8px;display:flex;justify-content:center;color:var(--accent-l)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div>
-        <div class="stat-num">${thisWeek}</div>
-        <div class="stat-lbl">Sessioni questa settimana</div>
+      <div class="card" style="text-align:center;padding:16px 10px">
+        <div style="margin-bottom:6px;display:flex;justify-content:center;color:var(--accent-l)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div>
+        <div style="font-family:var(--font2);font-size:1.8rem;font-weight:800;line-height:1">${thisWeek}</div>
+        <div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:4px">Sett. questa sett.</div>
       </div>
-      <div class="card" style="text-align:center">
-        <div style="margin-bottom:8px;display:flex;justify-content:center;color:var(--gold)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-        <div class="stat-num">${u.points||0}</div>
-        <div class="stat-lbl">Punti totali</div>
+      <div class="card" style="text-align:center;padding:16px 10px">
+        <div style="margin-bottom:6px;display:flex;justify-content:center;color:var(--gold)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <div style="font-family:var(--font2);font-size:1.8rem;font-weight:800;line-height:1">${u.points||0}</div>
+        <div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:4px">Punti totali</div>
       </div>
-      <div class="card" style="text-align:center">
-        <div style="margin-bottom:8px;display:flex;justify-content:center;color:var(--teal)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
-        <div class="stat-num">${log.length}</div>
-        <div class="stat-lbl">Sessioni totali</div>
+      <div class="card" style="text-align:center;padding:16px 10px">
+        <div style="margin-bottom:6px;display:flex;justify-content:center;color:var(--teal)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+        <div style="font-family:var(--font2);font-size:1.8rem;font-weight:800;line-height:1">${log.length}</div>
+        <div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:4px">Sessioni totali</div>
       </div>
     </div>
     ${u.program?`
-    <div class="card" style="margin-bottom:16px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-        <h3 style="font-family:var(--font2);font-size:1rem">Il tuo programma: <em style="color:var(--accent)">${u.program.name}</em></h3>
-        <button class="btn btn-ghost btn-sm" onclick="showDashSection('schede')">Vedi tutto →</button>
+    <div class="card" style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <h3 style="font-family:var(--font2);font-size:.95rem;font-weight:700">Programma: <span style="color:var(--accent)">${u.program.name}</span></h3>
+        <button class="btn btn-ghost btn-xs" onclick="showDashSection('schede')">Vedi →</button>
       </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        ${(u.program.days||[]).map((d,i)=>`<div class="card" style="flex:1;min-width:120px;cursor:pointer;padding:12px;text-align:center" onclick="showDashSection('schede')">
-          <div style="font-size:.75rem;color:var(--accent-l);font-weight:600;margin-bottom:4px">Giorno ${i+1}</div>
-          <div style="font-size:.8rem;font-weight:600">${d.focus||d.day}</div>
-          <div style="font-size:.72rem;color:var(--sub);margin-top:4px">${(d.exercises||[]).length} esercizi</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        ${(u.program.days||[]).map((d,i)=>`<div class="card" style="flex:1;min-width:80px;cursor:pointer;padding:10px 8px;text-align:center" onclick="showDashSection('schede')">
+          <div style="font-size:.7rem;color:var(--accent-l);font-weight:600;margin-bottom:3px">G${i+1}</div>
+          <div style="font-size:.75rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.focus||d.day}</div>
+          <div style="font-size:.68rem;color:var(--sub);margin-top:3px">${(d.exercises||[]).length} es.</div>
         </div>`).join('')}
       </div>
     </div>`:`
-    <div class="card" style="text-align:center;padding:32px;margin-bottom:16px">
-      <div style="margin-bottom:12px;display:flex;justify-content:center;opacity:.5"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8.01" y2="16" stroke-width="3"/><line x1="16" y1="16" x2="16.01" y2="16" stroke-width="3"/></svg></div>
-      <h3 style="margin-bottom:8px">Crea il tuo programma AI</h3>
-      <p style="color:var(--sub);margin-bottom:16px">Completa il profilo per ricevere un programma 100% personalizzato</p>
+    <div class="card" style="text-align:center;padding:28px 20px;margin-bottom:14px">
+      <div style="margin-bottom:10px;display:flex;justify-content:center;opacity:.4"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg></div>
+      <h3 style="margin-bottom:6px;font-size:1rem">Crea il tuo programma AI</h3>
+      <p style="color:var(--sub);margin-bottom:14px;font-size:.85rem">Profilo personalizzato in 5 minuti</p>
       <button class="btn btn-primary" onclick="showPage('pg-onboard')">Crea programma →</button>
     </div>`}
     <div class="grid2">
       <div class="card">
-        <h4 style="margin-bottom:12px">Sfida del giorno</h4>
+        <h4 style="margin-bottom:10px;font-size:.9rem">Sfida del giorno</h4>
         ${renderDailyChallenge()}
       </div>
       <div class="card">
-        <h4 style="margin-bottom:12px">Messaggio trainer</h4>
+        <h4 style="margin-bottom:10px;font-size:.9rem">Messaggio trainer</h4>
         ${renderTrainerMessage(u)}
       </div>
     </div>`;
@@ -13058,6 +13076,23 @@ function registerServiceWorker(){
 }
 
 addEventListener('DOMContentLoaded', ()=>{
+  // ── iOS Safari detection & fix ──
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+  if(isIOS) document.documentElement.classList.add('ios');
+  if(isIOS && isSafari) document.documentElement.classList.add('ios-safari');
+  // Fix viewport height on iOS (accounts for Safari toolbar)
+  function setVH(){
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+    // Extra bottom padding when Safari toolbar is visible
+    const safariBarsH = window.screen.height - window.innerHeight;
+    document.documentElement.style.setProperty('--safari-bars', `${Math.max(0, safariBarsH - 50)}px`);
+  }
+  setVH();
+  window.addEventListener('resize', setVH);
+  window.addEventListener('scroll', ()=>{ setTimeout(setVH, 100); });
+
   initCookieBanner();
   loadTheme();
   registerServiceWorker();
@@ -13122,8 +13157,13 @@ addEventListener('DOMContentLoaded', ()=>{
   if(SESSION){
     const ln=document.getElementById('nav-login');
     const nc=document.getElementById('nav-cta');
+    const ncm=document.getElementById('nav-cta-mobile');
+    const hb=document.getElementById('hamburger-btn');
     if(ln){ ln.textContent=SESSION.name; ln.onclick=()=>showPage('pg-dash'); }
-    if(nc){ nc.textContent='Dashboard →'; nc.onclick=()=>showPage('pg-dash'); }
+    if(nc){ nc.textContent='Dashboard →'; nc.onclick=()=>showPage('pg-dash'); nc.classList.replace('ghost','primary'); }
+    // Mobile: replace CTA with single Dashboard button, hide hamburger
+    if(ncm){ ncm.textContent='Dashboard →'; ncm.onclick=()=>showPage('pg-dash'); }
+    if(hb){ hb.style.display='none'; }
   }
   
   // Handle URL params for trainer onboarding links
@@ -14109,6 +14149,18 @@ function exportProgramPDF(){
   --sal: env(safe-area-inset-left, 0px);
   --sar: env(safe-area-inset-right, 0px);
   --bottomnav-h: calc(54px + env(safe-area-inset-bottom, 0px));
+  --vh: 1vh; /* overridden by JS for iOS */
+  --safari-bars: 0px; /* Safari toolbar height, set by JS */
+}
+
+/* On iOS Safari, add extra bottom padding for the toolbar */
+.ios-safari .mobile-nav {
+  padding-bottom: max(12px, calc(env(safe-area-inset-bottom) + var(--safari-bars, 0px))) !important;
+}
+.ios-safari .dash-main,
+.ios-safari .trainer-main,
+.ios-safari .owner-main {
+  padding-bottom: calc(54px + env(safe-area-inset-bottom, 0px) + var(--safari-bars, 0px) + 16px) !important;
 }
 
 /* ── Global ── */
@@ -14213,7 +14265,7 @@ nav {
   .pricing-grid { grid-template-columns: 1fr !important; max-width: 400px !important; }
   #marketplace-grid { grid-template-columns: 1fr !important; }
 
-  h2 { font-size: 1.2rem !important; }
+  h2.page-title { font-size: 1.2rem !important; }
   h3 { font-size: 1rem !important; }
   .sec-title { font-size: clamp(22px,6vw,34px) !important; }
   .hero h1 { font-size: clamp(2rem,8vw,3rem) !important; letter-spacing: -.5px !important; }
