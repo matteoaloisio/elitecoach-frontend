@@ -203,11 +203,11 @@ select.inp option,.form-select option{background:var(--bg2)}
 .t-rose{background:rgba(244,91,138,.1);color:var(--rose)}
 
 /* ─── TOAST ─── */
-#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+#toast{position:fixed;bottom:max(80px,calc(env(safe-area-inset-bottom)+72px));left:50%;transform:translateX(-50%) translateY(60px);
   z-index:9999;background:var(--card2);color:var(--text);
-  padding:10px 22px;border-radius:50px;font-size:13px;font-weight:500;
-  box-shadow:0 8px 40px rgba(0,0,0,.4);border:1px solid var(--border2);
-  transition:.35s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;pointer-events:none;opacity:0}
+  padding:7px 18px;border-radius:50px;font-size:12px;font-weight:500;
+  box-shadow:0 4px 20px rgba(0,0,0,.35);border:1px solid var(--border2);
+  transition:.28s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;pointer-events:none;opacity:0;max-width:calc(100vw - 40px)}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.success{border-color:rgba(45,212,160,.4);color:var(--green)}
 #toast.error{border-color:rgba(248,113,113,.4);color:var(--red)}
@@ -1834,36 +1834,6 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
   </div>
 </div>
 
-<!-- MARKETPLACE TRAINER -->
-<div class="pg" id="pg-marketplace" style="padding-top:var(--nav-h)">
-<nav>
-  <a class="nav-logo" onclick="showPage('pg-land')"><em>EliteCoach</em>Program.fit</a>
-  <div class="nav-right">
-    <button class="btn-nav ghost" onclick="showPage('pg-trainer-login')">Login Trainer</button>
-    <button class="btn-nav primary" onclick="showPage('pg-trainer-reg')">Diventa Trainer</button>
-  </div>
-</nav>
-<div class="container" style="padding-top:40px;padding-bottom:60px">
-  <div style="margin-bottom:24px">
-    <div class="sec-label">Trainer Marketplace</div>
-    <h1 style="font-family:var(--font2);font-size:clamp(24px,3vw,36px);font-weight:700;margin-bottom:8px">Trova il tuo <span style="color:var(--accent-l)">Trainer</span></h1>
-    <p style="color:var(--sub);font-size:14px">Professionisti certificati, risultati garantiti</p>
-  </div>
-  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center">
-    <input class="inp" id="mp-search" placeholder="Nome o specializzazione..." style="max-width:300px;border-radius:50px" oninput="renderMarketplace()">
-    <button class="mp-tag act" onclick="filterMpSpec(this,'')">Tutti</button>
-    <button class="mp-tag" onclick="filterMpSpec(this,'Bodybuilding')">Bodybuilding</button>
-    <button class="mp-tag" onclick="filterMpSpec(this,'Powerlifting')">Powerlifting</button>
-    <button class="mp-tag" onclick="filterMpSpec(this,'Nutrizione')">Nutrizione</button>
-    <button class="mp-tag" onclick="filterMpSpec(this,'CrossFit')">CrossFit</button>
-    <button class="mp-tag" onclick="filterMpSpec(this,'HIIT')">HIIT</button>
-    <button class="mp-tag" onclick="filterMpSpec(this,'Funzionale')">Funzionale</button>
-  </div>
-  <div class="grid3" id="marketplace-grid"></div>
-</div>
-</div>
-
-<!-- TRAINER PROFILE -->
 <div class="pg" id="pg-trainer-profile" style="padding-top:var(--nav-h)">
 <nav>
   <a class="nav-logo" onclick="openMarketplaceOverlay()">← Torna ai Trainer</a>
@@ -1940,7 +1910,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
 
 
 <!-- MARKETPLACE TRAINER -->
-<div class="pg" id="pg-marketplace" style="padding-top:var(--nav-h)">
+<div class="pg" id="pg-marketplace" style="padding-top:var(--nav-h);min-height:100vh">
 <nav>
   <a class="nav-logo" onclick="showPage('pg-land')"><em>EliteCoach</em>Program.fit</a>
   <div class="nav-right">
@@ -3251,7 +3221,7 @@ function showPage(id, sub){
 function toast(msg, type=''){
   const el = document.getElementById('toast');
   el.textContent = msg; el.className = 'show' + (type?' '+type:'');
-  setTimeout(()=>el.classList.remove('show','success','error'), 3000);
+  setTimeout(()=>el.classList.remove('show','success','error'), 1800);
 }
 
 // ─── MODAL ───────────────────────────────────────────────
@@ -4070,7 +4040,30 @@ function renderOwnerSection(sec){
     var _model = localStorage.getItem('ecp_ai_model') || 'claude-haiku-4-5-20251001';
     var _mH = _model === 'claude-haiku-4-5-20251001';
     var _mS = _model === 'claude-sonnet-4-5';
-    var _sys = localStorage.getItem('ecp_ai_system') || 'Sei il coach personale su EliteCoachProgram.fit. Rispondi in italiano, sii diretto e specifico. Massimo 3 punti per risposta. Non suggerire mai farmaci o integratori non naturali. Se menzioni infortuni, rimanda sempre a un medico. Promuovi recupero adeguato e consistenza a lungo termine.';
+    var _sys = localStorage.getItem('ecp_ai_system') || `Sei il Coach AI personale su EliteCoachProgram.fit, creato per trasformare atleti attraverso scienza, praticità e motivazione.
+
+IDENTITÀ
+Nome: Coach Elite. Ruolo: preparatore atletico e nutrizionista sportivo digitale. Tono: diretto, preciso, caldo — mai generico, mai burocratico. Lingua: sempre italiano, salvo esplicita richiesta contraria.
+
+REGOLE ASSOLUTE
+1. MAX 150 parole per risposta (sii denso, non dispersivo)
+2. SEMPRE personalizzato — usa nome, obiettivo, livello dell'atleta
+3. MAI suggerire farmaci, steroidi o integratori non naturali
+4. Se menzioni infortuni o dolori → rimanda sempre al medico
+5. Se la domanda è vaga → chiedi 1 sola domanda di chiarimento
+6. Non ripetere mai le stesse informazioni nel thread
+
+FORMATO RISPOSTA
+- Domande tecniche (tecnica, programmazione): risposta diretta + 1 consiglio pratico immediato
+- Domande di motivazione: breve, energico, chiamata all'azione concreta
+- Domande nutrizionali: dati precisi (kcal, grammi) basati sul profilo
+- Se appropriato: usa grassetto per i punti chiave. Mai elenchi lunghi (max 3 punti)
+
+COSA SAI DELL'ATLETA
+Conosci il suo programma (giorni, esercizi, serie, reps, recuperi), storia sessioni, peso e misure, record personali (1RM), piano alimentare attivo, streak e punti motivazione.
+
+MISSIONE
+Ogni risposta deve fare UNA COSA: avvicinare l'atleta al suo obiettivo di oggi. Non informare — trasformare.`;
     var _feats = ['Generazione programmi','AI Coach chat','Analisi dieta','Analisi video','Ricette AI','Check-in adattivo'];
     var _fH = _feats.map(function(feat){
       var fk = 'ai_feat_' + feat.toLowerCase().replace(/[^a-z]/g,'_');
@@ -9079,14 +9072,53 @@ async function sendAICoach(){
   var p=SESSION.profile||{},cfg=SESSION.coachConfig||{};
   var sysOv=localStorage.getItem('ecp_ai_system')||'';
   var PERSONAS={
-    motivatore:"Sei un coach ultra-motivatore, energico, diretto. Usa linguaggio positivo e chiamate all'azione forti.",
-    scientifico:"Sei un preparatore atletico scientifico. Cita principi fisiologici e dati precisi.",
-    amichevole:"Sei un amico personal trainer, empatico e incoraggiante. Tono caldo e accessibile.",
-    militare:"Sei un drill sergeant, duro ma giusto. Comandi chiari, nessuna scusa, massima disciplina."
+    motivatore:'Stile comunicativo: ultra-motivatore, energico, diretto. Usa linguaggio positivo e chiamate all\'azione forti.',
+    scientifico:'Stile comunicativo: preparatore atletico scientifico. Cita principi fisiologici, dati precisi, percentuali di carico.',
+    amichevole:'Stile comunicativo: amico personal trainer, empatico e incoraggiante. Tono caldo e accessibile.',
+    militare:'Stile comunicativo: drill sergeant, duro ma giusto. Comandi chiari, nessuna scusa, massima disciplina.'
   };
   var persona=PERSONAS[cfg.style||'motivatore']||PERSONAS.motivatore;
   var lang=cfg.lang==='en'?'Respond only in English.':'Rispondi sempre in italiano.';
-  var sys=persona+' '+lang+' Profilo atleta: Obiettivo '+(p.goal||'fitness')+', Livello '+(p.level||'intermedio')+', Sessioni/sett: '+(p.freq||'3-4')+', Infortuni: '+((p.injuries||[]).join(', ')||'nessuno')+'. Sii conciso (max 150 parole), pratico e personalizzato.'+(cfg.custom?' '+cfg.custom:'')+(sysOv?' '+sysOv:'');
+
+  // Build rich athlete context
+  var prog=SESSION.program;
+  var progCtx=prog
+    ?'Programma attivo: "'+prog.name+'" — '+( prog.weeks||'?')+' settimane, '+(prog.days||[]).length+' giorni/settimana, focus '+((prog.days||[]).map(function(d){return d.focus;}).filter(Boolean).join('/')||'generico')+'.'
+    :'Nessun programma AI attivo ancora.';
+  var log=SESSION.log||[];
+  var lastWo=log.length?'Ultima sessione: '+new Date(log[log.length-1].date).toLocaleDateString('it-IT')+' ('+( log[log.length-1].day_name||'allenamento')+').':'Nessuna sessione registrata ancora.';
+  var prs=SESSION.personalRecords;
+  var prCtx=prs?'Record personali (1RM): '+Object.entries(prs).slice(0,4).map(function(e){return e[0]+' '+e[1]+'kg';}).join(', ')+'.':'Nessun PR registrato.';
+  var nutr=prog&&prog.nutrition;
+  var nutrCtx=nutr?'Target nutrizionale: '+nutr.calories_target+'kcal, '+nutr.protein_g+'g proteine, '+nutr.carbs_g+'g carboidrati, '+nutr.fat_g+'g grassi.':'';
+  var streak=SESSION.streak||0;
+
+  var DEFAULT_SYS=`Sei il Coach AI personale su EliteCoachProgram.fit, creato per trasformare atleti attraverso scienza, praticità e motivazione.
+
+IDENTITÀ
+Nome: Coach Elite. Ruolo: preparatore atletico e nutrizionista sportivo digitale. Tono: diretto, preciso, caldo — mai generico, mai burocratico. ${lang}
+
+PROFILO ATLETA
+Nome: ${SESSION.name||'Atleta'}. Obiettivo: ${p.goal||'miglioramento fisico generale'}. Livello: ${p.level||'intermedio'}. Sessioni/settimana: ${p.freq||'3-4'}. Infortuni/limitazioni: ${(p.injuries||[]).join(', ')||'nessuno'}. Streak attuale: ${streak} giorni. ${progCtx} ${lastWo} ${prCtx} ${nutrCtx}
+
+${persona}
+
+REGOLE ASSOLUTE
+1. MAX 150 parole per risposta — denso, non dispersivo
+2. SEMPRE personalizzato — usa il nome e i dati dell'atleta sopra
+3. MAI suggerire farmaci, steroidi o integratori non naturali
+4. Se menzioni infortuni o dolori → rimanda sempre al medico
+5. Se la domanda è vaga → chiedi 1 sola domanda di chiarimento
+
+FORMATO
+- Tecnica/programmazione: risposta diretta + 1 consiglio pratico immediato
+- Motivazione: breve, energico, chiamata all'azione concreta
+- Nutrizione: dati precisi (kcal, grammi) basati sul profilo
+- Usa grassetto per punti chiave. Max 3 punti per lista.
+
+MISSIONE: Ogni risposta avvicina l'atleta al suo obiettivo di oggi. Non informare — trasformare.`;
+
+  var sys=(sysOv||DEFAULT_SYS)+(cfg.custom?' Istruzioni aggiuntive del trainer: '+cfg.custom:'');
   try{
     var resp=await apiFetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:getAIModel(),max_tokens:600,system:sys,messages:aiCoachHistory.slice(-12)})});
     if(!resp.ok) throw new Error('HTTP '+resp.status);
@@ -13446,10 +13478,11 @@ addEventListener('DOMContentLoaded', ()=>{
     const nc=document.getElementById('nav-cta');
     const ncm=document.getElementById('nav-cta-mobile');
     const hb=document.getElementById('hamburger-btn');
-    if(ln){ ln.textContent=SESSION.name; ln.onclick=()=>showPage('pg-dash'); }
+    // Landing nav: hide login/cta (pg-dash has its own nav)
+    if(ln){ ln.style.display='none'; }
     if(nc){ nc.textContent='Dashboard →'; nc.onclick=()=>showPage('pg-dash'); nc.classList.replace('ghost','primary'); }
-    // Mobile: replace CTA with single Dashboard button, hide hamburger
-    if(ncm){ ncm.textContent='Dashboard →'; ncm.onclick=()=>showPage('pg-dash'); }
+    // Mobile: hide CTA button and hamburger entirely (user is in pg-dash with its own nav)
+    if(ncm){ ncm.style.display='none'; }
     if(hb){ hb.style.display='none'; }
   }
   
@@ -14544,7 +14577,7 @@ nav {
 
   #pg-land, #pg-auth, #pg-marketplace, #pg-trainer-login,
   #pg-trainer-reg, #pg-trainer-profile, #pg-onboard {
-    padding-top: var(--nav-h) !important;
+    padding-top: calc(var(--nav-h) + env(safe-area-inset-top, 0px)) !important;
   }
 
   .card { padding: 14px 12px !important; border-radius: 14px !important; }
@@ -14919,17 +14952,7 @@ function renderPctTable(){
 }
 
 // ── 12. TOGGLE DARK/LIGHT THEME ──────────────────────────────────
-function acceptCookies(type){
-  localStorage.setItem('ecp_cookie_consent', type);
-  var b = document.getElementById('cookie-banner');
-  if(b){ b.style.opacity='0'; b.style.transition='opacity .3s'; setTimeout(function(){ b.style.display='none'; }, 300); }
-}
-function checkCookieBanner(){
-  if(!localStorage.getItem('ecp_cookie_consent')){
-    var b = document.getElementById('cookie-banner');
-    if(b){ b.style.display=''; b.style.opacity='0'; setTimeout(function(){ b.style.opacity='1'; b.style.transition='opacity .5s'; }, 100); }
-  }
-}
+// acceptCookies and checkCookieBanner defined in block 2
 
 function toggleMobileMenu(){
   var m = document.getElementById('mobile-menu');
@@ -15160,14 +15183,25 @@ function getScienceContext(goal, level, priorityMuscles) {
 function initCookieBanner(){
   if(!localStorage.getItem('ecp_consent')){
     const b=document.getElementById('cookie-banner');
-    if(b) b.style.display='';
+    if(b){
+      b.style.display='';
+      b.style.opacity='0';
+      setTimeout(function(){ b.style.opacity='1'; b.style.transition='opacity .4s'; }, 500);
+    }
+  }
+}
+function checkCookieBanner(){
+  if(!localStorage.getItem('ecp_consent')){
+    const b=document.getElementById('cookie-banner');
+    if(b){ b.style.display=''; }
   }
 }
 function acceptCookies(type){
+  // type: 'none' | 'essential' | 'all'
   localStorage.setItem('ecp_consent', type);
   localStorage.setItem('ecp_consent_date', new Date().toISOString());
   const b=document.getElementById('cookie-banner');
-  if(b) b.style.display='none';
+  if(b){ b.style.opacity='0'; b.style.transition='opacity .25s'; setTimeout(function(){ b.style.display='none'; b.style.opacity=''; b.style.transition=''; }, 260); }
 }
 
 // ─── LEGAL REGISTRATION WRAPPER ──────────────────────────
@@ -15416,15 +15450,32 @@ async function owSaveSystem(){
 </div>
 
 <!-- ═══ COOKIE BANNER ═══ -->
-<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;padding:12px 16px;background:var(--bg);border-top:1px solid var(--border2);box-shadow:0 -4px 20px rgba(0,0,0,.5)">
-  <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-    <p style="flex:1;min-width:200px;font-size:.83rem;color:var(--sub);margin:0">
-      🍪 Usiamo cookie tecnici necessari al funzionamento del sito.
-      <a onclick="document.getElementById('modal-cookie').classList.add('open')" style="color:var(--accent);cursor:pointer">Cookie Policy</a>
+<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;padding:0;background:var(--bg2);border-top:1.5px solid var(--border2);box-shadow:0 -4px 32px rgba(0,0,0,.4)">
+  <div style="max-width:860px;margin:0 auto;padding:16px 18px max(16px,env(safe-area-inset-bottom))">
+    <!-- Header -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-xl)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span style="font-size:.85rem;font-weight:700;color:var(--text)">Informativa sull'uso dei cookie</span>
+    </div>
+    <!-- Testo -->
+    <p style="font-size:.78rem;color:var(--sub);margin:0 0 14px;line-height:1.6">
+      Utilizziamo cookie <strong style="color:var(--text)">tecnici necessari</strong> per il funzionamento del sito (autenticazione, sessione) e, con il tuo consenso, cookie <strong style="color:var(--text)">analitici e di preferenza</strong> per migliorare l'esperienza. Puoi scegliere liberamente. Il rifiuto non impedisce l'uso del sito.
+      <a onclick="document.getElementById('modal-cookie').classList.add('open')" style="color:var(--accent);cursor:pointer;text-decoration:underline;margin-left:4px">Cookie Policy completa</a>
     </p>
-    <div style="display:flex;gap:8px;flex-shrink:0">
-      <button onclick="acceptCookies('essential')" style="padding:8px 16px;border-radius:50px;border:1px solid var(--border);background:var(--bg2);color:var(--sub);font-size:.8rem;cursor:pointer;white-space:nowrap">Solo necessari</button>
-      <button onclick="acceptCookies('all')" style="padding:8px 18px;border-radius:50px;border:none;background:var(--accent);color:#fff;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap">✓ Accetta tutti</button>
+    <!-- Pulsanti — 3 opzioni obbligatorie per GDPR -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button onclick="acceptCookies('none')"
+        style="padding:9px 16px;border-radius:50px;border:1px solid var(--border);background:transparent;color:var(--sub);font-size:.78rem;cursor:pointer;white-space:nowrap;min-height:38px">
+        ✕ Rifiuta tutti
+      </button>
+      <button onclick="acceptCookies('essential')"
+        style="padding:9px 16px;border-radius:50px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-size:.78rem;cursor:pointer;white-space:nowrap;min-height:38px">
+        Solo necessari
+      </button>
+      <button onclick="acceptCookies('all')"
+        style="padding:9px 20px;border-radius:50px;border:none;background:var(--accent);color:#fff;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap;min-height:38px;margin-left:auto">
+        ✓ Accetta tutti
+      </button>
     </div>
   </div>
 </div>
