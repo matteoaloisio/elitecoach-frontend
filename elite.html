@@ -15399,19 +15399,53 @@ function closeMarketplaceOverlay(){
 
 
 
+function buildTrainerRegHTML(){
+  return '<div style="max-width:560px;margin:0 auto;padding:28px 20px 60px">' +
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px">' +
+      '<div><h1 style="font-family:sans-serif;font-size:1.7rem;font-weight:800;margin:0 0 4px;color:#f1f5f9">Diventa Trainer</h1>' +
+      '<p style="color:#94a3b8;font-size:.88rem;margin:0">Raggiungi migliaia di clienti</p></div>' +
+      '<button onclick="closeTrainerArea()" style="background:#1e1e2e;border:1px solid #3d3d5c;border-radius:10px;padding:8px 18px;color:#94a3b8;cursor:pointer;font-size:14px">&#10005; Chiudi</button>' +
+    '</div>' +
+    '<div style="background:#1a1a2e;border:1px solid #2d2d44;border-radius:16px;padding:24px 20px">' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">' +
+        '<div><label style="font-size:.8rem;font-weight:700;color:#94a3b8;display:block;margin-bottom:6px">Nome *</label>' +
+        '<input id="trov-name" placeholder="Marco" style="width:100%;padding:12px;background:#0d0d1a;border:1.5px solid #2d2d44;border-radius:10px;color:#f1f5f9;font-size:16px;outline:none;box-sizing:border-box"></div>' +
+        '<div><label style="font-size:.8rem;font-weight:700;color:#94a3b8;display:block;margin-bottom:6px">Cognome *</label>' +
+        '<input id="trov-surname" placeholder="Bianchi" style="width:100%;padding:12px;background:#0d0d1a;border:1.5px solid #2d2d44;border-radius:10px;color:#f1f5f9;font-size:16px;outline:none;box-sizing:border-box"></div>' +
+      '</div>' +
+      '<div style="margin-bottom:12px"><label style="font-size:.8rem;font-weight:700;color:#94a3b8;display:block;margin-bottom:6px">Email *</label>' +
+      '<input id="trov-email" type="email" style="width:100%;padding:12px;background:#0d0d1a;border:1.5px solid #2d2d44;border-radius:10px;color:#f1f5f9;font-size:16px;outline:none;box-sizing:border-box"></div>' +
+      '<div style="margin-bottom:12px"><label style="font-size:.8rem;font-weight:700;color:#94a3b8;display:block;margin-bottom:6px">Password *</label>' +
+      '<input id="trov-pass" type="password" placeholder="Min 8 caratteri" style="width:100%;padding:12px;background:#0d0d1a;border:1.5px solid #2d2d44;border-radius:10px;color:#f1f5f9;font-size:16px;outline:none;box-sizing:border-box"></div>' +
+      '<div style="margin-bottom:12px"><label style="font-size:.8rem;font-weight:700;color:#94a3b8;display:block;margin-bottom:6px">Bio professionale</label>' +
+      '<textarea id="trov-bio" rows="3" placeholder="Esperienza, certificazioni..." style="width:100%;padding:12px;background:#0d0d1a;border:1.5px solid #2d2d44;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none;box-sizing:border-box;resize:vertical"></textarea></div>' +
+      '<div style="margin-bottom:12px"><label style="font-size:.8rem;font-weight:700;color:#94a3b8;display:block;margin-bottom:8px">Specializzazioni</label>' +
+      '<div id="trov-specs" style="display:flex;flex-wrap:wrap;gap:6px">' +
+        ['Bodybuilding','Powerlifting','CrossFit','HIIT','Dimagrimento','Nutrizione','Funzionale','Yoga','Riabilitazione','Calisthenics'].map(function(s){
+          return '<label style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:50px;cursor:pointer;border:1.5px solid #2d2d44;background:#0d0d1a;font-size:.8rem;color:#94a3b8"><input type="checkbox" value="'+s+'" style="accent-color:#818cf8"> '+s+'</label>';
+        }).join('') +
+      '</div></div>' +
+      '<div style="margin-bottom:20px"><label style="font-size:.8rem;font-weight:700;color:#94a3b8;display:block;margin-bottom:6px">Tariffa mensile (€)</label>' +
+      '<input id="trov-price" type="number" placeholder="89" style="max-width:140px;padding:12px;background:#0d0d1a;border:1.5px solid #2d2d44;border-radius:10px;color:#f1f5f9;font-size:16px;outline:none;box-sizing:border-box"></div>' +
+      '<div id="trov-err" style="display:none;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:10px 14px;color:#f87171;font-size:.85rem;margin-bottom:16px"></div>' +
+      '<button onclick="trainerRegAction()" style="width:100%;padding:15px;background:linear-gradient(135deg,#059669,#0fd6c2);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;cursor:pointer">Crea profilo Trainer &#8594;</button>' +
+      '<p style="text-align:center;font-size:.82rem;color:#94a3b8;margin-top:12px">Hai un account? <a onclick="openTrainerLogin()" style="color:#818cf8;cursor:pointer">Accedi</a></p>' +
+    '</div>' +
+  '</div>';
+}
+
 function openTrainerReg(){
   var el = document.getElementById('trainer-reg-overlay');
-  if(!el){ console.error('trainer-reg-overlay NOT FOUND'); return; }
-  var other = ['trainer-login-overlay','trainer-dash-overlay'];
-  other.forEach(function(id){ var o=document.getElementById(id); if(o) o.style.display='none'; });
+  if(!el){
+    el = ensureOverlay('trainer-reg-overlay', buildTrainerRegHTML(), {zIndex:'999999'});
+  }
+  ['trainer-login-overlay','trainer-dash-overlay'].forEach(function(id){
+    var o=document.getElementById(id); if(o) o.style.display='none';
+  });
   el.style.display = 'block';
   el.style.position = 'fixed';
-  el.style.top = '0';
-  el.style.left = '0';
-  el.style.right = '0';
-  el.style.bottom = '0';
-  el.style.width = '100%';
-  el.style.height = '100%';
+  el.style.top = '0'; el.style.left = '0'; el.style.right = '0'; el.style.bottom = '0';
+  el.style.width = '100%'; el.style.height = '100%';
   el.style.zIndex = '999999';
   el.style.background = '#0b0b14';
   el.style.overflowY = 'auto';
@@ -15568,8 +15602,10 @@ function mvContactByIdx(idx2){
 }
 
 function mvBecomeTrainer(){
-  closeMarketplaceOverlay();
+  // Prima apri la registrazione (la crea se non esiste), POI chiudi marketplace
   openTrainerReg();
+  // Chiudi marketplace con piccolo ritardo per evitare flash
+  setTimeout(function(){ closeMarketplaceOverlay(); }, 50);
 }
 
 function mvCloseProfile(){
