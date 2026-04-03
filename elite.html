@@ -412,18 +412,142 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
 .trainer-section{display:none}
 .trainer-section.act{display:block}
 
-.owner-sidebar{width:200px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);
-  padding:14px 10px;position:fixed;top:var(--nav-h);left:0;
-  height:calc(100vh - var(--nav-h));overflow-y:auto;z-index:100;
-  display:flex;flex-direction:column;gap:2px}
+/* ══ OWNER PANEL ══════════════════════════════════════════ */
+
+/* Login screen */
+#pg-owner-login{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:#0f172a;padding:24px;
+}
+.ow-login-wrap{
+  width:100%;max-width:380px;text-align:center;
+}
+.ow-login-logo{
+  font-family:var(--font2);font-size:1.4rem;font-weight:800;
+  color:#fff;margin-bottom:6px;
+}
+.ow-login-logo em{font-style:normal;color:#818cf8}
+.ow-login-sub{font-size:13px;color:#94a3b8;margin-bottom:32px}
+.ow-login-card{
+  background:#1e293b;border:1px solid #334155;border-radius:16px;
+  padding:28px;text-align:left;
+}
+.ow-login-title{
+  font-size:1rem;font-weight:700;color:#f1f5f9;margin-bottom:16px;
+}
+.ow-login-inp{
+  width:100%;box-sizing:border-box;
+  padding:12px 16px;border-radius:10px;
+  border:1.5px solid #334155;background:#0f172a;
+  color:#f1f5f9;font-size:16px;font-family:inherit;
+  outline:none;margin-bottom:12px;display:block;
+  -webkit-text-fill-color:#f1f5f9;
+  transition:border-color .2s;
+}
+.ow-login-inp:focus{border-color:#6366f1}
+.ow-login-inp::placeholder{color:#64748b}
+.ow-login-btn{
+  width:100%;padding:13px;border:none;border-radius:10px;
+  background:#6366f1;color:#fff;font-size:15px;font-weight:700;
+  cursor:pointer;font-family:inherit;transition:background .2s;
+}
+.ow-login-btn:hover{background:#4f46e5}
+.ow-login-btn:active{background:#4338ca}
+
+/* Owner nav bar */
+.ow-nav{
+  height:56px;background:#1e293b;border-bottom:1px solid #334155;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;position:sticky;top:0;z-index:100;
+}
+.ow-nav-logo{
+  font-family:var(--font2);font-size:1rem;font-weight:800;color:#f1f5f9;
+}
+.ow-nav-logo em{font-style:normal;color:#818cf8}
+.ow-nav-logo span{color:#f59e0b;margin-left:4px}
+.ow-nav-right{display:flex;gap:8px}
+.ow-nav-btn{
+  padding:7px 14px;border-radius:8px;border:1px solid #334155;
+  background:transparent;color:#94a3b8;font-size:13px;cursor:pointer;
+  font-family:inherit;transition:.2s;
+}
+.ow-nav-btn:hover{background:#334155;color:#f1f5f9}
+.ow-nav-exit{border-color:#ef4444;color:#ef4444}
+.ow-nav-exit:hover{background:#ef4444;color:#fff}
+
+/* Layout */
+.ow-layout{display:flex;min-height:calc(100vh - 56px)}
+.ow-sidebar{
+  width:200px;flex-shrink:0;background:#1e293b;border-right:1px solid #334155;
+  padding:16px 10px;display:flex;flex-direction:column;gap:2px;
+}
+.ow-sb-item{
+  display:flex;align-items:center;gap:10px;padding:9px 12px;
+  border-radius:8px;color:#94a3b8;cursor:pointer;font-size:13px;
+  transition:.15s;user-select:none;
+}
+.ow-sb-item:hover{background:#334155;color:#f1f5f9}
+.ow-sb-item.act{background:rgba(99,102,241,.15);color:#818cf8;font-weight:600}
+.ow-main{
+  flex:1;padding:28px;background:#0f172a;
+  color:#f1f5f9;min-height:calc(100vh - 56px);overflow-x:hidden;
+}
+
+/* Sections */
+.owner-section{display:none}
+.owner-section.act{display:block}
+
+/* Cards inside owner */
+.ow-card{
+  background:#1e293b;border:1px solid #334155;border-radius:12px;
+  padding:20px;margin-bottom:16px;
+}
+.ow-card h4{color:#f1f5f9;margin-bottom:12px;font-size:.95rem}
+.ow-stat-num{
+  font-family:var(--font2);font-size:2rem;font-weight:800;
+  color:#f1f5f9;line-height:1;
+}
+.ow-stat-lbl{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+
+/* Data table inside owner */
+.ow-main .data-table{width:100%;border-collapse:collapse;font-size:.84rem}
+.ow-main .data-table th{
+  background:#334155;color:#94a3b8;font-size:11px;text-transform:uppercase;
+  letter-spacing:.5px;padding:10px 12px;text-align:left;font-weight:600;
+}
+.ow-main .data-table td{
+  padding:11px 12px;border-bottom:1px solid #1e293b;color:#cbd5e1;
+  vertical-align:middle;
+}
+.ow-main .data-table tr:last-child td{border-bottom:none}
+.ow-main .data-table tr:hover td{background:rgba(255,255,255,.03)}
+
+/* Badges */
+.ow-badge-pro{background:rgba(20,184,166,.15);color:#2dd4bf;border:1px solid rgba(20,184,166,.3);padding:2px 10px;border-radius:50px;font-size:11px;font-weight:700}
+.ow-badge-free{background:rgba(99,102,241,.12);color:#818cf8;border:1px solid rgba(99,102,241,.25);padding:2px 10px;border-radius:50px;font-size:11px;font-weight:600}
+
+/* Input/textarea inside owner */
+.ow-main input.inp,.ow-main textarea.inp,.ow-main select.inp{
+  background:#0f172a!important;border-color:#334155!important;
+  color:#f1f5f9!important;-webkit-text-fill-color:#f1f5f9!important;
+}
+.ow-main input.inp::placeholder,.ow-main textarea.inp::placeholder{color:#475569!important}
+
+@media(max-width:768px){
+  .ow-sidebar{display:none}
+  .ow-main{padding:16px}
+}
+
+/* ── Legacy compatibility ─────────────────────── */
+/* Mantieni le classi precedenti per compatibilità con JS già presente */
+.owner-sidebar{width:200px;flex-shrink:0;background:#1e293b;border-right:1px solid #334155;
+  padding:14px 10px;display:flex;flex-direction:column;gap:2px}
 .owner-sidebar-item{display:flex;align-items:center;gap:8px;padding:8px 10px;
-  border-radius:var(--r-sm);color:var(--sub);cursor:pointer;transition:.18s;font-size:12px;user-select:none}
-.owner-sidebar-item:hover{background:var(--bg3);color:var(--text)}
+  border-radius:var(--r-sm);color:#94a3b8;cursor:pointer;transition:.18s;font-size:12px;user-select:none}
+.owner-sidebar-item:hover{background:#334155;color:#f1f5f9}
 .owner-sidebar-item.act{background:rgba(245,200,66,.1);color:var(--gold);font-weight:500}
 .owner-sidebar-item .ico{font-size:14px;flex-shrink:0;width:18px;text-align:center}
 .owner-main{flex:1;padding:26px;margin-left:200px;min-width:0}
-.owner-section{display:none}
-.owner-section.act{display:block}
 
 /* ── stat cards (owner / dash) ── */
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);
@@ -1709,6 +1833,176 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
     </div>
   </div>
 </div>
+
+<!-- MARKETPLACE TRAINER -->
+<div class="pg" id="pg-marketplace" style="padding-top:var(--nav-h)">
+<nav>
+  <a class="nav-logo" onclick="showPage('pg-land')"><em>EliteCoach</em>Program.fit</a>
+  <div class="nav-right">
+    <button class="btn-nav ghost" onclick="showPage('pg-trainer-login')">Login Trainer</button>
+    <button class="btn-nav primary" onclick="showPage('pg-trainer-reg')">Diventa Trainer</button>
+  </div>
+</nav>
+<div class="container" style="padding-top:40px;padding-bottom:60px">
+  <div style="margin-bottom:24px">
+    <div class="sec-label">Trainer Marketplace</div>
+    <h1 style="font-family:var(--font2);font-size:clamp(24px,3vw,36px);font-weight:700;margin-bottom:8px">Trova il tuo <span style="color:var(--accent-l)">Trainer</span></h1>
+    <p style="color:var(--sub);font-size:14px">Professionisti certificati, risultati garantiti</p>
+  </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center">
+    <input class="inp" id="mp-search" placeholder="Nome o specializzazione..." style="max-width:300px;border-radius:50px" oninput="renderMarketplace()">
+    <button class="mp-tag act" onclick="filterMpSpec(this,'')">Tutti</button>
+    <button class="mp-tag" onclick="filterMpSpec(this,'Bodybuilding')">Bodybuilding</button>
+    <button class="mp-tag" onclick="filterMpSpec(this,'Powerlifting')">Powerlifting</button>
+    <button class="mp-tag" onclick="filterMpSpec(this,'Nutrizione')">Nutrizione</button>
+    <button class="mp-tag" onclick="filterMpSpec(this,'CrossFit')">CrossFit</button>
+    <button class="mp-tag" onclick="filterMpSpec(this,'HIIT')">HIIT</button>
+    <button class="mp-tag" onclick="filterMpSpec(this,'Funzionale')">Funzionale</button>
+  </div>
+  <div class="grid3" id="marketplace-grid"></div>
+</div>
+</div>
+
+<!-- TRAINER PROFILE -->
+<div class="pg" id="pg-trainer-profile" style="padding-top:var(--nav-h)">
+<nav>
+  <a class="nav-logo" onclick="showPage('pg-marketplace')">← Torna ai Trainer</a>
+</nav>
+<div class="container" style="padding-top:40px;padding-bottom:60px" id="trainer-profile-content"></div>
+</div>
+
+<!-- TRAINER LOGIN -->
+<div class="pg" id="pg-trainer-login" style="padding-top:var(--nav-h)">
+<nav><a class="nav-logo" onclick="showPage('pg-land')"><em>EliteCoach</em>Program.fit</a><div class="nav-right"><button class="btn-nav ghost" onclick="showPage('pg-land')">← Torna</button></div></nav>
+<div style="min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;padding:40px 16px">
+  <div class="card" style="max-width:400px;width:100%">
+    <h2 style="font-family:var(--font2);margin-bottom:20px">Area Trainer</h2>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="field"><label>Email professionista</label><input class="inp" id="tr-log-email" type="email"></div>
+      <div class="field"><label>Password</label><input class="inp" id="tr-log-pass" type="password"></div>
+      <div id="tr-auth-err" style="color:var(--red);font-size:.85rem;display:none"></div>
+      <button class="btn btn-primary" style="width:100%" onclick="doTrainerLogin()">Accedi come Trainer</button>
+      <p style="text-align:center;font-size:.82rem;color:var(--sub)">Non sei registrato? <a onclick="showPage('pg-trainer-reg')" style="color:var(--accent);cursor:pointer">Registrati</a></p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- TRAINER REGISTER -->
+<div class="pg" id="pg-trainer-reg" style="padding-top:var(--nav-h)">
+<nav><a class="nav-logo" onclick="showPage('pg-land')"><em>EliteCoach</em>Program.fit</a><div class="nav-right"><button class="btn-nav ghost" onclick="showPage('pg-land')">← Torna</button></div></nav>
+<div style="max-width:580px;margin:0 auto;padding:40px 20px">
+  <h2 style="font-family:var(--font2);margin-bottom:6px">Diventa Trainer</h2>
+  <p style="color:var(--sub);margin-bottom:28px;font-size:.9rem">Registra il tuo profilo e raggiungi nuovi clienti</p>
+  <div id="tr-reg-content"></div>
+</div>
+</div>
+
+<!-- TRAINER DASHBOARD -->
+<div class="pg" id="pg-trainer-dash">
+<nav>
+  <a class="nav-logo"><em>EliteCoach</em>Program.fit — <span style="color:var(--teal);font-size:.9rem">Trainer</span></a>
+  <div class="nav-right">
+    <span id="tr-dash-name" style="color:var(--sub);font-size:.85rem"></span>
+    <button class="btn-nav ghost btn-sm" onclick="doTrainerLogout()">Esci</button>
+  </div>
+</nav>
+<div class="trainer-layout">
+  <aside class="trainer-sidebar">
+    <div class="trainer-sidebar-item act" onclick="showTrainerSection('overview')" data-sec="overview"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>Panoramica</div>
+    <div class="trainer-sidebar-item" onclick="showTrainerSection('clienti')" data-sec="clienti"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Clienti</div>
+    <div class="trainer-sidebar-item" onclick="showTrainerSection('calendario')" data-sec="calendario"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>Calendario</div>
+    <div class="trainer-sidebar-item" onclick="showTrainerSection('chat')" data-sec="chat"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>Chat Clienti</div>
+    <div class="trainer-sidebar-item" onclick="showTrainerSection('crea-scheda')" data-sec="crea-scheda"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></span>Crea Scheda</div>
+    <div class="trainer-sidebar-item" onclick="showTrainerSection('onboarding')" data-sec="onboarding"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>Onboarding</div>
+    <div class="trainer-sidebar-item" onclick="showTrainerSection('documenti')" data-sec="documenti"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>Documenti</div>
+    <div class="trainer-sidebar-item" onclick="showTrainerSection('contratti')" data-sec="contratti"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>Contratti</div>
+    <div class="trainer-sidebar-item" onclick="showTrainerSection('pagamenti')" data-sec="pagamenti"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>Pagamenti</div>
+    <div class="trainer-sidebar-item" onclick="showTrainerSection('revenue')" data-sec="revenue"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>Revenue</div>
+    <div class="trainer-sidebar-item" onclick="showTrainerSection('profilo')" data-sec="profilo"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></span>Profilo</div>
+  </aside>
+  <main class="trainer-main">
+    <div class="trainer-section act" id="ts-overview"></div>
+    <div class="trainer-section" id="ts-clienti"></div>
+    <div class="trainer-section" id="ts-calendario"></div>
+    <div class="trainer-section" id="ts-chat"></div>
+    <div class="trainer-section" id="ts-crea-scheda"></div>
+    <div class="trainer-section" id="ts-onboarding"></div>
+    <div class="trainer-section" id="ts-documenti"></div>
+    <div class="trainer-section" id="ts-contratti"></div>
+    <div class="trainer-section" id="ts-pagamenti"></div>
+    <div class="trainer-section" id="ts-revenue"></div>
+    <div class="trainer-section" id="ts-profilo"></div>
+  </main>
+</div>
+</div>
+
+<!-- OWNER DASHBOARD -->
+<div class="pg" id="pg-owner">
+
+<!-- LOGIN SCREEN -->
+<div id="pg-owner-login">
+  <div class="ow-login-wrap">
+    <div class="ow-login-logo"><em>EliteCoach</em>Program.fit</div>
+    <div class="ow-login-sub">Owner Panel — Accesso riservato</div>
+    <div class="ow-login-card">
+      <div class="ow-login-title">Accedi</div>
+      <input id="owner-pw" type="password" class="ow-login-inp" placeholder="Password owner"
+        onkeydown="if(event.key==='Enter'){event.preventDefault();doOwnerLogin();}">
+      <div id="ow-login-err" style="display:none;color:#ef4444;font-size:13px;margin-top:-4px"></div>
+      <button class="ow-login-btn" onclick="doOwnerLogin()">Accedi al pannello</button>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="pg-owner-dash" style="display:none;min-height:100vh">
+  <div class="ow-nav">
+    <div class="ow-nav-logo"><em>EliteCoach</em> <span>Owner</span></div>
+    <div class="ow-nav-right">
+      <button class="ow-nav-btn" onclick="owRefreshUsers()">&#8635; Aggiorna</button>
+      <button class="ow-nav-btn ow-nav-exit" onclick="initOwner()">Esci</button>
+    </div>
+  </div>
+  <div class="ow-layout">
+    <aside class="ow-sidebar">
+      <div class="ow-sb-item act" data-sec="stats"    onclick="showOwnerSection('stats')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Dashboard
+      </div>
+      <div class="ow-sb-item" data-sec="users"    onclick="showOwnerSection('users')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Utenti
+      </div>
+      <div class="ow-sb-item" data-sec="trainers" onclick="showOwnerSection('trainers')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+        Trainer
+      </div>
+      <div class="ow-sb-item" data-sec="revenue"  onclick="showOwnerSection('revenue')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Revenue
+      </div>
+      <div class="ow-sb-item" data-sec="subs"     onclick="showOwnerSection('subs')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Abbonamenti
+      </div>
+      <div class="ow-sb-item" data-sec="ai"       onclick="showOwnerSection('ai')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8.01" y2="16" stroke-width="3"/><line x1="16" y1="16" x2="16.01" y2="16" stroke-width="3"/></svg>
+        Config AI
+      </div>
+    </aside>
+    <main class="ow-main">
+      <div class="owner-section act" id="os-stats"></div>
+      <div class="owner-section"     id="os-users"></div>
+      <div class="owner-section"     id="os-trainers"></div>
+      <div class="owner-section"     id="os-revenue"></div>
+      <div class="owner-section"     id="os-subs"></div>
+      <div class="owner-section"     id="os-ai"></div>
+    </main>
+  </div>
+</div>
+
+</div><!-- /pg-owner -->
 
 <!-- MARKETPLACE TRAINER -->
 <div class="pg" id="pg-marketplace" style="padding-top:var(--nav-h)">
@@ -3549,34 +3843,48 @@ function doTrainerLogout(){
   showPage('pg-land');
 }
 
-// ─── OWNER ───────────────────────────────────────────────
+// ─── OWNER PANEL ─────────────────────────────────────────
 
 function getOwnerPw(){
   return localStorage.getItem('ecp_owner_pw') || 'matteo92';
 }
+
 function doOwnerLogin(){
   var pw = document.getElementById('owner-pw').value.trim();
-  if(!pw){ toast('Inserisci la password','error'); return; }
-  // Salva e accedi — il server verifica la password ad ogni chiamata API
+  var errEl = document.getElementById('ow-login-err');
+  if(!pw){
+    if(errEl){ errEl.textContent='Inserisci la password'; errEl.style.display='block'; }
+    return;
+  }
+  if(errEl) errEl.style.display='none';
   localStorage.setItem('ecp_owner_pw', pw);
   document.getElementById('pg-owner-login').style.display='none';
   document.getElementById('pg-owner-dash').style.display='block';
   renderOwner();
 }
 
-function initOwner(){ /* reset view on page show */ 
-  const login=document.getElementById('pg-owner-login');
-  const dash=document.getElementById('pg-owner-dash');
-  if(login&&dash){ login.style.display='flex'; dash.style.display='none'; }
-  const pwEl=document.getElementById('owner-pw'); if(pwEl) pwEl.value='';
+function initOwner(){
+  var login = document.getElementById('pg-owner-login');
+  var dash  = document.getElementById('pg-owner-dash');
+  if(login) login.style.display = 'flex';
+  if(dash)  dash.style.display  = 'none';
+  var pw = document.getElementById('owner-pw');
+  if(pw) pw.value = '';
+  var err = document.getElementById('ow-login-err');
+  if(err) err.style.display = 'none';
 }
 
 function showOwnerSection(sec){
-  document.querySelectorAll('.owner-section').forEach(s=>s.classList.remove('act'));
-  document.querySelectorAll('.owner-sidebar-item').forEach(s=>s.classList.remove('act'));
-  const el=document.getElementById('os-'+sec);
+  document.querySelectorAll('.owner-section').forEach(function(s){ s.classList.remove('act'); });
+  // Update both old and new sidebar item classes
+  document.querySelectorAll('.owner-sidebar-item,.ow-sb-item').forEach(function(s){ s.classList.remove('act'); });
+  var el = document.getElementById('os-'+sec);
   if(el){ el.classList.add('act'); renderOwnerSection(sec); }
-  document.querySelectorAll('.owner-sidebar-item[data-sec="'+sec+'"]').forEach(s=>s.classList.add('act'));
+  document.querySelectorAll('[data-sec="'+sec+'"]').forEach(function(s){ s.classList.add('act'); });
+}
+
+function owRefreshUsers(){
+  showOwnerSection('users');
 }
 
 function renderOwner(){ showOwnerSection('stats'); }
