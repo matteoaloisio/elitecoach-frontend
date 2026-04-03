@@ -1949,7 +1949,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
       <div class="mn-drawer-item" onclick="showDashSection('export');closeMobileDrawer()">
         <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><span>Export</span>
       </div>
-      <div class="mn-drawer-item" onclick="closeMobileDrawer();showPage('pg-trainer-login')">
+      <div class="mn-drawer-item" onclick="closeMobileDrawer();openTrainerLogin()">
         <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><span>Trova Trainer</span>
       </div>
     </div>
@@ -3272,7 +3272,15 @@ function showPage(id, sub){
   
 
   if(id==='pg-dash') renderDashboard();
-  if(id==='pg-trainer-dash') renderTrainerDash();
+  // Trainer pages → usa overlay system
+  if(id==='pg-trainer-login'){ if(typeof openTrainerLogin==='function') openTrainerLogin(); return; }
+  if(id==='pg-trainer-reg'){   if(typeof openTrainerReg==='function')   openTrainerReg();   return; }
+  if(id==='pg-trainer-dash'){
+    var _tr=window.TR_SESSION||(typeof getTrainerSession==='function'?getTrainerSession():null);
+    if(_tr){ if(typeof openTrainerDash==='function') openTrainerDash(); }
+    else    { if(typeof openTrainerLogin==='function') openTrainerLogin(); }
+    return;
+  }
   if(id==='pg-onboard') initOnboarding();
   if(id==='pg-trainer-reg') initTrainerReg();
 }
@@ -11123,7 +11131,7 @@ async function checkOAuthCallback() {
     saveTrainerSession(trainer);
     window.history.replaceState({}, '', '/');
     renderTrainerDash();
-    showPage('pg-trainer-dash');
+    openTrainerDash();
   }
 }
 
@@ -13130,7 +13138,7 @@ addEventListener('DOMContentLoaded', ()=>{
     }, 100);
   } else if(TR_SESSION && TR_SESSION.email){
     // Restore trainer — torna sempre alla dashboard trainer
-    showPage('pg-trainer-dash');
+    openTrainerDash();
   } else {
     // Nessuna sessione → mostra home page
     showPage('pg-land');
@@ -16451,7 +16459,7 @@ function mvContact(email){
 
 function mvBecomeTrainer(){
   closeMarketplaceOverlay();
-  showPage('pg-trainer-reg');
+  openTrainerReg();
 }
 
 // Chiudi con ESC o click esterno
@@ -16609,7 +16617,7 @@ function doTrainerLogin(){
     if(err){err.textContent='Password non corretta.';err.style.display='block';} return;
   }
   saveTrainerSession(trainer);
-  showPage('pg-trainer-dash');
+  openTrainerDash();
   renderTrainerDash();
   toast('Bentornato '+trainer.name+'! 💪','success');
 }
@@ -16641,7 +16649,7 @@ function doTrainerReg(){
   };
   addTrainer(newTrainer);
   saveTrainerSession(newTrainer);
-  showPage('pg-trainer-dash');
+  openTrainerDash();
   renderTrainerDash();
   toast('Profilo creato! Benvenuto '+name+' 🎉','success');
 }
@@ -16656,7 +16664,7 @@ function doTrainerLogout(){
 // ── Render Dashboard ──────────────────────────────────────────────
 function renderTrainerDash(){
   var tr = getTrainerSession() || TR_SESSION;
-  if(!tr){ showPage('pg-trainer-login'); return; }
+  if(!tr){ openTrainerLogin(); return; }
   window.TR_SESSION = tr;
   // Update nav
   var av = document.getElementById('tr-nav-avatar');
@@ -17242,18 +17250,20 @@ function trdRevenue(tr){var cl=(tr.clients||[]).length||3;var p=tr.price||89;var
 function trdProfilo(tr){return '<h2 style="font-family:var(--font2);font-size:1.3rem;font-weight:800;margin:0 0 20px">Profilo</h2><div class="card" style="padding:22px;margin-bottom:16px"><div style="display:flex;align-items:center;gap:16px;margin-bottom:20px"><div style="width:60px;height:60px;border-radius:16px;background:'+(tr.color||'#6366f1')+';display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;color:#fff">'+((tr.photo||'T').substring(0,2))+'</div><div><h3 style="margin:0 0 4px">'+tr.name+' '+(tr.surname||'')+'</h3><div style="color:var(--sub);font-size:.85rem">'+tr.email+'</div><div style="color:#f5c842;font-size:.9rem">★★★★★ '+(tr.rating||5).toFixed(1)+'</div></div></div><div style="margin-bottom:12px"><label style="font-size:.8rem;font-weight:700;color:var(--sub);display:block;margin-bottom:6px">Bio</label><textarea class="inp" id="trd-eb" rows="3" style="width:100%">'+( tr.bio||'')+'</textarea></div><div style="margin-bottom:16px"><label style="font-size:.8rem;font-weight:700;color:var(--sub);display:block;margin-bottom:6px">Tariffa €/mese</label><input class="inp" id="trd-ep" type="number" value="'+(tr.price||89)+'" style="max-width:140px"></div><button onclick="trdSaveProfilo()" class="btn btn-primary">Salva</button></div><div class="card" style="padding:18px;display:flex;align-items:center;justify-content:space-between"><div><div style="font-weight:600;margin-bottom:3px">Visibile nel marketplace</div><div style="font-size:.82rem;color:var(--sub)">I clienti possono trovarti</div></div><span style="background:rgba(15,214,194,.12);color:var(--teal);padding:4px 12px;border-radius:50px;font-size:.8rem;font-weight:600">Attivo</span></div>';}
 function trdSaveProfilo(){var tr=window.TR_SESSION||getTrainerSession();if(!tr)return;var bio=(document.getElementById('trd-eb')||{}).value||tr.bio;var price=parseInt((document.getElementById('trd-ep')||{}).value||tr.price)||tr.price;tr.bio=bio;tr.price=price;saveTrainerSession(tr);try{var list=JSON.parse(localStorage.getItem('ecp_trainers')||'[]');var idx2=list.findIndex(function(t){return t.email===tr.email;});if(idx2>=0){list[idx2]=tr;localStorage.setItem('ecp_trainers',JSON.stringify(list));}}catch(e){}toast('Profilo aggiornato!','success');}
 
-// Override showPage for trainer pages
-var _spOrig = showPage;
-showPage = function(id, sub){
-  if(id==='pg-trainer-login'){ openTrainerLogin(); return; }
-  if(id==='pg-trainer-reg'){   openTrainerReg();   return; }
-  if(id==='pg-trainer-dash'){
-    var tr=window.TR_SESSION||getTrainerSession();
-    if(tr){ openTrainerDash(); return; } else { openTrainerLogin(); return; }
-  }
-  if(_spOrig) _spOrig(id, sub);
-};
+// showPage trainer: handled via direct onclick calls
 
+
+// ── Trainer overlay auto-restore ──
+document.addEventListener('DOMContentLoaded', function(){
+  // Se c'è una sessione trainer attiva, apri la dashboard
+  setTimeout(function(){
+    var trSession = null;
+    try { trSession = JSON.parse(localStorage.getItem('ecp_trainer_session')||'null'); } catch(e){}
+    if(trSession && trSession.email && typeof openTrainerDash === 'function'){
+      // Non aprire automaticamente — aspetta click utente
+    }
+  }, 500);
+});
 </script>
 
 
