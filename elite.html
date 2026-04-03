@@ -1421,7 +1421,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
           <li class="y">Revenue analytics</li>
           <li class="y">Documenti PDF clienti</li>
         </ul>
-        <button class="btn btn-primary btn-full" onclick="showPage('pg-trainer-reg')">Diventa Trainer →</button>
+        <button class="btn btn-primary btn-full" onclick="openTrainerRegOverlay()">Diventa Trainer →</button>
       </div>
     </div>
   </div>
@@ -1883,7 +1883,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
       <div class="field"><label>Password</label><input class="inp" id="tr-log-pass" type="password"></div>
       <div id="tr-auth-err" style="color:var(--red);font-size:.85rem;display:none"></div>
       <button class="btn btn-primary" style="width:100%" onclick="doTrainerLogin()">Accedi come Trainer</button>
-      <p style="text-align:center;font-size:.82rem;color:var(--sub)">Non sei registrato? <a onclick="showPage('pg-trainer-reg')" style="color:var(--accent);cursor:pointer">Registrati</a></p>
+      <p style="text-align:center;font-size:.82rem;color:var(--sub)">Non sei registrato? <a onclick="openTrainerRegOverlay()" style="color:var(--accent);cursor:pointer">Registrati</a></p>
     </div>
   </div>
 </div>
@@ -14743,6 +14743,109 @@ nav {
   <scr"+"ipt>window.print();<\/scr"+"ipt>
   
 
+
+<!-- ═══ TRAINER REGISTRATION OVERLAY ═══ -->
+<div id="trainer-reg-overlay" style="display:none;position:fixed;inset:0;z-index:99999;background:#080810;overflow-y:auto;-webkit-overflow-scrolling:touch">
+
+  <!-- NAV -->
+  <div style="position:sticky;top:0;z-index:10;background:#0d0d1a;border-bottom:1px solid #1a1a2e;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px">
+    <div style="font-family:sans-serif;font-weight:800;font-size:1rem;color:#fff">
+      <span style="color:#0fd6c2">Diventa</span> <span style="color:#0099ff">Trainer</span>
+    </div>
+    <button onclick="closeTrainerRegOverlay()" style="padding:7px 16px;border-radius:8px;border:1px solid #1a1a2e;background:transparent;color:#94a3b8;font-size:13px;cursor:pointer;font-family:sans-serif">&#8592; Chiudi</button>
+  </div>
+
+  <!-- CONTENT -->
+  <div style="max-width:520px;margin:0 auto;padding:32px 20px 60px">
+
+    <!-- Header -->
+    <div style="text-align:center;margin-bottom:28px">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:54px;height:54px;border-radius:16px;background:rgba(15,214,194,.12);border:1.5px solid rgba(15,214,194,.25);margin-bottom:14px">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0fd6c2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <h2 style="font-family:sans-serif;font-size:1.5rem;font-weight:800;color:#f1f5f9;margin:0 0 6px">Diventa Trainer</h2>
+      <p style="color:#64748b;font-size:.9rem;margin:0">Registra il tuo profilo e raggiungi nuovi clienti</p>
+    </div>
+
+    <!-- Form -->
+    <div style="background:#0d0d1a;border:1px solid #1a1a2e;border-radius:16px;padding:24px">
+      <div style="display:flex;flex-direction:column;gap:14px">
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Nome *</label>
+            <input id="tro-name" type="text" placeholder="Marco" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none">
+          </div>
+          <div>
+            <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Cognome *</label>
+            <input id="tro-surname" type="text" placeholder="Bianchi" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none">
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Email *</label>
+          <input id="tro-email" type="email" placeholder="trainer@example.com" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none">
+        </div>
+
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Password *</label>
+          <input id="tro-pass" type="password" placeholder="Minimo 8 caratteri" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none">
+        </div>
+
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Bio professionale</label>
+          <textarea id="tro-bio" rows="3" placeholder="Esperienza, certificazioni, approccio..." style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:15px;font-family:sans-serif;outline:none;resize:vertical"></textarea>
+        </div>
+
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Specializzazioni</label>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Ipertrofia" style="accent-color:#0fd6c2"> Ipertrofia</label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Dimagrimento" style="accent-color:#0fd6c2"> Dimagrimento</label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Powerlifting" style="accent-color:#0fd6c2"> Powerlifting</label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="CrossFit" style="accent-color:#0fd6c2"> CrossFit</label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Calisthenics" style="accent-color:#0fd6c2"> Calisthenics</label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Running" style="accent-color:#0fd6c2"> Running</label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Yoga" style="accent-color:#0fd6c2"> Yoga</label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Riabilitazione" style="accent-color:#0fd6c2"> Riabilitazione</label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Senior" style="accent-color:#0fd6c2"> Senior</label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Prep. atletica" style="accent-color:#0fd6c2"> Prep. atletica</label>
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Tariffa mensile (&#8364;)</label>
+          <input id="tro-price" type="number" placeholder="89" style="width:130px;padding:11px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none">
+        </div>
+
+        <div id="tro-err" style="display:none;padding:10px 14px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;color:#f87171;font-size:.85rem;font-family:sans-serif"></div>
+
+        <button onclick="doTrainerRegOverlay()" style="width:100%;padding:14px;background:#0099ff;border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;font-family:sans-serif;cursor:pointer;margin-top:4px">
+          Registra il profilo &#8594;
+        </button>
+
+        <p style="text-align:center;font-size:.78rem;color:#475569;font-family:sans-serif;margin:0">
+          Hai gi&#224; un account? <a onclick="closeTrainerRegOverlay();showPage('pg-trainer-login')" style="color:#0099ff;cursor:pointer">Accedi</a>
+        </p>
+
+      </div>
+    </div>
+
+    <!-- Benefits -->
+    <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div style="background:rgba(15,214,194,.06);border:1px solid rgba(15,214,194,.15);border-radius:12px;padding:13px">
+        <div style="color:#0fd6c2;font-weight:700;font-size:.83rem;font-family:sans-serif;margin-bottom:3px">Raggiungi clienti</div>
+        <div style="color:#64748b;font-size:.76rem;font-family:sans-serif">Visibile a migliaia di utenti</div>
+      </div>
+      <div style="background:rgba(0,153,255,.06);border:1px solid rgba(0,153,255,.15);border-radius:12px;padding:13px">
+        <div style="color:#0099ff;font-weight:700;font-size:.83rem;font-family:sans-serif;margin-bottom:3px">Gestisci tutto</div>
+        <div style="color:#64748b;font-size:.76rem;font-family:sans-serif">Chat, schede e pagamenti</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 </body></html>`;
 
   const w = window.open('','_blank');
@@ -16680,7 +16783,153 @@ function mvHireTrainer(email){
 
 function mvBecomeTrainer(){
   closeMarketplaceOverlay();
-  if(typeof showPage==='function') showPage('pg-trainer-reg');
+  openTrainerRegOverlay();
+}
+function openTrainerRegOverlay(){
+  // Reset form
+  ['tro-name','tro-surname','tro-email','tro-pass','tro-bio','tro-price'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
+  document.querySelectorAll('.tro-spec').forEach(function(cb){ cb.checked=false; });
+  var err=document.getElementById('tro-err'); if(err){err.style.display='none';}
+  document.getElementById('trainer-reg-overlay').style.display='block';
+  window.scrollTo(0,0);
+}
+function closeTrainerRegOverlay(){
+  document.getElementById('trainer-reg-overlay').style.display='none';
+}
+function doTrainerRegOverlay(){
+  var name=document.getElementById('tro-name').value.trim();
+  var surname=document.getElementById('tro-surname').value.trim();
+  var email=document.getElementById('tro-email').value.trim().toLowerCase();
+  var pass=document.getElementById('tro-pass').value;
+  var bio=document.getElementById('tro-bio').value.trim();
+  var price=parseFloat(document.getElementById('tro-price').value)||89;
+  var specs=[...document.querySelectorAll('.tro-spec:checked')].map(function(c){return c.value;});
+  var err=document.getElementById('tro-err');
+  if(!name||!surname||!email||!pass){
+    err.textContent='Compila tutti i campi obbligatori (*)';
+    err.style.display='block'; return;
+  }
+  if(pass.length<8){
+    err.textContent='Password minimo 8 caratteri';
+    err.style.display='block'; return;
+  }
+  if(typeof getTrainerByEmail==='function' && getTrainerByEmail(email)){
+    err.textContent='Email già registrata';
+    err.style.display='block'; return;
+  }
+  if(typeof addTrainer==='function'){
+    addTrainer({name:name,surname:surname,email:email,pass:pass,bio:bio,price:price,
+      specializations:specs,status:'pending',rating:5,clients:[],photo:name[0]+(surname[0]||''),
+      joinDate:new Date().toISOString()});
+  }
+  closeTrainerRegOverlay();
+  alert('Registrazione inviata! Attendi approvazione dall\'owner.');
+  if(typeof showPage==='function') showPage('pg-trainer-login');
 }
 </script>
+
+<!-- ═══ TRAINER REGISTRATION OVERLAY ═══ -->
+<div id="trainer-reg-overlay" style="display:none;position:fixed;inset:0;z-index:99999;background:#080810;overflow-y:auto;-webkit-overflow-scrolling:touch">
+
+  <!-- NAV -->
+  <div style="position:sticky;top:0;z-index:10;background:#0d0d1a;border-bottom:1px solid #1a1a2e;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px">
+    <div style="font-family:sans-serif;font-weight:800;font-size:1rem;color:#fff">
+      <span style="color:#0fd6c2">Diventa</span> <span style="color:#0099ff">Trainer</span>
+    </div>
+    <button onclick="closeTrainerRegOverlay()" style="padding:7px 16px;border-radius:8px;border:1px solid #1a1a2e;background:transparent;color:#94a3b8;font-size:13px;cursor:pointer;font-family:sans-serif">&#8592; Chiudi</button>
+  </div>
+
+  <!-- CONTENT -->
+  <div style="max-width:520px;margin:0 auto;padding:32px 20px 60px">
+
+    <!-- Header -->
+    <div style="text-align:center;margin-bottom:28px">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:54px;height:54px;border-radius:16px;background:rgba(15,214,194,.12);border:1.5px solid rgba(15,214,194,.25);margin-bottom:14px">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0fd6c2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <h2 style="font-family:sans-serif;font-size:1.5rem;font-weight:800;color:#f1f5f9;margin:0 0 6px">Diventa Trainer</h2>
+      <p style="color:#64748b;font-size:.9rem;margin:0">Registra il tuo profilo e raggiungi nuovi clienti</p>
+    </div>
+
+    <!-- Form -->
+    <div style="background:#0d0d1a;border:1px solid #1a1a2e;border-radius:16px;padding:24px">
+      <div style="display:flex;flex-direction:column;gap:14px">
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Nome *</label>
+            <input id="tro-name" type="text" placeholder="Marco" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none">
+          </div>
+          <div>
+            <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Cognome *</label>
+            <input id="tro-surname" type="text" placeholder="Bianchi" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none">
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Email *</label>
+          <input id="tro-email" type="email" placeholder="trainer@example.com" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none">
+        </div>
+
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Password *</label>
+          <input id="tro-pass" type="password" placeholder="Minimo 8 caratteri" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none">
+        </div>
+
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Bio professionale</label>
+          <textarea id="tro-bio" rows="3" placeholder="Esperienza, certificazioni, approccio..." style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:15px;font-family:sans-serif;outline:none;resize:vertical"></textarea>
+        </div>
+
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Specializzazioni</label>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Ipertrofia" style="accent-color:#0fd6c2"> Ipertrofia</label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Dimagrimento" style="accent-color:#0fd6c2"> Dimagrimento</label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Powerlifting" style="accent-color:#0fd6c2"> Powerlifting</label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="CrossFit" style="accent-color:#0fd6c2"> CrossFit</label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Calisthenics" style="accent-color:#0fd6c2"> Calisthenics</label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Running" style="accent-color:#0fd6c2"> Running</label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Yoga" style="accent-color:#0fd6c2"> Yoga</label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Riabilitazione" style="accent-color:#0fd6c2"> Riabilitazione</label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Senior" style="accent-color:#0fd6c2"> Senior</label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Prep. atletica" style="accent-color:#0fd6c2"> Prep. atletica</label>
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Tariffa mensile (&#8364;)</label>
+          <input id="tro-price" type="number" placeholder="89" style="width:130px;padding:11px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none">
+        </div>
+
+        <div id="tro-err" style="display:none;padding:10px 14px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;color:#f87171;font-size:.85rem;font-family:sans-serif"></div>
+
+        <button onclick="doTrainerRegOverlay()" style="width:100%;padding:14px;background:#0099ff;border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;font-family:sans-serif;cursor:pointer;margin-top:4px">
+          Registra il profilo &#8594;
+        </button>
+
+        <p style="text-align:center;font-size:.78rem;color:#475569;font-family:sans-serif;margin:0">
+          Hai gi&#224; un account? <a onclick="closeTrainerRegOverlay();showPage('pg-trainer-login')" style="color:#0099ff;cursor:pointer">Accedi</a>
+        </p>
+
+      </div>
+    </div>
+
+    <!-- Benefits -->
+    <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div style="background:rgba(15,214,194,.06);border:1px solid rgba(15,214,194,.15);border-radius:12px;padding:13px">
+        <div style="color:#0fd6c2;font-weight:700;font-size:.83rem;font-family:sans-serif;margin-bottom:3px">Raggiungi clienti</div>
+        <div style="color:#64748b;font-size:.76rem;font-family:sans-serif">Visibile a migliaia di utenti</div>
+      </div>
+      <div style="background:rgba(0,153,255,.06);border:1px solid rgba(0,153,255,.15);border-radius:12px;padding:13px">
+        <div style="color:#0099ff;font-weight:700;font-size:.83rem;font-family:sans-serif;margin-bottom:3px">Gestisci tutto</div>
+        <div style="color:#64748b;font-size:.76rem;font-family:sans-serif">Chat, schede e pagamenti</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 </body></html>
