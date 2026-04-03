@@ -1395,15 +1395,14 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
             <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:var(--border)"></div>
           </div>
           <div style="position:relative">
-          <div id="g-signin-btn-auth" style="display:flex;justify-content:center;width:100%"></div>
+          <div id="g-signin-btn-auth" style="display:none;justify-content:center;width:100%"></div>
           <!-- Fallback button mobile-friendly -->
           <button id="g-btn-auth-fallback" onclick="showGoogleTermsModal('login')" 
-            style="display:none;width:100%;padding:11px 16px;border-radius:8px;border:1px solid var(--border2);background:var(--bg2);color:var(--text);font-size:14px;font-weight:500;cursor:pointer;align-items:center;justify-content:center;gap:10px">
+            style="display:flex;width:100%;padding:11px 16px;border-radius:8px;border:1px solid var(--border2);background:var(--bg2);color:var(--text);font-size:14px;font-weight:500;cursor:pointer;align-items:center;justify-content:center;gap:10px">
             <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
             Continua con Google
           </button>
-          <div id="g-terms-overlay-auth" onclick="showGoogleTermsModal('login')" 
-               style="position:absolute;inset:0;cursor:pointer;z-index:10;background:transparent"></div>
+          
         </div>
             <p style="font-size:.72rem;color:var(--muted);text-align:center;margin:6px 0 0;line-height:1.5">Accedendo accetti i nostri <a href="javascript:void(0)" onclick="showTermsModal()" style="color:var(--accent)">Termini</a> e <a href="javascript:void(0)" onclick="showPrivacyModal()" style="color:var(--accent)">Privacy Policy</a></p>
           
@@ -1441,15 +1440,14 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
           <div style="flex:1;height:1px;background:var(--border)"></div>
         </div>
         <div style="position:relative">
-          <div id="g-signin-btn-register" style="display:flex;justify-content:center;width:100%"></div>
+          <div id="g-signin-btn-register" style="display:none;justify-content:center;width:100%"></div>
           <!-- Fallback mobile -->
           <button id="g-btn-reg-fallback" onclick="showGoogleTermsModal('register')"
-            style="display:none;width:100%;padding:11px 16px;border-radius:8px;border:1px solid var(--border2);background:var(--bg2);color:var(--text);font-size:14px;font-weight:500;cursor:pointer;align-items:center;justify-content:center;gap:10px">
+            style="display:flex;width:100%;padding:11px 16px;border-radius:8px;border:1px solid var(--border2);background:var(--bg2);color:var(--text);font-size:14px;font-weight:500;cursor:pointer;align-items:center;justify-content:center;gap:10px">
             <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
             Continua con Google
           </button>
-          <div id="g-terms-overlay-reg" onclick="showGoogleTermsModal('register')" 
-               style="position:absolute;inset:0;cursor:pointer;z-index:10;background:transparent"></div>
+          
         </div>
       </div>
     </div>
@@ -1852,83 +1850,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
 
 <!-- ── MODALS -->
 
-<!-- ════════════════════════════════════════════════
-     EXERCISE PLAYER MODAL — full screen
-     ════════════════════════════════════════════════ -->
-<div id="ex-player-modal">
-  <!-- TOP BAR -->
-  <div class="ep-topbar">
-    <button class="ep-close" onclick="closeExPlayer()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
-    </button>
-    <div style="flex:1;min-width:0">
-      <div class="ep-title" id="ep-name">Esercizio</div>
-      <div id="ep-progress-label" style="font-size:11px;color:var(--sub);margin-top:2px">Serie 1 di 4</div>
-    </div>
-    <a id="ep-yt-link" href="#" target="_blank" style="display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:rgba(255,0,0,.15);color:#ff4444;flex-shrink:0;text-decoration:none">
-      <svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.55 3.5 12 3.5 12 3.5s-7.55 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.03 0 12 0 12s0 3.97.5 5.81a3.02 3.02 0 002.12 2.14C4.45 20.5 12 20.5 12 20.5s7.55 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.97 24 12 24 12s0-3.97-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>
-    </a>
-  </div>
 
-  <!-- VIDEO -->
-  <div class="ep-video-wrap" id="ep-video-wrap"></div>
-
-  <!-- SCROLLABLE BODY -->
-  <div class="ep-body">
-
-    <!-- META BADGES -->
-    <div class="ep-meta" id="ep-meta"></div>
-
-    <!-- SETS GRID -->
-    <div>
-      <div class="ep-section-label">Serie — tocca per completare</div>
-      <div class="ep-sets-grid" id="ep-sets-grid"></div>
-    </div>
-
-    <!-- COMPLETE SET BUTTON -->
-    <button class="ep-complete-btn ready" id="ep-complete-btn" onclick="epCompleteCurrentSet()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      <span id="ep-btn-label">Completa serie 1</span>
-    </button>
-
-    <!-- REST TIMER (hidden until needed) -->
-    <div id="ep-timer-wrap" class="ep-timer-wrap" style="display:none">
-      <div class="ep-timer-ring">
-        <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" stroke-width="8" stroke="var(--border2)"/><circle id="ep-timer-circle" cx="50" cy="50" r="44" stroke-width="8" stroke-dasharray="276.46" stroke-dashoffset="0"/></svg>
-        <div class="ep-timer-num" id="ep-timer-num">90s</div>
-      </div>
-      <div style="flex:1">
-        <div style="font-weight:700;color:var(--teal);font-size:.95rem;margin-bottom:3px">Recupero</div>
-        <div style="font-size:.82rem;color:var(--sub);margin-bottom:10px" id="ep-timer-sub">Prossima: serie 2</div>
-        <button onclick="epSkipRest()" style="padding:7px 16px;border-radius:50px;border:1px solid var(--border2);background:var(--bg3);color:var(--sub);font-size:13px;cursor:pointer;font-family:var(--font)">Salta recupero →</button>
-      </div>
-    </div>
-
-    <!-- SUGGESTIONS -->
-    <div id="ep-suggestions-wrap">
-      <div class="ep-section-label">Suggerimenti — tocca per leggere</div>
-      <div id="ep-suggestions" style="display:flex;flex-direction:column;gap:8px"></div>
-    </div>
-
-    <!-- NOTES -->
-    <div>
-      <div class="ep-section-label">Note personali</div>
-      <textarea class="ep-note" id="ep-note-input"
-        placeholder="Carico usato, sensazioni, difficoltà..."
-        oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';epSaveNote(this.value)"></textarea>
-    </div>
-
-    <!-- YT SEARCH FALLBACK -->
-    <div id="ep-yt-search" style="display:none;flex-direction:column;gap:8px">
-      <div class="ep-section-label">Cerca video tecnica</div>
-      <a id="ep-yt-it" href="#" target="_blank" class="btn btn-primary" style="text-decoration:none;justify-content:center;gap:8px">
-        <svg width="14" height="14" viewBox="0 0 24 24"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.55 3.5 12 3.5 12 3.5s-7.55 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.03 0 12 0 12s0 3.97.5 5.81a3.02 3.02 0 002.12 2.14C4.45 20.5 12 20.5 12 20.5s7.55 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.97 24 12 24 12s0-3.97-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>
-        Cerca su YouTube
-      </a>
-    </div>
-
-  </div><!-- end ep-body -->
-</div><!-- end ex-player-modal -->
 
 
   <div class="modal" style="max-width:480px">
@@ -8036,11 +7958,11 @@ function buildDietaPiano(u){
     const meals = ['colazione','pranzo','cena','spuntino'];
     meals.forEach(function(m){
       if(day[m]){
-        const icons = {'colazione':'','pranzo':'','cena':'','spuntino':'&#127822;'};
+        const icons = {'colazione':'','pranzo':'','cena':'','spuntino':''};
         out += '<div style="display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--border2)">';
         out += '<span style="font-size:.85rem;min-width:80px;color:var(--sub)">'+icons[m]+' '+m.charAt(0).toUpperCase()+m.slice(1)+'</span>';
         out += '<div style="flex:1"><div style="font-size:.85rem">'+day[m].pasto+'</div>';
-        if(day[m].kcal) out += '<div style="font-size:.75rem;color:var(--sub)"> '+day[m].kcal+'kcal &bull; P:'+day[m].prot+'g C:'+day[m].carb+'g</div>';
+        if(day[m].kcal) out += '<div style="font-size:.75rem;color:var(--sub)">'+day[m].kcal+'kcal &bull; P:'+day[m].prot+'g C:'+day[m].carb+'g</div>';
         out += '</div></div>';
       }
     });
@@ -8918,7 +8840,13 @@ async function sendAICoach(){
   }catch(err){
     var tp=document.getElementById('coach-typing'); if(tp) tp.remove();
     aiCoachHistory.pop();
-    _renderCoachMsg({role:'assistant',content:'Errore: '+String(err.message||err).slice(0,100)+'. Verifica API key.'});
+    var emsg=String(err.message||err);
+    var uiMsg=emsg.includes('401')||emsg.includes('unauthorized')||emsg.includes('token')
+      ?'Sessione scaduta. Ricarica la pagina e accedi di nuovo.'
+      :emsg.includes('429')?'Troppe richieste. Aspetta qualche secondo e riprova.'
+      :emsg.includes('500')||emsg.includes('502')||emsg.includes('503')?'Server temporaneamente non disponibile. Riprova tra poco.'
+      :'Errore di connessione. Verifica la rete e riprova.';
+    _renderCoachMsg({role:'assistant',content:uiMsg});
     console.error('sendAICoach:',err);
   }
 }
@@ -14449,48 +14377,7 @@ nav {
   .ex-header > div:nth-child(2) > div:first-child { font-size: 15px !important; font-weight: 700 !important; }
 }
 
-/* ══════════════════════════════════════════════
-   EXERCISE PLAYER — full-screen workout modal
-   ══════════════════════════════════════════════ */
-#ex-player-modal{display:none;position:fixed;inset:0;z-index:8000;background:var(--bg);flex-direction:column;overflow:hidden}
-#ex-player-modal.open{display:flex}
-.ep-video-wrap{position:relative;width:100%;background:#000;flex-shrink:0}
-.ep-video-wrap iframe{width:100%;display:block;aspect-ratio:16/9;border:none}
-.ep-video-placeholder{width:100%;aspect-ratio:16/9;background:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--muted)}
-.ep-topbar{display:flex;align-items:center;padding:max(10px,env(safe-area-inset-top)) 16px 10px;background:rgba(8,8,16,.96);border-bottom:1px solid var(--border);gap:12px;flex-shrink:0}
-.ep-close{width:36px;height:36px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);color:var(--sub);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
-.ep-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px;padding-bottom:calc(24px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
-.ep-title{font-family:var(--font2);font-size:1.15rem;font-weight:800;color:var(--text);line-height:1.2}
-.ep-meta{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
-.ep-badge{padding:4px 11px;border-radius:50px;font-size:11px;font-weight:700;background:var(--bg3);color:var(--sub)}
-.ep-badge.accent{background:rgba(91,94,244,.15);color:var(--accent-xl)}
-.ep-badge.teal{background:rgba(15,214,194,.12);color:var(--teal)}
-.ep-badge.gold{background:rgba(245,200,66,.12);color:var(--gold)}
-.ep-badge.green{background:rgba(45,212,160,.12);color:var(--green)}
-.ep-sets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(85px,1fr));gap:8px}
-.ep-set-card{background:var(--bg2);border:2px solid var(--border2);border-radius:14px;padding:12px 8px;text-align:center;cursor:pointer;transition:.12s;-webkit-tap-highlight-color:transparent;min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
-.ep-set-card.done{background:rgba(45,212,160,.1);border-color:var(--green)}
-.ep-set-card.current{border-color:var(--accent);background:rgba(91,94,244,.08)}
-.ep-set-card:active{transform:scale(.94)}
-.ep-set-num{font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
-.ep-set-kg{width:56px;background:transparent;border:none;color:var(--text);font-family:var(--font2);font-size:1.15rem;font-weight:800;text-align:center;outline:none;padding:0}
-.ep-set-reps{font-size:11px;color:var(--sub)}
-.ep-timer-wrap{display:flex;align-items:center;gap:16px;background:var(--bg2);border-radius:16px;padding:14px 16px}
-.ep-timer-ring{width:80px;height:80px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
-.ep-timer-ring svg{position:absolute;inset:-3px;width:calc(100% + 6px);height:calc(100% + 6px);transform:rotate(-90deg)}
-.ep-timer-ring svg circle{fill:none;stroke:var(--teal);stroke-linecap:round;transition:stroke-dashoffset .95s linear}
-.ep-timer-num{font-family:var(--font2);font-size:1.4rem;font-weight:800;color:var(--text);position:relative;z-index:1}
-.ep-suggestion{display:flex;align-items:flex-start;gap:10px;background:var(--bg2);border:1.5px solid var(--border2);border-radius:12px;padding:12px 14px;cursor:pointer;transition:.12s;-webkit-tap-highlight-color:transparent;text-align:left}
-.ep-suggestion:active,.ep-suggestion.tapped{border-color:var(--teal);background:rgba(15,214,194,.06)}
-.ep-suggestion-icon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ep-note{background:var(--bg2);border:1.5px solid var(--border2);border-radius:12px;padding:12px;color:var(--text);font-family:var(--font);font-size:15px;width:100%;resize:none;min-height:68px;outline:none;transition:border-color .15s}
-.ep-note:focus{border-color:var(--accent)}
-.ep-section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px}
-.ep-complete-btn{width:100%;padding:16px;border-radius:16px;border:none;font-family:var(--font);font-size:16px;font-weight:700;cursor:pointer;transition:.12s;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center;gap:8px;min-height:56px}
-.ep-complete-btn.ready{background:var(--accent);color:#fff}
-.ep-complete-btn.ready:active{transform:scale(.97);background:var(--accent-l)}
-.ep-complete-btn.resting{background:var(--bg3);color:var(--teal);border:2px solid var(--teal)}
-.ep-complete-btn.all-done{background:var(--green);color:#fff}
+
 
 </style>  <div style="display:flex;align-items:center;justify-content:space-between">
     <h1>💪 ${p.name}</h1>
@@ -15710,410 +15597,8 @@ function renderDashNotifiche(){
 // Mostra modale termini prima del login Google
 var _googleLoginMode = 'login';
 
-// ════════════════════════════════════════════════════════════════
-// EXERCISE PLAYER — full-screen workout experience
-// ════════════════════════════════════════════════════════════════
-var _epEx = null;         // current exercise object
-var _epDayKey = null;
-var _epEi = null;
-var _epCurrentSet = 0;    // 0-indexed
-var _epTotalSets = 4;
-var _epResting = false;
-var _epRestInterval = null;
-var _epRestTotal = 90;
-var _epNoteKey = null;
 
-function openExPlayer(ex, dayKey, ei) {
-  _epEx = ex || {};
-  _epDayKey = dayKey || null;
-  _epEi = ei != null ? ei : null;
-  _epCurrentSet = 0;
-  _epResting = false;
-  _epTotalSets = parseInt(_epEx.sets) || 4;
-
-  var modal = document.getElementById('ex-player-modal');
-  if (!modal) return;
-  modal.classList.add('open');
-  document.body.style.overflow = 'hidden';
-
-  _epBuildVideo();
-  _epBuildMeta();
-  _epBuildSets();
-  _epBuildSuggestions();
-  _epLoadNote();
-  _epUpdateButton();
-  _epUpdateProgress();
-}
-
-function closeExPlayer() {
-  var modal = document.getElementById('ex-player-modal');
-  if (modal) modal.classList.remove('open');
-  document.body.style.overflow = '';
-  // Stop rest timer if running
-  if (_epRestInterval) { clearInterval(_epRestInterval); _epRestInterval = null; }
-  // Stop video
-  var wrap = document.getElementById('ep-video-wrap');
-  if (wrap) wrap.innerHTML = '';
-  _epResting = false;
-}
-
-function _epBuildVideo() {
-  var wrap = document.getElementById('ep-video-wrap');
-  if (!wrap) return;
-  var ex = _epEx;
-  var url = getYTLink(ex);
-  var videoId = url ? getYTVideoId(url) : null;
-
-  if (videoId) {
-    var embedUrl = 'https://www.youtube.com/embed/' + videoId + '?autoplay=0&rel=0&modestbranding=1';
-    wrap.innerHTML = '<div style="position:relative;width:100%;padding-bottom:56.25%"><iframe src="' + embedUrl + '" frameborder="0" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>';
-    // Update YT link
-    var ytLink = document.getElementById('ep-yt-link');
-    if (ytLink) { ytLink.href = 'https://www.youtube.com/watch?v=' + videoId; ytLink.style.display = 'flex'; }
-    var srch = document.getElementById('ep-yt-search');
-    if (srch) srch.style.display = 'none';
-  } else {
-    // No video — show search button
-    var name = ex.name || '';
-    wrap.innerHTML = '<div class="ep-video-placeholder"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg><span style="font-size:13px;color:#555">Nessun video specifico</span></div>';
-    var ytLink = document.getElementById('ep-yt-link');
-    if (ytLink) { ytLink.href = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(name + ' esercizio tecnica'); ytLink.style.display = 'flex'; }
-    var it = document.getElementById('ep-yt-it');
-    if (it) it.href = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(name + ' esercizio tecnica');
-    var srch = document.getElementById('ep-yt-search');
-    if (srch) srch.style.display = 'flex';
-  }
-}
-
-function _epBuildMeta() {
-  var el = document.getElementById('ep-meta');
-  var name = document.getElementById('ep-name');
-  if (!el) return;
-  var ex = _epEx;
-  if (name) name.textContent = ex.name || 'Esercizio';
-
-  var badges = [];
-  badges.push('<span class="ep-badge accent">' + _epTotalSets + ' serie × ' + (ex.reps || '10-12') + ' reps</span>');
-  if (ex.rest) badges.push('<span class="ep-badge teal">⏱ ' + ex.rest + 's recupero</span>');
-  if (ex.rpe) badges.push('<span class="ep-badge gold">RPE ' + ex.rpe + '</span>');
-  if (ex.tempo) badges.push('<span class="ep-badge">Tempo: ' + ex.tempo + '</span>');
-  if (ex.technique && ex.technique !== 'normale') badges.push('<span class="ep-badge">' + ex.technique.toUpperCase() + '</span>');
-  el.innerHTML = badges.join('');
-}
-
-function _epBuildSets() {
-  var grid = document.getElementById('ep-sets-grid');
-  if (!grid) return;
-  var ex = _epEx;
-  var reps = ex.reps || '10-12';
-  var dayKey = _epDayKey; var ei = _epEi;
-
-  var html = '';
-  for (var s = 0; s < _epTotalSets; s++) {
-    var sid = s;
-    var prevKg = '';
-    if (dayKey && ei != null) {
-      var inp = document.getElementById('kg-' + dayKey + '-' + ei + '-' + s);
-      if (inp) prevKg = inp.value || '';
-    }
-    var isDone = s < _epCurrentSet;
-    var isCurrent = s === _epCurrentSet;
-    var cls = isDone ? 'ep-set-card done' : (isCurrent ? 'ep-set-card current' : 'ep-set-card');
-    html += '<div class="' + cls + '" id="ep-sc-' + s + '" onclick="epTapSet(' + s + ')">'
-      + '<div class="ep-set-num">S' + (s+1) + '</div>'
-      + '<input type="number" class="ep-set-kg" id="ep-kg-' + s + '" placeholder="kg"'
-      + ' value="' + prevKg + '" onclick="event.stopPropagation()"'
-      + ' onchange="epSaveKg(' + s + ',this.value)"'
-      + ' style="pointer-events:' + (isCurrent||isDone ? 'auto' : 'none') + '">'
-      + '<div class="ep-set-reps">' + reps + '</div>'
-      + (isDone ? '<div style="color:var(--green);font-size:16px">✓</div>' : '')
-      + '</div>';
-  }
-  grid.innerHTML = html;
-}
-
-function _epUpdateProgress() {
-  var lbl = document.getElementById('ep-progress-label');
-  if (!lbl) return;
-  if (_epCurrentSet >= _epTotalSets) {
-    lbl.textContent = 'Tutte le ' + _epTotalSets + ' serie completate!';
-    lbl.style.color = 'var(--green)';
-  } else {
-    lbl.textContent = 'Serie ' + (_epCurrentSet + 1) + ' di ' + _epTotalSets;
-    lbl.style.color = '';
-  }
-}
-
-function _epUpdateButton() {
-  var btn = document.getElementById('ep-complete-btn');
-  var lbl = document.getElementById('ep-btn-label');
-  if (!btn || !lbl) return;
-
-  if (_epCurrentSet >= _epTotalSets) {
-    btn.className = 'ep-complete-btn all-done';
-    lbl.textContent = 'Esercizio completato!';
-    btn.onclick = null;
-  } else if (_epResting) {
-    btn.className = 'ep-complete-btn resting';
-    lbl.textContent = 'In recupero…';
-    btn.onclick = null;
-  } else {
-    btn.className = 'ep-complete-btn ready';
-    lbl.textContent = 'Completa serie ' + (_epCurrentSet + 1);
-    btn.onclick = epCompleteCurrentSet;
-  }
-}
-
-function epTapSet(s) {
-  // Allow tapping done sets to undo, or current to complete
-  if (s === _epCurrentSet && !_epResting) {
-    epCompleteCurrentSet();
-  } else if (s < _epCurrentSet) {
-    // Undo: go back
-    _epCurrentSet = s;
-    _epResting = false;
-    if (_epRestInterval) { clearInterval(_epRestInterval); _epRestInterval = null; }
-    document.getElementById('ep-timer-wrap').style.display = 'none';
-    _epBuildSets();
-    _epUpdateButton();
-    _epUpdateProgress();
-  }
-}
-
-function epCompleteCurrentSet() {
-  if (_epResting || _epCurrentSet >= _epTotalSets) return;
-
-  // Save kg back to original set pills
-  var kgInput = document.getElementById('ep-kg-' + _epCurrentSet);
-  var kg = kgInput ? kgInput.value : '';
-  if (_epDayKey && _epEi != null && kg) {
-    var origInp = document.getElementById('kg-' + _epDayKey + '-' + _epEi + '-' + _epCurrentSet);
-    if (origInp) { origInp.value = kg; origInp.dispatchEvent(new Event('change')); }
-  }
-
-  // Mark set done on original cards too
-  if (_epDayKey && _epEi != null) {
-    var pill = document.getElementById('set-' + _epDayKey + '-' + _epEi + '-' + _epCurrentSet);
-    if (pill) pill.classList.add('done');
-  }
-
-  _epCurrentSet++;
-
-  if (_epCurrentSet >= _epTotalSets) {
-    // All done
-    _epBuildSets();
-    _epUpdateButton();
-    _epUpdateProgress();
-    // Log on original card
-    if (_epDayKey && _epEi != null) {
-      try { logExercise(_epDayKey, _epEi); } catch(e) {}
-    }
-  } else {
-    // Start rest timer
-    var restSecs = parseInt(_epEx.rest) || 90;
-    _epBuildSets();
-    _epUpdateProgress();
-    _epStartRest(restSecs);
-  }
-}
-
-function _epStartRest(secs) {
-  _epResting = true;
-  _epRestTotal = secs;
-  _epUpdateButton();
-
-  var wrap = document.getElementById('ep-timer-wrap');
-  var numEl = document.getElementById('ep-timer-num');
-  var subEl = document.getElementById('ep-timer-sub');
-  var circle = document.getElementById('ep-timer-circle');
-  if (!wrap || !numEl) return;
-
-  var circleLen = 2 * Math.PI * 44; // r=44
-  if (circle) { circle.style.strokeDasharray = circleLen; circle.style.strokeDashoffset = 0; }
-  wrap.style.display = 'flex';
-  if (subEl) subEl.textContent = 'Prossima: serie ' + (_epCurrentSet + 1);
-
-  var t = secs;
-  numEl.textContent = t + 's';
-  numEl.style.color = 'var(--teal)';
-
-  if (_epRestInterval) clearInterval(_epRestInterval);
-  _epRestInterval = setInterval(function() {
-    t--;
-    if (numEl) {
-      numEl.textContent = t > 0 ? t + 's' : 'Go!';
-      if (t <= 5 && t > 0) numEl.style.color = 'var(--gold)';
-      else if (t <= 0) numEl.style.color = 'var(--green)';
-    }
-    if (circle) {
-      var offset = circleLen * (1 - (secs - t) / secs);
-      circle.style.strokeDashoffset = offset;
-    }
-    // Beep
-    if (t === 3 || t === 0) {
-      try {
-        var ctx = new (window.AudioContext || window.webkitAudioContext)();
-        var o = ctx.createOscillator(); var g = ctx.createGain();
-        o.connect(g); g.connect(ctx.destination);
-        o.frequency.value = t === 0 ? 1100 : 660; g.gain.value = 0.25;
-        o.start(); o.stop(ctx.currentTime + 0.18);
-      } catch(e) {}
-    }
-    if (t <= 0) {
-      clearInterval(_epRestInterval); _epRestInterval = null;
-      _epResting = false;
-      if (wrap) wrap.style.display = 'none';
-      _epUpdateButton();
-    }
-  }, 1000);
-}
-
-function epSkipRest() {
-  if (_epRestInterval) { clearInterval(_epRestInterval); _epRestInterval = null; }
-  _epResting = false;
-  var wrap = document.getElementById('ep-timer-wrap');
-  if (wrap) wrap.style.display = 'none';
-  _epUpdateButton();
-}
-
-function _epBuildSuggestions() {
-  var el = document.getElementById('ep-suggestions');
-  if (!el) return;
-  var ex = _epEx;
-  var suggestions = [];
-
-  // Load/weight tip
-  if (ex.load_tip) suggestions.push({ icon: '⚡', color: 'rgba(15,214,194,.15)', text: ex.load_tip, type: 'teal' });
-
-  // PR suggestion
-  var prKey = 'pr_' + (ex.name || '');
-  var pr = SESSION && SESSION[prKey];
-  if (pr) {
-    var repsMin = parseInt((ex.reps || '10').toString().split('-')[0]) || 10;
-    var sug = Math.round(pr * (1 + repsMin * 0.025) * 4) / 4;
-    suggestions.push({ icon: '🏆', color: 'rgba(245,200,66,.15)', text: 'PR precedente: ' + pr + 'kg. Carico suggerito: ' + sug + 'kg per ' + repsMin + ' reps.', type: 'gold' });
-  }
-
-  // Tech notes
-  if (ex.notes) suggestions.push({ icon: '📋', color: 'rgba(91,94,244,.12)', text: ex.notes, type: 'accent' });
-  if (ex.desc) suggestions.push({ icon: '📖', color: 'rgba(255,255,255,.04)', text: ex.desc, type: '' });
-
-  // Progression
-  if (ex.progression) suggestions.push({ icon: '📈', color: 'rgba(15,214,194,.08)', text: ex.progression, type: '' });
-
-  // RPE guide
-  if (ex.rpe) suggestions.push({ icon: '🎯', color: 'rgba(245,200,66,.08)', text: 'RPE ' + ex.rpe + ': ' + _epRpeGuide(ex.rpe), type: '' });
-
-  // Tempo guide
-  if (ex.tempo) {
-    var parts = ex.tempo.split('-');
-    if (parts.length === 4) suggestions.push({ icon: '⏱', color: 'rgba(91,94,244,.08)', text: 'Tempo ' + ex.tempo + ': ' + parts[0] + 's discesa · ' + parts[1] + 's pausa bassa · ' + parts[2] + 's salita · ' + parts[3] + 's pausa alta', type: '' });
-  }
-
-  // Technique tip from RX info
-  var rx = getRXInfo ? getRXInfo(ex) : null;
-  if (rx && rx.tip) suggestions.push({ icon: '✓', color: 'rgba(45,212,160,.1)', text: 'Tecnica: ' + rx.tip, type: 'green' });
-
-  if (!suggestions.length) {
-    suggestions.push({ icon: '💪', color: 'rgba(91,94,244,.08)', text: 'Mantieni la tecnica corretta per tutto il set. Respira: espira nella fase concentrica, inspira nella fase eccentrica.', type: '' });
-  }
-
-  el.innerHTML = suggestions.map(function(s) {
-    return '<div class="ep-suggestion" onclick="this.classList.toggle(\'tapped\')">'
-      + '<div class="ep-suggestion-icon" style="background:' + s.color + ';font-size:13px">' + s.icon + '</div>'
-      + '<div style="flex:1;font-size:13px;color:var(--sub);line-height:1.55">' + s.text + '</div>'
-      + '</div>';
-  }).join('');
-}
-
-function _epRpeGuide(rpe) {
-  var n = parseInt(rpe);
-  if (n <= 6) return 'sforzo moderato, potresti fare ancora 4+ reps';
-  if (n === 7) return 'sforzo medio, potresti fare ancora 3 reps';
-  if (n === 8) return 'sforzo alto, potresti fare ancora 2 reps';
-  if (n === 9) return 'sforzo molto alto, potresti fare ancora 1 rep';
-  return 'massimo sforzo, non potresti fare un\'altra rep';
-}
-
-function _epLoadNote() {
-  var inp = document.getElementById('ep-note-input');
-  if (!inp) return;
-  _epNoteKey = _epDayKey && _epEi != null ? 'ecp_exnote_' + (_epEx.name || '') + '_' + _epDayKey + '_' + _epEi : null;
-  if (_epNoteKey) {
-    inp.value = localStorage.getItem(_epNoteKey) || '';
-  } else {
-    // Also check for existing note in textarea
-    if (_epDayKey && _epEi != null) {
-      var orig = document.getElementById('note-' + _epDayKey + '-' + _epEi);
-      if (orig) inp.value = orig.value;
-    }
-  }
-  inp.style.height = 'auto';
-  inp.style.height = inp.scrollHeight + 'px';
-}
-
-function epSaveNote(val) {
-  if (_epNoteKey) localStorage.setItem(_epNoteKey, val);
-  // Sync back to original textarea
-  if (_epDayKey && _epEi != null) {
-    var orig = document.getElementById('note-' + _epDayKey + '-' + _epEi);
-    if (orig) orig.value = val;
-  }
-}
-
-function epSaveKg(s, val) {
-  // Sync to original set pill
-  if (_epDayKey && _epEi != null) {
-    var orig = document.getElementById('kg-' + _epDayKey + '-' + _epEi + '-' + s);
-    if (orig) { orig.value = val; }
-  }
-}
-
-// ── Override openYTDirect to open the new player when in session ──
-var _origOpenYTDirect = window.openYTDirect;
-function openYTDirect(name) {
-  // Find the exercise from the current program
-  var ex = null;
-  if (SESSION && SESSION.program && currentDayIdx != null) {
-    var dayExs = (SESSION.program.days || [])[currentDayIdx]?.exercises || [];
-    ex = dayExs.find(function(e) { return (e.name||'').toLowerCase() === (name||'').toLowerCase(); });
-  }
-  if (!ex) ex = (ALL_EXERCISES||[]).find(function(e) { return (e.name||'').toLowerCase() === (name||'').toLowerCase(); });
-  if (!ex) ex = { name: name };
-
-  // Find ei (exercise index in program)
-  var ei = null;
-  if (SESSION && SESSION.program && currentDayIdx != null) {
-    var exs = (SESSION.program.days || [])[currentDayIdx]?.exercises || [];
-    for (var i = 0; i < exs.length; i++) {
-      if ((exs[i].name||'').toLowerCase() === (name||'').toLowerCase()) { ei = i; break; }
-    }
-  }
-
-  var dayKey = currentDayIdx != null ? 'd' + currentDayIdx : null;
-  openExPlayer(ex, dayKey, ei);
-}
-
-// ── Also intercept openYT from library to open player ──
-var _origOpenYT = window.openYT;
-function openYT(ex) {
-  // In library context (no session) use original modal
-  // In workout context use the player
-  if (sessionActive && ex && ex.name) {
-    var dayKey = currentDayIdx != null ? 'd' + currentDayIdx : null;
-    var ei = null;
-    if (SESSION && SESSION.program && currentDayIdx != null) {
-      var exs = (SESSION.program.days || [])[currentDayIdx]?.exercises || [];
-      for (var i = 0; i < exs.length; i++) {
-        if ((exs[i].name||'').toLowerCase() === (ex.name||'').toLowerCase()) { ei = i; break; }
-      }
-    }
-    openExPlayer(ex, dayKey, ei);
-  } else if (_origOpenYT) {
-    _origOpenYT(ex);
-  }
-}
-
+function showGoogleTermsModal(mode){
   _googleLoginMode = mode || 'login';
   // Su mobile il click sull'iframe Google non funziona
   // Mostriamo il modale termini e poi usiamo google.accounts.id.prompt()
