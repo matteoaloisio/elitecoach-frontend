@@ -16930,165 +16930,198 @@ function doTrainerLoginOverlay(){
 
 </script>
 
-<!-- ═══ TRAINER REGISTRATION OVERLAY ═══ -->
-<div id="trainer-reg-overlay" style="display:none;position:fixed;inset:0;z-index:99999;background:#080810;overflow-y:auto;-webkit-overflow-scrolling:touch">
 
-  <!-- NAV -->
-  <div style="position:sticky;top:0;z-index:10;background:#0d0d1a;border-bottom:1px solid #1a1a2e;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px">
-    <div style="font-family:sans-serif;font-weight:800;font-size:1rem;color:#fff">
-      <span style="color:#0fd6c2">Diventa</span> <span style="color:#0099ff">Trainer</span>
+<div class="pg" id="pg-marketplace" style="padding-top:var(--nav-h)">
+<nav>
+  <a class="nav-logo" onclick="showPage('pg-land')"><em>EliteCoach</em>Program.fit</a>
+  <div class="nav-right">
+    <button class="btn-nav ghost" onclick="showPage('pg-trainer-login')">Login Trainer</button>
+    <button class="btn-nav primary" onclick="showPage('pg-trainer-reg')">Diventa Trainer</button>
+  </div>
+</nav>
+<div class="container" style="padding-top:40px;padding-bottom:60px">
+  <div style="margin-bottom:24px">
+    <div class="sec-label">Trainer Marketplace</div>
+    <h1 style="font-family:var(--font2);font-size:clamp(24px,3vw,36px);font-weight:700;margin-bottom:8px">Trova il tuo <span style="color:var(--accent-l)">Trainer</span></h1>
+    <p style="color:var(--sub);font-size:14px">Professionisti certificati, risultati garantiti</p>
+  </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center">
+    <input class="inp" id="mp-search" placeholder="Nome o specializzazione..." style="max-width:300px;border-radius:50px" oninput="renderMarketplace()">
+    <button class="mp-tag act" onclick="filterMpSpec(this,'')">Tutti</button>
+    <button class="mp-tag" onclick="filterMpSpec(this,'Bodybuilding')">Bodybuilding</button>
+    <button class="mp-tag" onclick="filterMpSpec(this,'Powerlifting')">Powerlifting</button>
+    <button class="mp-tag" onclick="filterMpSpec(this,'Nutrizione')">Nutrizione</button>
+    <button class="mp-tag" onclick="filterMpSpec(this,'CrossFit')">CrossFit</button>
+    <button class="mp-tag" onclick="filterMpSpec(this,'HIIT')">HIIT</button>
+    <button class="mp-tag" onclick="filterMpSpec(this,'Funzionale')">Funzionale</button>
+  </div>
+  <div class="grid3" id="marketplace-grid"></div>
+</div>
+</div>
+
+<!-- TRAINER PROFILE -->
+
+<!-- PLAYER MODAL -->
+<div id="ex-player-modal">
+  <!-- TOP BAR -->
+  <div class="ep-topbar">
+    <button class="ep-close" onclick="closeExPlayer()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div style="flex:1;min-width:0">
+      <div class="ep-title" id="ep-name">Esercizio</div>
+      <div id="ep-progress-label" style="font-size:11px;color:var(--sub);margin-top:2px">Serie 1 di 4</div>
     </div>
-    <button onclick="closeTrainerRegOverlay()" style="padding:7px 16px;border-radius:8px;border:1px solid #1a1a2e;background:transparent;color:#94a3b8;font-size:13px;cursor:pointer;font-family:sans-serif">&#8592; Chiudi</button>
+    <a id="ep-yt-link" href="#" target="_blank" style="display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:rgba(255,0,0,.15);color:#ff4444;flex-shrink:0;text-decoration:none">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.55 3.5 12 3.5 12 3.5s-7.55 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.03 0 12 0 12s0 3.97.5 5.81a3.02 3.02 0 002.12 2.14C4.45 20.5 12 20.5 12 20.5s7.55 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.97 24 12 24 12s0-3.97-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>
+    </a>
   </div>
 
-  <!-- CONTENT -->
-  <div style="max-width:520px;margin:0 auto;padding:32px 20px 60px">
+  <!-- VIDEO -->
+  <div class="ep-video-wrap" id="ep-video-wrap"></div>
 
-    <!-- Header -->
-    <div style="text-align:center;margin-bottom:28px">
-      <div style="display:inline-flex;align-items:center;justify-content:center;width:54px;height:54px;border-radius:16px;background:rgba(15,214,194,.12);border:1.5px solid rgba(15,214,194,.25);margin-bottom:14px">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0fd6c2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      </div>
-      <h2 style="font-family:sans-serif;font-size:1.5rem;font-weight:800;color:#f1f5f9;margin:0 0 6px">Diventa Trainer</h2>
-      <p style="color:#64748b;font-size:.9rem;margin:0">Registra il tuo profilo e raggiungi nuovi clienti</p>
+  <!-- SCROLLABLE BODY -->
+  <div class="ep-body">
+
+    <!-- META BADGES -->
+    <div class="ep-meta" id="ep-meta"></div>
+
+    <!-- SETS GRID -->
+    <div>
+      <div class="ep-section-label">Serie — tocca per completare</div>
+      <div class="ep-sets-grid" id="ep-sets-grid"></div>
     </div>
 
-    <!-- Form -->
-    <div style="background:#0d0d1a;border:1px solid #1a1a2e;border-radius:16px;padding:24px">
-      <div style="display:flex;flex-direction:column;gap:14px">
+    <!-- COMPLETE SET BUTTON -->
+    <button class="ep-complete-btn ready" id="ep-complete-btn" onclick="epCompleteCurrentSet()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      <span id="ep-btn-label">Completa serie 1</span>
+    </button>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div>
-            <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Nome *</label>
-            <input id="tro-name" type="text" placeholder="Marco" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none">
-          </div>
-          <div>
-            <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Cognome *</label>
-            <input id="tro-surname" type="text" placeholder="Bianchi" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none">
-          </div>
-        </div>
+    <!-- REST TIMER (hidden until needed) -->
+    <div id="ep-timer-wrap" class="ep-timer-wrap" style="display:none">
+      <div class="ep-timer-ring">
+        <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" stroke-width="8" stroke="var(--border2)"/><circle id="ep-timer-circle" cx="50" cy="50" r="44" stroke-width="8" stroke-dasharray="276.46" stroke-dashoffset="0"/></svg>
+        <div class="ep-timer-num" id="ep-timer-num">90s</div>
+      </div>
+      <div style="flex:1">
+        <div style="font-weight:700;color:var(--teal);font-size:.95rem;margin-bottom:3px">Recupero</div>
+        <div style="font-size:.82rem;color:var(--sub);margin-bottom:10px" id="ep-timer-sub">Prossima: serie 2</div>
+        <button onclick="epSkipRest()" style="padding:7px 16px;border-radius:50px;border:1px solid var(--border2);background:var(--bg3);color:var(--sub);font-size:13px;cursor:pointer;font-family:var(--font)">Salta recupero →</button>
+      </div>
+    </div>
 
+    <!-- SUGGESTIONS -->
+    <div id="ep-suggestions-wrap">
+      <div class="ep-section-label">Suggerimenti — tocca per leggere</div>
+      <div id="ep-suggestions" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+
+    <!-- NOTES -->
+    <div>
+      <div class="ep-section-label">Note personali</div>
+      <textarea class="ep-note" id="ep-note-input"
+        placeholder="Carico usato, sensazioni, difficoltà..."
+        oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';epSaveNote(this.value)"></textarea>
+    </div>
+
+    <!-- YT SEARCH FALLBACK -->
+    <div id="ep-yt-search" style="display:none;flex-direction:column;gap:8px">
+      <div class="ep-section-label">Cerca video tecnica</div>
+      <a id="ep-yt-it" href="#" target="_blank" class="btn btn-primary" style="text-decoration:none;justify-content:center;gap:8px">
+        <svg width="14" height="14" viewBox="0 0 24 24"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.55 3.5 12 3.5 12 3.5s-7.55 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.03 0 12 0 12s0 3.97.5 5.81a3.02 3.02 0 002.12 2.14C4.45 20.5 12 20.5 12 20.5s7.55 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.97 24 12 24 12s0-3.97-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>
+        Cerca su YouTube
+      </a>
+    </div>
+
+  </div><!-- end ep-body -->
+</div><!-- end ex-player-modal -->
+
+
+  <div class="modal" style="max-width:480px">
+    <div class="modal-hd">
+      <h3>Attiva Piano Pro</h3>
+      <button class="modal-close" onclick="closeModal('pay-modal')">✕</button>
+    </div>
+
+    <!-- Plan summary -->
+    <div style="background:linear-gradient(135deg,rgba(91,94,244,.14),rgba(15,214,194,.07));border:1px solid rgba(91,94,244,.3);border-radius:var(--r-sm);padding:14px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
         <div>
-          <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Email *</label>
-          <input id="tro-email" type="email" placeholder="trainer@example.com" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none">
+          <div style="font-weight:700;color:var(--text)">Piano Pro ⭐</div>
+          <div style="font-size:12px;color:var(--sub);margin-top:3px">Schede AI illimitate · 700+ esercizi · AI Coach · Wearable</div>
         </div>
+        <div style="font-family:var(--font2);font-size:1.6rem;font-weight:800;color:var(--teal)">€14,99<span style="font-size:.75rem;font-weight:400;color:var(--muted)">/mese</span></div>
+      </div>
+    </div>
 
-        <div>
-          <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Password *</label>
-          <input id="tro-pass" type="password" placeholder="Minimo 8 caratteri" style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none">
+    <!-- Payment method tabs -->
+    <div class="tabs" style="margin-bottom:16px" id="pay-tabs">
+      <button class="tab-btn act" id="ptab-card" onclick="switchPayTab('card')">Carta</button>
+      <button class="tab-btn" id="ptab-paypal" onclick="switchPayTab('paypal')">PayPal</button>
+      <button class="tab-btn" id="ptab-apple" onclick="switchPayTab('apple')">Apple Pay</button>
+    </div>
+
+    <!-- CARD TAB -->
+    <div id="pay-tab-card">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="field">
+          <label>Nome titolare</label>
+          <input class="inp" id="stripe-name" placeholder="Mario Rossi" autocomplete="cc-name">
         </div>
-
-        <div>
-          <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Bio professionale</label>
-          <textarea id="tro-bio" rows="3" placeholder="Esperienza, certificazioni, approccio..." style="width:100%;box-sizing:border-box;padding:11px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:15px;font-family:sans-serif;outline:none;resize:vertical"></textarea>
+        <!-- Stripe Elements mount point -->
+        <div class="field">
+          <label>Dati carta</label>
+          <div id="stripe-card-element" style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:12px 14px;min-height:42px;transition:.2s"></div>
+          <div id="stripe-card-errors" style="color:var(--red);font-size:12px;margin-top:4px;display:none"></div>
         </div>
-
-        <div>
-          <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Specializzazioni</label>
-          <div style="display:flex;flex-wrap:wrap;gap:6px">
-            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Ipertrofia" style="accent-color:#0fd6c2"> Ipertrofia</label>
-            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Dimagrimento" style="accent-color:#0fd6c2"> Dimagrimento</label>
-            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Powerlifting" style="accent-color:#0fd6c2"> Powerlifting</label>
-            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="CrossFit" style="accent-color:#0fd6c2"> CrossFit</label>
-            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Calisthenics" style="accent-color:#0fd6c2"> Calisthenics</label>
-            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Running" style="accent-color:#0fd6c2"> Running</label>
-            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Yoga" style="accent-color:#0fd6c2"> Yoga</label>
-            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Riabilitazione" style="accent-color:#0fd6c2"> Riabilitazione</label>
-            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Senior" style="accent-color:#0fd6c2"> Senior</label>
-            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;background:#131320;border:1.5px solid #1e293b;padding:5px 12px;border-radius:50px;font-size:13px;color:#cbd5e1;font-family:sans-serif"><input type="checkbox" class="tro-spec" value="Prep. atletica" style="accent-color:#0fd6c2"> Prep. atletica</label>
-          </div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V5l-9-4z"/></svg>
+          Pagamento sicuro con crittografia SSL · Cancella quando vuoi
         </div>
-
-        <div>
-          <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Tariffa mensile (&#8364;)</label>
-          <input id="tro-price" type="number" placeholder="89" style="width:130px;padding:11px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none">
-        </div>
-
-        <div id="tro-err" style="display:none;padding:10px 14px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;color:#f87171;font-size:.85rem;font-family:sans-serif"></div>
-
-        <button onclick="doTrainerRegOverlay()" style="width:100%;padding:14px;background:#0099ff;border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;font-family:sans-serif;cursor:pointer;margin-top:4px">
-          Registra il profilo &#8594;
+        <button class="btn btn-teal" id="stripe-submit-btn" style="width:100%;font-size:14px" onclick="stripeSubmit()">
+          Paga €14,99 — Attiva Pro
         </button>
-
-        <p style="text-align:center;font-size:.78rem;color:#475569;font-family:sans-serif;margin:0">
-          Hai gi&#224; un account? <a onclick="closeTrainerRegOverlay();openTrainerLoginOverlay()" style="color:#0099ff;cursor:pointer">Accedi</a>
-        </p>
-
       </div>
     </div>
 
-    <!-- Benefits -->
-    <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div style="background:rgba(15,214,194,.06);border:1px solid rgba(15,214,194,.15);border-radius:12px;padding:13px">
-        <div style="color:#0fd6c2;font-weight:700;font-size:.83rem;font-family:sans-serif;margin-bottom:3px">Raggiungi clienti</div>
-        <div style="color:#64748b;font-size:.76rem;font-family:sans-serif">Visibile a migliaia di utenti</div>
-      </div>
-      <div style="background:rgba(0,153,255,.06);border:1px solid rgba(0,153,255,.15);border-radius:12px;padding:13px">
-        <div style="color:#0099ff;font-weight:700;font-size:.83rem;font-family:sans-serif;margin-bottom:3px">Gestisci tutto</div>
-        <div style="color:#64748b;font-size:.76rem;font-family:sans-serif">Chat, schede e pagamenti</div>
+    <!-- PAYPAL TAB -->
+    <div id="pay-tab-paypal" style="display:none">
+      <div style="text-align:center;padding:20px 0">
+        <div id="paypal-button-container" style="min-height:48px"></div>
+        <p style="font-size:11px;color:var(--muted);margin-top:12px">Verrai reindirizzato a PayPal per completare il pagamento</p>
       </div>
     </div>
 
+    <!-- APPLE PAY TAB -->
+    <div id="pay-tab-apple" style="display:none">
+      <div style="text-align:center;padding:20px 0">
+        <div id="apple-pay-button" style="min-height:48px;display:none"></div>
+        <div id="apple-pay-unavail" style="padding:20px">
+          <p style="font-size:13px;color:var(--sub);margin-bottom:12px">Apple Pay disponibile su Safari/iOS con carta salvata in Wallet</p>
+          <button class="btn btn-ghost" onclick="switchPayTab('card')">Usa carta →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Promo code -->
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+      <div style="display:flex;gap:8px">
+        <input class="inp" id="stripe-promo" placeholder="Codice promo" style="flex:1">
+        <button class="btn btn-ghost btn-sm" onclick="applyStripePromo()">Applica</button>
+      </div>
+      <div id="stripe-promo-result" style="font-size:12px;margin-top:6px"></div>
+    </div>
+
+    <!-- Accepted cards -->
+    <div style="display:flex;align-items:center;gap:8px;margin-top:12px;justify-content:center;opacity:.6">
+      <svg width="38" height="24" viewBox="0 0 38 24"><rect width="38" height="24" rx="3" fill="#1A1F71"/><text x="4" y="17" fill="white" font-size="11" font-family="Arial" font-weight="bold">VISA</text></svg>
+      <svg width="38" height="24" viewBox="0 0 38 24"><rect width="38" height="24" rx="3" fill="#EB001B"/><circle cx="15" cy="12" r="8" fill="#EB001B"/><circle cx="23" cy="12" r="8" fill="#F79E1B"/><path d="M19 6.8a8 8 0 010 10.4A8 8 0 0119 6.8z" fill="#FF5F00"/></svg>
+      <svg width="38" height="24" viewBox="0 0 38 24"><rect width="38" height="24" rx="3" fill="#2557D6"/><text x="5" y="16" fill="white" font-size="9" font-family="Arial" font-weight="bold">AMEX</text></svg>
+      <svg width="38" height="24" viewBox="0 0 38 24"><rect width="38" height="24" rx="3" fill="#fff" stroke="#ddd"/><text x="3" y="16" fill="#231F20" font-size="8" font-family="Arial" font-weight="bold">Maestro</text></svg>
+    </div>
   </div>
 </div>
 
 
-<!-- ═══ TRAINER LOGIN OVERLAY ═══ -->
-<div id="trainer-login-overlay" style="display:none;position:fixed;inset:0;z-index:99999;background:#080810;overflow-y:auto;-webkit-overflow-scrolling:touch">
-
-  <!-- NAV -->
-  <div style="position:sticky;top:0;z-index:10;background:#0d0d1a;border-bottom:1px solid #1a1a2e;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px">
-    <div style="font-family:sans-serif;font-weight:800;font-size:1rem;color:#fff">
-      <span style="color:#0fd6c2">Area</span> <span style="color:#0099ff">Trainer</span>
-    </div>
-    <button onclick="closeTrainerLoginOverlay()" style="padding:7px 16px;border-radius:8px;border:1px solid #1a1a2e;background:transparent;color:#94a3b8;font-size:13px;cursor:pointer;font-family:sans-serif">&#8592; Chiudi</button>
-  </div>
-
-  <!-- CONTENT -->
-  <div style="max-width:420px;margin:0 auto;padding:48px 20px 60px;display:flex;flex-direction:column;align-items:center">
-
-    <!-- Icon -->
-    <div style="display:inline-flex;align-items:center;justify-content:center;width:54px;height:54px;border-radius:16px;background:rgba(15,214,194,.12);border:1.5px solid rgba(15,214,194,.25);margin-bottom:20px">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0fd6c2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg>
-    </div>
-    <h2 style="font-family:sans-serif;font-size:1.4rem;font-weight:800;color:#f1f5f9;margin:0 0 6px;text-align:center">Accedi come Trainer</h2>
-    <p style="color:#64748b;font-size:.88rem;margin:0 0 28px;text-align:center">Il tuo pannello professionale</p>
-
-    <!-- Form -->
-    <div style="background:#0d0d1a;border:1px solid #1a1a2e;border-radius:16px;padding:24px;width:100%;box-sizing:border-box">
-      <div style="display:flex;flex-direction:column;gap:14px">
-
-        <div>
-          <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Email professionista</label>
-          <input id="trl-email" type="email" placeholder="trainer@example.com"
-            style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none">
-        </div>
-
-        <div>
-          <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Password</label>
-          <input id="trl-pass" type="password" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;"
-            style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none">
-        </div>
-
-        <div id="trl-err" style="display:none;padding:10px 14px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;color:#f87171;font-size:.85rem;font-family:sans-serif"></div>
-
-        <button onclick="doTrainerLoginOverlay()" style="width:100%;padding:14px;background:#0099ff;border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;font-family:sans-serif;cursor:pointer">
-          Accedi &#8594;
-        </button>
-
-        <div style="text-align:center;padding:8px 0;color:#334155;font-size:12px;font-family:sans-serif">&#9135; oppure &#9135;</div>
-
-        <button onclick="closeTrainerLoginOverlay();openTrainerRegOverlay()" style="width:100%;padding:13px;background:transparent;border:1.5px solid #1e293b;border-radius:12px;color:#0fd6c2;font-size:14px;font-weight:600;font-family:sans-serif;cursor:pointer">
-          &#43; Registra il tuo profilo
-        </button>
-
-      </div>
-    </div>
-
-    <p style="margin-top:20px;font-size:.78rem;color:#334155;font-family:sans-serif;text-align:center">
-      Sei un cliente? <a onclick="closeTrainerLoginOverlay();showPage('pg-auth','login')" style="color:#0099ff;cursor:pointer">Accedi qui</a>
-    </p>
-
-  </div>
-</div>
 </body></html>
