@@ -1814,21 +1814,25 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
 </div>
 
 <!-- OWNER DASHBOARD -->
-<div class="pg" id="pg-owner" style="background:var(--bg)">
-<nav style="background:var(--nav-bg,var(--bg2));border-bottom:1px solid var(--border)">
+<div class="pg" id="pg-owner" style="background:#111827">
+<nav style="background:#1f2937;border-bottom:1px solid #374151">
   <a class="nav-logo"><em>EliteCoach</em>Program.fit — <span style="color:var(--gold)">Owner</span></a>
   <div class="nav-right"><button class="btn-nav ghost btn-sm" onclick="showPage('pg-land')">← Esci</button></div>
 </nav>
-<div id="pg-owner-login" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;background:#0d0d1a">
-  <div style="max-width:360px;width:100%;background:#1a1a2e;border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:28px">
-    <div style="font-family:var(--font2);font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:6px">Owner Panel</div>
-    <div style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:20px">Accesso riservato</div>
+<div id="pg-owner-login" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;background:#111827">
+  <div style="max-width:360px;width:100%;background:#ffffff;border-radius:16px;padding:32px;box-shadow:0 20px 60px rgba(0,0,0,.5)">
+    <div style="font-family:Georgia,serif;font-size:1.2rem;font-weight:700;color:#111827;margin-bottom:4px">Owner Panel</div>
+    <div style="font-size:13px;color:#6b7280;margin-bottom:24px">Accesso riservato · EliteCoachProgram.fit</div>
     <div style="display:flex;flex-direction:column;gap:12px">
       <input id="owner-pw" type="password" placeholder="Password owner"
-        style="width:100%;box-sizing:border-box;font-size:16px;padding:13px 16px;border-radius:10px;border:1.5px solid rgba(255,255,255,.15);background:#262640;color:#fff;outline:none;font-family:inherit;-webkit-text-fill-color:#fff"
+        style="width:100%;box-sizing:border-box;font-size:16px;padding:13px 16px;border-radius:10px;border:2px solid #e5e7eb;background:#f9fafb;color:#111827;outline:none;font-family:inherit;-webkit-text-fill-color:#111827;transition:border-color .2s"
+        onfocus="this.style.borderColor='#5b5ef4'" onblur="this.style.borderColor='#e5e7eb'"
         onkeydown="if(event.key==='Enter'){event.preventDefault();doOwnerLogin();}">
-      <button style="width:100%;padding:14px;font-size:15px;font-weight:700;background:linear-gradient(135deg,#5b5ef4,#4338ca);color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:inherit" onclick="doOwnerLogin()">Accedi</button>
+      <button style="width:100%;padding:14px;font-size:15px;font-weight:700;background:#5b5ef4;color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:inherit;transition:background .2s"
+        onmouseover="this.style.background='#4338ca'" onmouseout="this.style.background='#5b5ef4'"
+        onclick="doOwnerLogin()">Accedi →</button>
     </div>
+    <div style="margin-top:16px;font-size:11px;color:#9ca3af;text-align:center">Solo per amministratori autorizzati</div>
   </div>
 </div>
 <div id="pg-owner-dash" style="display:none">
