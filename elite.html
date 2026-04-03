@@ -1232,7 +1232,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
 <!-- MOBILE MENU DROPDOWN -->
 <div id="mobile-menu" style="display:none;position:fixed;top:var(--nav-h);left:0;right:0;background:var(--bg);border-bottom:1px solid var(--border);z-index:199;padding:16px;display:none;flex-direction:column;gap:10px">
   <button class="btn btn-ghost" style="width:100%;justify-content:flex-start;gap:10px" onclick="showPage('pg-auth','login');closeMobileMenu()">Accedi</button>
-  <button class="btn btn-ghost" style="width:100%;justify-content:flex-start;gap:10px" onclick="openMarketplaceOverlay();closeMobileMenu()">Trova un Trainer</button>
+  <button class="btn btn-ghost" style="width:100%;justify-content:flex-start;gap:10px" onclick="showPage('pg-trainer-login');closeMobileMenu()">Trova un Trainer</button>
   <button class="btn btn-ghost" style="width:100%;justify-content:flex-start;gap:10px" onclick="document.getElementById('libreria-section')?.scrollIntoView({behavior:'smooth'});closeMobileMenu()">Libreria Esercizi</button>
   <div style="border-top:1px solid var(--border);padding-top:10px;display:flex;gap:8px;flex-wrap:wrap">
     <button class="lb act" data-lang="it" onclick="setLang('it');closeMobileMenu()">IT</button>
@@ -1835,7 +1835,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
       <div class="mn-drawer-item" onclick="showDashSection('export');closeMobileDrawer()">
         <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><span>Export</span>
       </div>
-      <div class="mn-drawer-item" onclick="closeMobileDrawer();openMarketplaceOverlay()">
+      <div class="mn-drawer-item" onclick="closeMobileDrawer();showPage('pg-trainer-login')">
         <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><span>Trova Trainer</span>
       </div>
     </div>
@@ -3074,7 +3074,7 @@ function showPage(id, sub){
       if(typeof initGoogleSignIn === 'function') initGoogleSignIn();
     }, 200);
   }
-  if(id==='pg-marketplace') renderMarketplace();
+  
 
   if(id==='pg-dash') renderDashboard();
   if(id==='pg-trainer-dash') renderTrainerDash();
@@ -8617,8 +8617,8 @@ function renderDashPiano(){
             <li>Wearable sync avanzato</li><li>Gamification completa</li>
             <li>Priorità supporto</li>
           </ul>
-          <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="cancelStripeSubscription()">Cancella abbonamento</button>
-          <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:6px" onclick="openCustomerPortal()">Gestisci abbonamento Stripe</button>`:`
+          <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="toast('Funzione non disponibile','error')">Cancella abbonamento</button>
+          <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:6px" onclick="toast('Funzione non disponibile','error')">Gestisci abbonamento Stripe</button>`:`
           <ul class="price-features">
             <li>3 schede AI al mese</li><li>Libreria base</li>
             <li>Tracker progressi</li>
@@ -9286,7 +9286,7 @@ function renderTCreaScheda(){
         <h4>Esercizi — ${builderDays[builderCurrentDay]?.name}</h4>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
           <button class="btn btn-ghost btn-sm" onclick="addBuilderExercise()">+ Aggiungi esercizio</button>
-          <button class="btn btn-ghost btn-sm" onclick="openIntensityPanel()">⚡ Tecniche</button>
+          <button class="btn btn-ghost btn-sm" onclick="toast('Funzione non disponibile','error')">⚡ Tecniche</button>
         </div>
       </div>
       <div id="builder-ex-list">
@@ -9730,7 +9730,7 @@ function renderTRevenue(){
       <div style="display:flex;gap:10px;margin-bottom:10px">
         <input class="inp" id="tr-promo" placeholder="Es: COACH20" style="max-width:180px">
         <input class="inp" id="tr-promo-disc" type="number" placeholder="%" style="max-width:80px">
-        <button class="btn btn-primary btn-sm" onclick="addTrainerPromo()">+ Aggiungi</button>
+        <button class="btn btn-primary btn-sm" onclick="toast('Funzione non disponibile','error')">+ Aggiungi</button>
       </div>
     </div>`;
 }
@@ -12947,12 +12947,16 @@ addEventListener('DOMContentLoaded', ()=>{
   // RESTORE IMMEDIATO: se loggato, mostra dashboard senza attese
   if(SESSION && SESSION.email && _authToken){
     // ── Restore pagina e sezione dall'ultima visita ──
+    // Pulisci pagine obsolete dal sessionStorage
+    var _stalePages = ['pg-marketplace','pg-trainer-profile'];
+    var _storedPg = sessionStorage.getItem('ecp_last_pg');
+    if(_stalePages.indexOf(_storedPg) !== -1){ sessionStorage.removeItem('ecp_last_pg'); }
     var _lastPg  = sessionStorage.getItem('ecp_last_pg')  || 'pg-dash';
     var _lastSec = sessionStorage.getItem('ecp_last_sec') || 'home';
     var _lastSub = sessionStorage.getItem('ecp_last_sub') || null;
 
     // Pagine sicure da ripristinare quando loggato
-    var _safePgs = ['pg-dash','pg-onboard','pg-marketplace'];
+    var _safePgs = ['pg-dash','pg-onboard'];
     if(_safePgs.indexOf(_lastPg) === -1) _lastPg = 'pg-dash';
 
     showPage(_lastPg, _lastSub);
@@ -13025,6 +13029,14 @@ addEventListener('DOMContentLoaded', ()=>{
   });
 
   console.log('🚀 EliteCoachProgram.fit v5.1 — Loaded. Exercises:', ALL_EXERCISES.length);
+  // ── FAILSAFE: se nessuna pagina è visibile dopo 300ms, mostra pg-land ──
+  setTimeout(function(){
+    var anyVisible = document.querySelector('.pg.on');
+    if(!anyVisible || !document.body.contains(anyVisible)){
+      console.log('Failsafe: mostrando pg-land');
+      showPage('pg-land');
+    }
+  }, 300);
   // Reminder e notifiche: solo se loggato
   if(SESSION){ scheduleWorkoutReminder(); checkWeeklyReminder(); }
   loadTheme();
@@ -15935,6 +15947,11 @@ function owOvSaveSystem(){
   localStorage.setItem('ecp_ai_system', v);
   alert('✅ Istruzioni salvate');
 }
+
+
+function showPrivacy(){ var m=document.getElementById('modal-privacy'); if(m) m.classList.add('open'); }
+function showTerms(){ var m=document.getElementById('modal-termini'); if(m) m.classList.add('open'); }
+function _emergencyRecover(){ try{ if(typeof loadSession==='function') loadSession(); if(typeof renderDashboard==='function') renderDashboard(); }catch(e){ showPage('pg-land'); } }
 
 </script>
 </body></html>
