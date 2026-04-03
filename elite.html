@@ -3366,9 +3366,11 @@ async function initApp(){
     }
     await loadUserFromSupabase();
     saveSession(SESSION);
-    if(document.getElementById('pg-land')?.classList.contains('on')){
+    var _onOwner = document.getElementById('pg-owner')?.classList.contains('on');
+    var _onLand  = document.getElementById('pg-land')?.classList.contains('on');
+    if(_onLand && !_onOwner){
       showPage('pg-dash'); renderDashboard();
-    } else { try{ renderDashboard(); }catch(e){} }
+    } else if(!_onOwner){ try{ renderDashboard(); }catch(e){} }
     // Carica configurazione AI dal server (globale)
     loadAIConfig().catch(function(){});
     console.log('OK initApp: caricati', (SESSION.log||[]).length, 'allenamenti dal server');
@@ -13164,7 +13166,9 @@ addEventListener('DOMContentLoaded', ()=>{
     renderDashboard();
     // Carica da Supabase SUBITO — fonte di verità assoluta
     setTimeout(function(){
+      if(document.getElementById('pg-owner')?.classList.contains('on')) return; // non interrompere owner panel
       initApp().then(function(){
+        if(document.getElementById('pg-owner')?.classList.contains('on')) return;
         try{ renderDashboard(); }catch(e){}
         // Aggiorna storico se aperto
         var sEl = document.getElementById('ds-storico');
@@ -13178,6 +13182,7 @@ addEventListener('DOMContentLoaded', ()=>{
   }
   // initApp: verifica OAuth Supabase
   setTimeout(function(){
+    if(document.getElementById('pg-owner')?.classList.contains('on')) return; // non interrompere owner panel
     if(typeof initApp==='function') initApp().catch(console.error);
   }, 400);
 
