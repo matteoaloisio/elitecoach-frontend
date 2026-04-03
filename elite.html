@@ -6813,6 +6813,52 @@ function renderDay(idx){
   const wodColor = wodColors[day.wod_type] || '#5b5ef4';
 
   document.getElementById('day-content').innerHTML = `
+    <!-- ══ PLAYER LAUNCHER BANNER ══ -->
+    <div id="ep-launcher" onclick="epLaunchDay(${idx})" style="
+      margin-bottom:16px;cursor:pointer;
+      background:linear-gradient(135deg,#1a1040 0%,#0d1a2e 50%,#0a1520 100%);
+      border:1.5px solid rgba(91,94,244,.35);
+      border-radius:20px;overflow:hidden;position:relative;
+      -webkit-tap-highlight-color:transparent;
+      box-shadow:0 8px 32px rgba(91,94,244,.18);
+      transition:transform .12s,box-shadow .12s;
+    " onmousedown="this.style.transform='scale(.98)'" onmouseup="this.style.transform=''" ontouchstart="this.style.transform='scale(.98)'" ontouchend="this.style.transform=''">
+      <!-- Background glow -->
+      <div style="position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(91,94,244,.25) 0%,transparent 70%);pointer-events:none"></div>
+      <div style="position:absolute;bottom:-30px;left:30%;width:120px;height:120px;background:radial-gradient(circle,rgba(15,214,194,.12) 0%,transparent 70%);pointer-events:none"></div>
+      <div style="padding:18px 20px;display:flex;align-items:center;gap:16px;position:relative">
+        <!-- Play icon circle -->
+        <div style="
+          width:58px;height:58px;border-radius:50%;flex-shrink:0;
+          background:linear-gradient(135deg,var(--accent) 0%,#7c3aed 100%);
+          display:flex;align-items:center;justify-content:center;
+          box-shadow:0 4px 20px rgba(91,94,244,.45);
+        ">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+        </div>
+        <!-- Info -->
+        <div style="flex:1;min-width:0">
+          <div style="font-family:var(--font2);font-size:1rem;font-weight:800;color:#fff;margin-bottom:3px;letter-spacing:-.2px">
+            ${sessionActive ? 'Sessione in corso' : 'Avvia Player'}
+          </div>
+          <div style="font-size:12px;color:rgba(255,255,255,.55);margin-bottom:8px">
+            ${exs.length} esercizi · ${totalSets} serie · ~${estMin} min
+          </div>
+          <!-- Exercise preview pills -->
+          <div style="display:flex;gap:5px;flex-wrap:wrap">
+            ${exs.slice(0,3).map(e=>`<span style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:50px;padding:3px 10px;font-size:10px;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px">${e.name}</span>`).join('')}
+            ${exs.length > 3 ? `<span style="background:rgba(91,94,244,.2);border:1px solid rgba(91,94,244,.3);border-radius:50px;padding:3px 10px;font-size:10px;color:var(--accent-xl)">+${exs.length-3}</span>` : ''}
+          </div>
+        </div>
+        <!-- Arrow -->
+        <div style="color:rgba(255,255,255,.3);flex-shrink:0">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+      <!-- Progress bar (shows completed sets if session active) -->
+      ${sessionActive ? `<div style="height:3px;background:rgba(255,255,255,.08)"><div id="ep-launcher-progress" style="height:100%;background:linear-gradient(90deg,var(--teal),var(--accent));width:0%;transition:width .4s"></div></div>` : ''}
+    </div>
+
     <!-- DAY HEADER -->
     <div style="display:flex;align-items:start;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
       <div>
@@ -14544,6 +14590,9 @@ nav {
 .ep-slide{position:absolute;bottom:0;left:0;right:0;background:#121220;border-radius:20px 20px 0 0;padding:8px 16px max(20px,env(safe-area-inset-bottom));transform:translateY(101%);transition:transform .26s cubic-bezier(.32,0,.67,0);z-index:20;max-height:78vh;overflow-y:auto}
 .ep-slide.open{transform:translateY(0)}
 .ep-slide-handle{width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.12);margin:0 auto 14px}
+/* ── Player launcher banner hover ── */
+#ep-launcher:hover{box-shadow:0 12px 40px rgba(91,94,244,.3)!important;border-color:rgba(91,94,244,.55)!important}
+@media(max-width:768px){#ep-launcher:hover{box-shadow:0 8px 32px rgba(91,94,244,.18)!important}}
 /* Note */
 .ep-note{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:12px;color:#fff;font-family:var(--font);font-size:15px;width:100%;resize:none;min-height:80px;outline:none;transition:border-color .15s;display:block}
 .ep-note:focus{border-color:var(--accent)}
@@ -15937,6 +15986,8 @@ function epCompleteCurrentSet(){
   if(_epCurrentSet>=_epTotalSets){
     _epUpdatePlayBtn();
     if(_epDayKey&&_epEi!=null) try{logExercise(_epDayKey,_epEi);}catch(e){}
+    // Update launcher progress
+    if(_epDayKey) try{epUpdateLauncherProgress(parseInt(_epDayKey.replace('day','')));}catch(e){}
   } else {
     _epStartRest(_epRestArr[_epCurrentSet-1]||90);
   }
@@ -16155,6 +16206,40 @@ function epSaveKgRow(s,val){
     var kgInp=document.getElementById('ep-kg-input');
     if(kgInp) kgInp.value=val;
   }
+}
+
+// ── Launch player on day's first exercise ──
+function epLaunchDay(dayIdx){
+  var prog=SESSION&&SESSION.program;
+  if(!prog){ toast('Nessun programma attivo','error'); return; }
+  var day=(prog.days||[])[dayIdx];
+  if(!day){ return; }
+  var exs=day.exercises||[];
+  if(!exs.length){ toast('Nessun esercizio','error'); return; }
+  if(!sessionActive) startSession(dayIdx);
+  var ex=exs[0];
+  openExPlayer(ex,'day'+dayIdx,0);
+  // Update progress bar if session active
+  setTimeout(function(){ epUpdateLauncherProgress(dayIdx); },200);
+}
+
+function epUpdateLauncherProgress(dayIdx){
+  var prog=SESSION&&SESSION.program;
+  if(!prog) return;
+  var exs=((prog.days||[])[dayIdx]||{}).exercises||[];
+  var bar=document.getElementById('ep-launcher-progress');
+  if(!bar||!exs.length) return;
+  var dayKey='day'+dayIdx;
+  var done=0,total=0;
+  exs.forEach(function(ex,ei){
+    var sets=parseInt(ex.sets)||3;
+    total+=sets;
+    for(var s=0;s<sets;s++){
+      var pill=document.getElementById('set-'+dayKey+'-'+ei+'-'+s);
+      if(pill&&pill.classList.contains('done')) done++;
+    }
+  });
+  bar.style.width=(total>0?Math.round(done/total*100):0)+'%';
 }
 
 // ── openYTDirect: always open player ──
