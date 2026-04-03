@@ -1237,7 +1237,6 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
   </div>
   <!-- MOBILE nav-right -->
   <div class="nav-mobile-right">
-    <button class="btn-nav primary" id="nav-cta-mobile" style="font-size:.82rem;padding:8px 14px;border-radius:50px" onclick="showPage('pg-auth','register')">Inizia gratis →</button>
     <button class="btn-nav ghost" onclick="toggleMobileMenu()" id="hamburger-btn" style="padding:6px 10px;line-height:1;display:flex;align-items:center">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
@@ -1875,18 +1874,21 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
 <!-- TRAINER LOGIN -->
 <div class="pg" id="pg-trainer-login" style="padding-top:var(--nav-h)">
 <nav><a class="nav-logo" onclick="showPage('pg-land')" style="display:flex;align-items:center;text-decoration:none;-webkit-tap-highlight-color:transparent"><svg width="200" height="28" viewBox="0 0 420 56" xmlns="http://www.w3.org/2000/svg" style="overflow:visible"><defs><style>@keyframes _spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}@keyframes _spinR{0%{transform:rotate(0deg)}100%{transform:rotate(-360deg)}}@keyframes _glow{0%,100%{filter:drop-shadow(0 0 4px #0099ff)}50%{filter:drop-shadow(0 0 10px #0099ff)}}@keyframes _bolt{0%,100%{opacity:.8}50%{opacity:1}}</style><filter id="lgf6"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g transform="translate(28,28)" style="animation:_glow 2.4s ease-in-out infinite"><circle cx="0" cy="0" r="24" fill="none" stroke="#0099ff" stroke-width="1" stroke-dasharray="8 5" opacity=".4" style="transform-origin:0 0;animation:_spin 8s linear infinite"/><circle cx="0" cy="0" r="19" fill="none" stroke="#0099ff" stroke-width="0.5" opacity=".2"/><polygon points="0,-18 18,0 0,18 -18,0" fill="rgba(0,153,255,.08)" stroke="#0099ff" stroke-width="1.5"/><polygon points="0,-10 10,0 0,10 -10,0" fill="rgba(0,153,255,.15)" stroke="#0099ff" stroke-width="1" opacity=".7"/><polygon points="2,-7 -3,1 2,1 -2,7 3,-1 -2,-1" fill="#0099ff" filter="url(#lgf6)" style="animation:_bolt 1.8s ease-in-out infinite"/><circle cx="0" cy="-18" r="2" fill="#0099ff" opacity=".8"/><circle cx="18" cy="0" r="2" fill="#0099ff" opacity=".8"/><circle cx="0" cy="18" r="2" fill="#0099ff" opacity=".8"/><circle cx="-18" cy="0" r="2" fill="#0099ff" opacity=".8"/><circle cx="0" cy="0" r="26" fill="none" stroke="#00ccff" stroke-width="0.5" stroke-dasharray="3 18" opacity=".3" style="transform-origin:0 0;animation:_spinR 12s linear infinite"/></g><g transform="translate(64,0)"><rect x="0" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="0" y="0" width="40" height="9" rx="2" fill="#0099ff"/><rect x="0" y="23" width="30" height="9" rx="2" fill="#0099ff"/><rect x="0" y="47" width="40" height="9" rx="2" fill="#0099ff"/><rect x="52" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="52" y="47" width="40" height="9" rx="2" fill="#0099ff"/><rect x="104" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="118" y="0" width="40" height="9" rx="2" fill="#0099ff"/><rect x="134" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="202" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="166" y="0" width="40" height="9" rx="2" fill="#0099ff"/><rect x="175" y="23" width="31" height="9" rx="2" fill="#0099ff"/><rect x="166" y="47" width="40" height="9" rx="2" fill="#0099ff"/><rect x="222" y="8" width="1" height="40" fill="rgba(255,255,255,.08)"/><text x="232" y="38" font-family="Arial Narrow,Arial,sans-serif" font-size="20" font-weight="700" letter-spacing="5" fill="rgba(255,255,255,.55)">COACH</text><rect x="334" y="8" width="1" height="40" fill="rgba(255,255,255,.05)"/><text x="344" y="24" font-family="Arial,sans-serif" font-size="10" letter-spacing="2" fill="rgba(255,255,255,.22)">PROGRAM</text><text x="344" y="42" font-family="Arial,sans-serif" font-size="11" font-weight="700" letter-spacing="2" fill="#0099ff">.FIT</text></g></svg></a><div class="nav-right"><button class="btn-nav ghost" onclick="showPage('pg-land')">← Torna</button></div></nav>
-<div style="min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;padding:40px 16px">
-  <div class="card" style="max-width:400px;width:100%">
-    <h2 style="font-family:var(--font2);margin-bottom:20px">Area Trainer</h2>
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div class="field"><label>Email professionista</label><input class="inp" id="tr-log-email" type="email"></div>
-      <div class="field"><label>Password</label><input class="inp" id="tr-log-pass" type="password"></div>
-      <div id="tr-auth-err" style="color:var(--red);font-size:.85rem;display:none"></div>
-      <button class="btn btn-primary" style="width:100%" onclick="doTrainerLogin()">Accedi come Trainer</button>
-      <p style="text-align:center;font-size:.82rem;color:var(--sub)">Non sei registrato? <a onclick="openTrainerRegOverlay()" style="color:var(--accent);cursor:pointer">Registrati</a></p>
-    </div>
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg)">
+  <div style="text-align:center">
+    <div style="color:var(--sub);font-size:.9rem;margin-bottom:16px">Reindirizzamento...</div>
+    <div id="tr-auth-err" style="display:none"></div>
   </div>
 </div>
+<script>
+(function(){
+  var el=document.getElementById('pg-trainer-login');
+  if(el&&el.classList.contains('on')){
+    el.classList.remove('on');
+    if(typeof openTrainerLoginOverlay==='function') openTrainerLoginOverlay();
+  }
+})();
+</script>
 </div>
 
 <!-- TRAINER REGISTER -->
@@ -1946,7 +1948,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
       <button class="btn btn-primary" style="width:100%;padding:14px;font-size:15px;border-radius:12px;font-weight:700;margin-top:4px" onclick="doTrainerReg()">Registra il profilo &#8594;</button>
 
       <p style="text-align:center;font-size:.78rem;color:var(--muted);margin:0">
-        Hai gi&#224; un account? <a onclick="showPage('pg-trainer-login')" style="color:var(--accent);cursor:pointer">Accedi</a>
+        Hai gi&#224; un account? <a onclick="openTrainerLoginOverlay()" style="color:var(--accent);cursor:pointer">Accedi</a>
       </p>
 
     </div>
@@ -3210,6 +3212,13 @@ function showPage(id, sub){
     }, 200);
   }
   if(id==='pg-marketplace') renderMarketplace();
+  // Auto-redirect trainer login page to overlay
+  if(id==='pg-trainer-login'){
+    var pgtl=document.getElementById('pg-trainer-login');
+    if(pgtl) pgtl.classList.remove('on');
+    if(typeof openTrainerLoginOverlay==='function') setTimeout(openTrainerLoginOverlay,0);
+    return;
+  }
   if(id==='pg-dash') renderDashboard();
   if(id==='pg-trainer-dash') renderTrainerDash();
   if(id==='pg-onboard') initOnboarding();
@@ -3691,7 +3700,7 @@ function doLogoutTrainer(){
   clearTimeout(window._sessionSyncTimer);
   TR_SESSION = null;
   localStorage.removeItem('ecp_tr_session');
-  showPage('pg-trainer-login');
+  openTrainerLoginOverlay();
   toast('Arrivederci!', 'success');
 }
 
@@ -9163,7 +9172,7 @@ function _renderCoachMsg(m){
 
 function renderTrainerDash(){
   TR_SESSION=loadTrainerSession();
-  if(!TR_SESSION){ showPage('pg-trainer-login'); return; }
+  if(!TR_SESSION){ openTrainerLoginOverlay(); return; }
   const nameEl=document.getElementById('tr-dash-name');
   if(nameEl) nameEl.textContent=TR_SESSION.name+' '+TR_SESSION.surname;
   showTrainerSection('overview');
@@ -9929,7 +9938,7 @@ function doTrainerReg(){
     status:'pending',rating:5,clients:[],photo:'TR',
     joinDate:new Date().toISOString()});
   toast('Registrazione inviata! Attendi approvazione.','success');
-  setTimeout(()=>showPage('pg-trainer-login'),1500);
+  setTimeout(()=>openTrainerLoginOverlay(),1500);
 }
 
 // ─── MARKETPLACE ──────────────────────────────────────────
@@ -14825,7 +14834,7 @@ nav {
         </button>
 
         <p style="text-align:center;font-size:.78rem;color:#475569;font-family:sans-serif;margin:0">
-          Hai gi&#224; un account? <a onclick="closeTrainerRegOverlay();showPage('pg-trainer-login')" style="color:#0099ff;cursor:pointer">Accedi</a>
+          Hai gi&#224; un account? <a onclick="closeTrainerRegOverlay();openTrainerLoginOverlay()" style="color:#0099ff;cursor:pointer">Accedi</a>
         </p>
 
       </div>
@@ -14846,6 +14855,65 @@ nav {
   </div>
 </div>
 
+
+<!-- ═══ TRAINER LOGIN OVERLAY ═══ -->
+<div id="trainer-login-overlay" style="display:none;position:fixed;inset:0;z-index:99999;background:#080810;overflow-y:auto;-webkit-overflow-scrolling:touch">
+
+  <!-- NAV -->
+  <div style="position:sticky;top:0;z-index:10;background:#0d0d1a;border-bottom:1px solid #1a1a2e;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px">
+    <div style="font-family:sans-serif;font-weight:800;font-size:1rem;color:#fff">
+      <span style="color:#0fd6c2">Area</span> <span style="color:#0099ff">Trainer</span>
+    </div>
+    <button onclick="closeTrainerLoginOverlay()" style="padding:7px 16px;border-radius:8px;border:1px solid #1a1a2e;background:transparent;color:#94a3b8;font-size:13px;cursor:pointer;font-family:sans-serif">&#8592; Chiudi</button>
+  </div>
+
+  <!-- CONTENT -->
+  <div style="max-width:420px;margin:0 auto;padding:48px 20px 60px;display:flex;flex-direction:column;align-items:center">
+
+    <!-- Icon -->
+    <div style="display:inline-flex;align-items:center;justify-content:center;width:54px;height:54px;border-radius:16px;background:rgba(15,214,194,.12);border:1.5px solid rgba(15,214,194,.25);margin-bottom:20px">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0fd6c2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg>
+    </div>
+    <h2 style="font-family:sans-serif;font-size:1.4rem;font-weight:800;color:#f1f5f9;margin:0 0 6px;text-align:center">Accedi come Trainer</h2>
+    <p style="color:#64748b;font-size:.88rem;margin:0 0 28px;text-align:center">Il tuo pannello professionale</p>
+
+    <!-- Form -->
+    <div style="background:#0d0d1a;border:1px solid #1a1a2e;border-radius:16px;padding:24px;width:100%;box-sizing:border-box">
+      <div style="display:flex;flex-direction:column;gap:14px">
+
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Email professionista</label>
+          <input id="trl-email" type="email" placeholder="trainer@example.com"
+            style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none">
+        </div>
+
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Password</label>
+          <input id="trl-pass" type="password" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;"
+            style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none">
+        </div>
+
+        <div id="trl-err" style="display:none;padding:10px 14px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;color:#f87171;font-size:.85rem;font-family:sans-serif"></div>
+
+        <button onclick="doTrainerLoginOverlay()" style="width:100%;padding:14px;background:#0099ff;border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;font-family:sans-serif;cursor:pointer">
+          Accedi &#8594;
+        </button>
+
+        <div style="text-align:center;padding:8px 0;color:#334155;font-size:12px;font-family:sans-serif">&#9135; oppure &#9135;</div>
+
+        <button onclick="closeTrainerLoginOverlay();openTrainerRegOverlay()" style="width:100%;padding:13px;background:transparent;border:1.5px solid #1e293b;border-radius:12px;color:#0fd6c2;font-size:14px;font-weight:600;font-family:sans-serif;cursor:pointer">
+          &#43; Registra il tuo profilo
+        </button>
+
+      </div>
+    </div>
+
+    <p style="margin-top:20px;font-size:.78rem;color:#334155;font-family:sans-serif;text-align:center">
+      Sei un cliente? <a onclick="closeTrainerLoginOverlay();showPage('pg-auth','login')" style="color:#0099ff;cursor:pointer">Accedi qui</a>
+    </p>
+
+  </div>
+</div>
 </body></html>`;
 
   const w = window.open('','_blank');
@@ -16826,8 +16894,40 @@ function doTrainerRegOverlay(){
   }
   closeTrainerRegOverlay();
   alert('Registrazione inviata! Attendi approvazione dall\'owner.');
-  if(typeof showPage==='function') showPage('pg-trainer-login');
+  if(typeof showPage==='function') openTrainerLoginOverlay();
 }
+
+function openTrainerLoginOverlay(){
+  var el=document.getElementById('trainer-login-overlay');
+  if(!el) return;
+  var e=document.getElementById('trl-email'); if(e) e.value='';
+  var p=document.getElementById('trl-pass'); if(p) p.value='';
+  var err=document.getElementById('trl-err'); if(err) err.style.display='none';
+  el.style.display='block';
+  window.scrollTo(0,0);
+}
+function closeTrainerLoginOverlay(){
+  var el=document.getElementById('trainer-login-overlay');
+  if(el) el.style.display='none';
+}
+function doTrainerLoginOverlay(){
+  var email=(document.getElementById('trl-email')||{}).value||'';
+  var pass=(document.getElementById('trl-pass')||{}).value||'';
+  var err=document.getElementById('trl-err');
+  email=email.trim().toLowerCase();
+  if(!email||!pass){ err.textContent='Inserisci email e password'; err.style.display='block'; return; }
+  var tr=typeof getTrainerByEmail==='function'?getTrainerByEmail(email):null;
+  if(!tr){ err.textContent='Trainer non trovato'; err.style.display='block'; return; }
+  if(tr.pass!==pass){ err.textContent='Password non corretta'; err.style.display='block'; return; }
+  if(tr.status==='pending'){ err.textContent='Account in attesa di approvazione'; err.style.display='block'; return; }
+  if(tr.status==='rejected'||tr.status==='suspended'){ err.textContent='Account sospeso o rifiutato'; err.style.display='block'; return; }
+  if(typeof TR_SESSION!=='undefined') TR_SESSION=tr;
+  localStorage.setItem('ecp_tr_session',JSON.stringify(tr));
+  closeTrainerLoginOverlay();
+  if(typeof showPage==='function') showPage('pg-trainer-dash');
+  if(typeof renderTrainerDash==='function') renderTrainerDash();
+}
+
 </script>
 
 <!-- ═══ TRAINER REGISTRATION OVERLAY ═══ -->
@@ -16911,7 +17011,7 @@ function doTrainerRegOverlay(){
         </button>
 
         <p style="text-align:center;font-size:.78rem;color:#475569;font-family:sans-serif;margin:0">
-          Hai gi&#224; un account? <a onclick="closeTrainerRegOverlay();showPage('pg-trainer-login')" style="color:#0099ff;cursor:pointer">Accedi</a>
+          Hai gi&#224; un account? <a onclick="closeTrainerRegOverlay();openTrainerLoginOverlay()" style="color:#0099ff;cursor:pointer">Accedi</a>
         </p>
 
       </div>
@@ -16932,4 +17032,63 @@ function doTrainerRegOverlay(){
   </div>
 </div>
 
+
+<!-- ═══ TRAINER LOGIN OVERLAY ═══ -->
+<div id="trainer-login-overlay" style="display:none;position:fixed;inset:0;z-index:99999;background:#080810;overflow-y:auto;-webkit-overflow-scrolling:touch">
+
+  <!-- NAV -->
+  <div style="position:sticky;top:0;z-index:10;background:#0d0d1a;border-bottom:1px solid #1a1a2e;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px">
+    <div style="font-family:sans-serif;font-weight:800;font-size:1rem;color:#fff">
+      <span style="color:#0fd6c2">Area</span> <span style="color:#0099ff">Trainer</span>
+    </div>
+    <button onclick="closeTrainerLoginOverlay()" style="padding:7px 16px;border-radius:8px;border:1px solid #1a1a2e;background:transparent;color:#94a3b8;font-size:13px;cursor:pointer;font-family:sans-serif">&#8592; Chiudi</button>
+  </div>
+
+  <!-- CONTENT -->
+  <div style="max-width:420px;margin:0 auto;padding:48px 20px 60px;display:flex;flex-direction:column;align-items:center">
+
+    <!-- Icon -->
+    <div style="display:inline-flex;align-items:center;justify-content:center;width:54px;height:54px;border-radius:16px;background:rgba(15,214,194,.12);border:1.5px solid rgba(15,214,194,.25);margin-bottom:20px">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0fd6c2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg>
+    </div>
+    <h2 style="font-family:sans-serif;font-size:1.4rem;font-weight:800;color:#f1f5f9;margin:0 0 6px;text-align:center">Accedi come Trainer</h2>
+    <p style="color:#64748b;font-size:.88rem;margin:0 0 28px;text-align:center">Il tuo pannello professionale</p>
+
+    <!-- Form -->
+    <div style="background:#0d0d1a;border:1px solid #1a1a2e;border-radius:16px;padding:24px;width:100%;box-sizing:border-box">
+      <div style="display:flex;flex-direction:column;gap:14px">
+
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Email professionista</label>
+          <input id="trl-email" type="email" placeholder="trainer@example.com"
+            style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none">
+        </div>
+
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Password</label>
+          <input id="trl-pass" type="password" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;"
+            style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1.5px solid #1e293b;background:#131320;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none">
+        </div>
+
+        <div id="trl-err" style="display:none;padding:10px 14px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;color:#f87171;font-size:.85rem;font-family:sans-serif"></div>
+
+        <button onclick="doTrainerLoginOverlay()" style="width:100%;padding:14px;background:#0099ff;border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;font-family:sans-serif;cursor:pointer">
+          Accedi &#8594;
+        </button>
+
+        <div style="text-align:center;padding:8px 0;color:#334155;font-size:12px;font-family:sans-serif">&#9135; oppure &#9135;</div>
+
+        <button onclick="closeTrainerLoginOverlay();openTrainerRegOverlay()" style="width:100%;padding:13px;background:transparent;border:1.5px solid #1e293b;border-radius:12px;color:#0fd6c2;font-size:14px;font-weight:600;font-family:sans-serif;cursor:pointer">
+          &#43; Registra il tuo profilo
+        </button>
+
+      </div>
+    </div>
+
+    <p style="margin-top:20px;font-size:.78rem;color:#334155;font-family:sans-serif;text-align:center">
+      Sei un cliente? <a onclick="closeTrainerLoginOverlay();showPage('pg-auth','login')" style="color:#0099ff;cursor:pointer">Accedi qui</a>
+    </p>
+
+  </div>
+</div>
 </body></html>
