@@ -1967,8 +1967,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
 
 </div><!-- end ex-player-modal -->
 
-
-
+<div class="modal-bg" id="pay-modal">
   <div class="modal" style="max-width:480px">
     <div class="modal-hd">
       <h3>Attiva Piano Pro</h3>
@@ -3522,7 +3521,7 @@ async function doRegister(){
     showPage('pg-onboard');
   } catch(e) {
     console.error('doRegister error:', e);
-    showAuthError('Errore connessione. Riprova.',true);
+    showAuthError('Servizio temporaneamente non disponibile. Riprova tra qualche minuto.',true);
   } finally {
     if(btn){ btn.disabled=false; btn.textContent='Crea Account'; }
   }
@@ -3540,7 +3539,12 @@ async function doLogin(){
   try {
     const res  = await apiPost('/api/auth/login', { email, password: pass });
     if(!res.ok || res.error){
-      showAuthError(res.error || 'Credenziali errate. Controlla email e password.');
+      // Hide raw server errors from user
+      const raw = res.error || '';
+      const msg = (raw.includes('ECONNREFUSED') || raw.includes('Database') || raw.includes('DB'))
+        ? 'Servizio temporaneamente non disponibile. Riprova tra qualche minuto.'
+        : (raw || 'Credenziali errate. Controlla email e password.');
+      showAuthError(msg);
       return;
     }
     _authToken = res.token;
@@ -3565,7 +3569,7 @@ async function doLogin(){
     else { showPage('pg-onboard'); }
   } catch(e) {
     console.error('doLogin error:', e);
-    showAuthError('Errore di connessione. Riprova.');
+    showAuthError('Connessione al server non riuscita. Controlla la tua rete e riprova.');
   } finally {
     _loginInProgress = false;
     if(btn){ btn.disabled=false; btn.textContent='Accedi'; }
