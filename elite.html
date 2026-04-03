@@ -1585,53 +1585,83 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
 <div style="max-width:640px;margin:0 auto;padding:40px 20px">
 
   <div id="onb-choice">
-    <div style="text-align:center;margin-bottom:28px">
-      <div style="font-size:2.5rem;margin-bottom:8px">&#127919;</div>
+    <div style="text-align:center;margin-bottom:32px">
+      <!-- SVG target/goal icon -->
+      <div style="display:flex;justify-content:center;margin-bottom:14px">
+        <div style="width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,rgba(91,94,244,.15),rgba(15,214,194,.1));border:1.5px solid rgba(91,94,244,.25);display:flex;align-items:center;justify-content:center">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#g1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#5b5ef4"/><stop offset="100%" stop-color="#0fd6c2"/></linearGradient></defs>
+            <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+          </svg>
+        </div>
+      </div>
       <h2 style="font-family:var(--font2);font-size:1.5rem;margin-bottom:6px">Crea il tuo programma</h2>
       <p style="color:var(--sub);font-size:.9rem">Scegli come vuoi configurarlo</p>
     </div>
+
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px">
 
+      <!-- CARD RAPIDO -->
       <div class="card" onclick="startQuickOnb()"
-        style="cursor:pointer;border:2px solid transparent;transition:.2s;text-align:center;padding:22px 14px"
-        onmouseenter="this.style.borderColor='var(--teal)';this.style.transform='translateY(-3px)'"
-        onmouseleave="this.style.borderColor='transparent';this.style.transform='none'">
-        <div style="font-size:2rem;margin-bottom:6px">&#9889;</div>
-        <div style="font-family:var(--font2);font-weight:700;color:var(--teal);margin-bottom:4px">Rapido</div>
-        <div style="font-size:.78rem;color:var(--sub);margin-bottom:10px">6 domande &bull; 1 minuto</div>
-        <div style="font-size:.75rem;color:var(--sub);text-align:left;line-height:1.8;margin-bottom:12px">
-          ✓ Obiettivo e livello<br>
-          ✓ Frequenza settimanale<br>
-          ✓ Eta, sesso, peso<br>
-          ✓ Attrezzatura<br>
-          ✓ Limitazioni fisiche
+        style="cursor:pointer;border:2px solid transparent;transition:.2s .0s;text-align:center;padding:24px 16px;position:relative;overflow:hidden"
+        onmouseenter="this.style.borderColor='var(--teal)';this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 32px rgba(15,214,194,.15)'"
+        onmouseleave="this.style.borderColor='transparent';this.style.transform='none';this.style.boxShadow='none'">
+        <!-- SVG fulmine -->
+        <div style="display:flex;justify-content:center;margin-bottom:12px">
+          <div style="width:52px;height:52px;border-radius:14px;background:rgba(15,214,194,.1);border:1.5px solid rgba(15,214,194,.2);display:flex;align-items:center;justify-content:center">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0fd6c2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+          </div>
         </div>
-        <button class="btn" style="width:100%;border-radius:50px;background:rgba(15,214,194,.12);border:1px solid rgba(15,214,194,.3);color:var(--teal);font-weight:600;font-size:.85rem">
-          Inizia rapido &#9889;
+        <div style="font-family:var(--font2);font-weight:700;color:var(--teal);margin-bottom:4px;font-size:1rem">Rapido</div>
+        <div style="font-size:.75rem;color:var(--sub);margin-bottom:12px">6 domande &bull; 1 minuto</div>
+        <div style="font-size:.74rem;color:var(--sub);text-align:left;line-height:2;margin-bottom:14px">
+          <div style="display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Obiettivo e livello</div>
+          <div style="display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Frequenza settimanale</div>
+          <div style="display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Età, sesso, peso</div>
+          <div style="display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Attrezzatura</div>
+          <div style="display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Limitazioni fisiche</div>
+        </div>
+        <button class="btn" style="width:100%;border-radius:50px;background:rgba(15,214,194,.12);border:1.5px solid rgba(15,214,194,.35);color:var(--teal);font-weight:700;font-size:.85rem;display:flex;align-items:center;justify-content:center;gap:7px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Inizia rapido
         </button>
       </div>
 
+      <!-- CARD COMPLETO -->
       <div class="card" onclick="startFullOnb()"
-        style="cursor:pointer;border:2px solid transparent;transition:.2s;text-align:center;padding:22px 14px"
-        onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-3px)'"
-        onmouseleave="this.style.borderColor='transparent';this.style.transform='none'">
-        <div style="font-size:2rem;margin-bottom:6px"></div>
-        <div style="font-family:var(--font2);font-weight:700;color:var(--accent);margin-bottom:4px">Completo</div>
-        <div style="font-size:.78rem;color:var(--sub);margin-bottom:10px">7 sezioni &bull; Ultra-personalizzato</div>
-        <div style="font-size:.75rem;color:var(--sub);text-align:left;line-height:1.8;margin-bottom:12px">
-          ✓ Tutto il questionario rapido<br>
-          ✓ Massimali di forza<br>
-          ✓ Anamnesi medica<br>
-          ✓ Stile di vita e sonno<br>
-          ✓ Obiettivi estetici e AI
+        style="cursor:pointer;border:2px solid transparent;transition:.2s;text-align:center;padding:24px 16px;position:relative;overflow:hidden"
+        onmouseenter="this.style.borderColor='var(--accent)';this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 32px rgba(91,94,244,.18)'"
+        onmouseleave="this.style.borderColor='transparent';this.style.transform='none';this.style.boxShadow='none'">
+        <!-- SVG documento completo -->
+        <div style="display:flex;justify-content:center;margin-bottom:12px">
+          <div style="width:52px;height:52px;border-radius:14px;background:rgba(91,94,244,.1);border:1.5px solid rgba(91,94,244,.25);display:flex;align-items:center;justify-content:center">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#5b5ef4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+          </div>
         </div>
-        <button class="btn btn-primary" style="width:100%;border-radius:50px;font-weight:600;font-size:.85rem">
-          Questionario completo 
+        <div style="font-family:var(--font2);font-weight:700;color:var(--accent-xl);margin-bottom:4px;font-size:1rem">Completo</div>
+        <div style="font-size:.75rem;color:var(--sub);margin-bottom:12px">7 sezioni &bull; Ultra-personalizzato</div>
+        <div style="font-size:.74rem;color:var(--sub);text-align:left;line-height:2;margin-bottom:14px">
+          <div style="display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent-xl)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Tutto il questionario rapido</div>
+          <div style="display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent-xl)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Massimali di forza</div>
+          <div style="display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent-xl)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Anamnesi medica</div>
+          <div style="display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent-xl)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Stile di vita e sonno</div>
+          <div style="display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent-xl)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Obiettivi estetici e AI</div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;border-radius:50px;font-weight:700;font-size:.85rem;display:flex;align-items:center;justify-content:center;gap:7px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Questionario completo
         </button>
       </div>
 
     </div>
-    <p style="text-align:center;font-size:.76rem;color:var(--muted)">· Puoi aggiornare i dati dalla dashboard in qualsiasi momento</p>
+    <p style="text-align:center;font-size:.76rem;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:6px">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Puoi aggiornare i dati dalla dashboard in qualsiasi momento
+    </p>
   </div>
 
   <div id="onb-wizard" style="display:none">
