@@ -3203,9 +3203,16 @@ function showPage(id, sub){
   if(!pg) return;
   pg.classList.add('on');
   window.scrollTo(0,0);
+
+  // ── Salva pagina corrente per restore al ricaricamento ──
+  try{
+    sessionStorage.setItem('ecp_last_pg', id);
+    if(sub) sessionStorage.setItem('ecp_last_sub', sub);
+    else sessionStorage.removeItem('ecp_last_sub');
+  }catch(e){}
+
   if(id==='pg-auth'){
     switchAuthTab(sub||'login');
-    // Re-inizializza il bottone Google Sign-In
     setTimeout(function(){
       if(typeof initGoogleSignIn === 'function') initGoogleSignIn();
     }, 200);
@@ -3682,6 +3689,8 @@ async function doLogout(){
   clearSession();
   SESSION = null; TR_SESSION = null;
   window._owAllUsers = null;
+  // Pulisci stato pagina salvato
+  try{ sessionStorage.removeItem('ecp_last_pg'); sessionStorage.removeItem('ecp_last_sec'); sessionStorage.removeItem('ecp_last_sub'); }catch(e){}
   window.history.replaceState({}, '', window.location.pathname);
   showPage('pg-land');
   toast('Arrivederci!', 'success');
@@ -6689,6 +6698,8 @@ function showDashSection(sec){
   document.querySelectorAll('.mobile-nav-item').forEach(s=>s.classList.toggle('act',s.dataset.sec===sec));
   const el=document.getElementById('ds-'+sec);
   if(el){ el.classList.add('act'); renderDashSec(sec); }
+  // ── Salva sezione corrente per restore al ricaricamento ──
+  try{ sessionStorage.setItem('ecp_last_sec', sec); }catch(e){}
 }
 
 function renderDashSec(sec){
@@ -13195,6 +13206,7 @@ function scheduleStreakReminder(){
 }
 
 async function enableNotifications(){
+  if(!SESSION){ toast('Accedi per attivare le notifiche','error'); return; }
   const granted = await requestNotifications();
   if(!granted) return;
   scheduleWorkoutReminder(18, 30); // 18:30 every day
@@ -13435,8 +13447,21 @@ addEventListener('DOMContentLoaded', ()=>{
 
   // RESTORE IMMEDIATO: se loggato, mostra dashboard senza attese
   if(SESSION && SESSION.email && _authToken){
-    showPage('pg-dash');
+    // ── Restore pagina e sezione dall'ultima visita ──
+    var _lastPg  = sessionStorage.getItem('ecp_last_pg')  || 'pg-dash';
+    var _lastSec = sessionStorage.getItem('ecp_last_sec') || 'home';
+    var _lastSub = sessionStorage.getItem('ecp_last_sub') || null;
+
+    // Pagine sicure da ripristinare quando loggato
+    var _safePgs = ['pg-dash','pg-onboard','pg-marketplace'];
+    if(_safePgs.indexOf(_lastPg) === -1) _lastPg = 'pg-dash';
+
+    showPage(_lastPg, _lastSub);
     renderDashboard();
+    // Ripristina la sezione dashboard se eravamo nella dashboard
+    if(_lastPg === 'pg-dash' && _lastSec && _lastSec !== 'home'){
+      setTimeout(function(){ showDashSection(_lastSec); }, 80);
+    }
     // Carica da Supabase SUBITO — fonte di verità assoluta
     setTimeout(function(){
       if(document.getElementById('pg-owner')?.classList.contains('on')) return; // non interrompere owner panel
@@ -13451,6 +13476,7 @@ addEventListener('DOMContentLoaded', ()=>{
       }).catch(console.error);
     }, 100);
   } else if(TR_SESSION && TR_SESSION.email){
+    // Restore trainer — torna sempre alla dashboard trainer
     showPage('pg-trainer-dash');
   }
   // initApp: verifica OAuth Supabase
@@ -13497,8 +13523,8 @@ addEventListener('DOMContentLoaded', ()=>{
   });
 
   console.log('🚀 EliteCoachProgram.fit v5.1 — Loaded. Exercises:', ALL_EXERCISES.length);
-  scheduleWorkoutReminder();
-  checkWeeklyReminder();
+  // Reminder e notifiche: solo se loggato
+  if(SESSION){ scheduleWorkoutReminder(); checkWeeklyReminder(); }
   loadTheme();
   checkPaymentRedirect();
   checkOAuthCallback();
@@ -15520,6 +15546,7 @@ async function owSaveSystem(){
 <script>
 // ════ NOTIFICHE COMPLETE ════
 async function requestNotificationPermission(){
+  if(!SESSION){ toast('Accedi per attivare le notifiche','error'); return false; }
   if(!('Notification' in window)){ toast('Browser non supporta notifiche','error'); return false; }
   if(Notification.permission==='granted') return true;
   if(Notification.permission==='denied'){ toast('Notifiche bloccate — abilitale dal browser','error'); return false; }
@@ -15544,6 +15571,7 @@ function notifyNewPR(name,weight,reps){
   toast('PR: '+name+' '+weight+'kg!','success');
 }
 function showNotificationBanner(){
+  if(!SESSION) return; // Solo per utenti loggati
   if(document.getElementById('notif-banner')) return;
   var b=document.createElement('div');
   b.id='notif-banner';
@@ -15564,6 +15592,8 @@ function showNotificationBanner(){
   setTimeout(function(){if(b.parentNode)b.remove();},8000);
 }
 async function initNotificationSystem(){
+  // Solo se utente loggato
+  if(!SESSION) return;
   if(!localStorage.getItem('ecp_notif_asked')&&'Notification' in window&&Notification.permission==='default'){
     setTimeout(showNotificationBanner,30000);
   }
