@@ -1231,7 +1231,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
       <button class="lb act" data-lang="it" onclick="setLang('it')">IT</button>
       <button class="lb" data-lang="en" onclick="setLang('en')">EN</button>
     </div>
-    <button class="btn-nav ghost" onclick="showPage('pg-marketplace')" style="display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M3 12h4m10 0h4M12 3v4m0 10v4M6.3 6.3l2.8 2.8m5.6 5.6 2.8 2.8M6.3 17.7l2.8-2.8m5.6-5.6 2.8-2.8"/></svg> Trainer</button>
+    <button class="btn-nav ghost" onclick="openMarketplaceOverlay()" style="display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M3 12h4m10 0h4M12 3v4m0 10v4M6.3 6.3l2.8 2.8m5.6 5.6 2.8 2.8M6.3 17.7l2.8-2.8m5.6-5.6 2.8-2.8"/></svg> Trainer</button>
     <button class="btn-nav ghost" id="nav-login" onclick="showPage('pg-auth','login')">Accedi</button>
     <button class="btn-nav primary" id="nav-cta" onclick="showPage('pg-auth','register')">Inizia gratis →</button>
   </div>
@@ -1246,7 +1246,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
 <!-- MOBILE MENU DROPDOWN -->
 <div id="mobile-menu" style="display:none;position:fixed;top:var(--nav-h);left:0;right:0;background:var(--bg);border-bottom:1px solid var(--border);z-index:199;padding:16px;display:none;flex-direction:column;gap:10px">
   <button class="btn btn-ghost" style="width:100%;justify-content:flex-start;gap:10px" onclick="showPage('pg-auth','login');closeMobileMenu()">Accedi</button>
-  <button class="btn btn-ghost" style="width:100%;justify-content:flex-start;gap:10px" onclick="showPage('pg-marketplace');closeMobileMenu()">Trova un Trainer</button>
+  <button class="btn btn-ghost" style="width:100%;justify-content:flex-start;gap:10px" onclick="openMarketplaceOverlay();closeMobileMenu()">Trova un Trainer</button>
   <button class="btn btn-ghost" style="width:100%;justify-content:flex-start;gap:10px" onclick="document.getElementById('libreria-section')?.scrollIntoView({behavior:'smooth'});closeMobileMenu()">Libreria Esercizi</button>
   <div style="border-top:1px solid var(--border);padding-top:10px;display:flex;gap:8px;flex-wrap:wrap">
     <button class="lb act" data-lang="it" onclick="setLang('it');closeMobileMenu()">IT</button>
@@ -1261,7 +1261,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
   <p class="hero-sub" id="hsub">Programmi personalizzati con intelligenza artificiale, trainer certificati e tracciamento avanzato dei progressi.</p>
   <div class="hero-btns">
     <button class="btn btn-xl btn-primary" onclick="showPage('pg-auth','register')" id="hcta">Crea il tuo programma gratis →</button>
-    <button class="btn btn-lg btn-ghost" onclick="showPage('pg-marketplace')" id="hcta2">Trova un Trainer</button>
+    <button class="btn btn-lg btn-ghost" onclick="openMarketplaceOverlay()" id="hcta2">Trova un Trainer</button>
   </div>
   <p class="hero-note" id="hnote">✓ Gratis per sempre · ✓ Nessuna carta richiesta · ✓ Cancella quando vuoi</p>
   <div class="stats-row">
@@ -1471,7 +1471,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
       <p>Unisciti a 50.000+ persone che hanno già scelto EliteCoachProgram.fit per i loro obiettivi di fitness.</p>
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
         <button class="btn btn-xl btn-primary" onclick="showPage('pg-auth','register')">Crea account gratis →</button>
-        <button class="btn btn-lg btn-ghost" onclick="showPage('pg-marketplace')">Trova il tuo trainer</button>
+        <button class="btn btn-lg btn-ghost" onclick="openMarketplaceOverlay()">Trova il tuo trainer</button>
       </div>
     </div>
   </div>
@@ -1694,7 +1694,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
     <div class="dash-sidebar-item" onclick="showDashSection('checkin')" data-sec="checkin"><span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14l2 2 4-4"/></svg></span>Check-in</div>
     <div class="dash-sidebar-item" onclick="showDashSection('1rm')" data-sec="1rm"><span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><polyline points="22 12 18 12 15 20 9 4 6 12 2 12"/></svg></span>Calc 1RM</div>
     <div class="dash-sidebar-item" onclick="showDashSection('social')" data-sec="social"><span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Social</div>
-    <div class="dash-sidebar-item" onclick="showPage('pg-marketplace')" style="margin-top:8px">
+    <div class="dash-sidebar-item" onclick="openMarketplaceOverlay()" style="margin-top:8px">
       <span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Trova Trainer
     </div>
     <div class="dash-sidebar-item" onclick="showDashSection('export')" data-sec="export"><span class="ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>Export</div>
@@ -1819,7 +1819,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
       <div class="mn-drawer-item" onclick="showDashSection('export');closeMobileDrawer()">
         <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><span>Export</span>
       </div>
-      <div class="mn-drawer-item" onclick="closeMobileDrawer();showPage('pg-marketplace')">
+      <div class="mn-drawer-item" onclick="closeMobileDrawer();openMarketplaceOverlay()">
         <div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><span>Trova Trainer</span>
       </div>
     </div>
@@ -1866,7 +1866,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
 <!-- TRAINER PROFILE -->
 <div class="pg" id="pg-trainer-profile" style="padding-top:var(--nav-h)">
 <nav>
-  <a class="nav-logo" onclick="showPage('pg-marketplace')">← Torna ai Trainer</a>
+  <a class="nav-logo" onclick="openMarketplaceOverlay()">← Torna ai Trainer</a>
 </nav>
 <div class="container" style="padding-top:40px;padding-bottom:60px" id="trainer-profile-content"></div>
 </div>
@@ -1971,7 +1971,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
 <!-- TRAINER PROFILE -->
 <div class="pg" id="pg-trainer-profile" style="padding-top:var(--nav-h)">
 <nav>
-  <a class="nav-logo" onclick="showPage('pg-marketplace')">← Torna ai Trainer</a>
+  <a class="nav-logo" onclick="openMarketplaceOverlay()">← Torna ai Trainer</a>
 </nav>
 <div class="container" style="padding-top:40px;padding-bottom:60px" id="trainer-profile-content"></div>
 </div>
@@ -6854,7 +6854,7 @@ function renderTrainerMessage(u){
   const trainers=getTrainers().filter(t=>t.status==='active');
   if(!u.trainerId){
     return `<p style="color:var(--sub);font-size:.88rem;margin-bottom:10px">Non hai ancora un trainer assegnato</p>
-      <button class="btn btn-ghost btn-sm" onclick="showPage('pg-marketplace')">Trova trainer</button>`;
+      <button class="btn btn-ghost btn-sm" onclick="openMarketplaceOverlay()">Trova trainer</button>`;
   }
   const tr=trainers.find(t=>t.email===u.trainerId);
   return tr?`<div style="display:flex;align-items:center;gap:10px">
@@ -8553,7 +8553,7 @@ function renderDashChat(){
         <div style="margin-bottom:12px;opacity:.25;display:flex;justify-content:center"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
         <h3 style="margin-bottom:8px">Nessun trainer assegnato</h3>
         <p style="color:var(--sub);margin-bottom:16px">Trova un trainer nel marketplace per iniziare a chattare</p>
-        <button class="btn btn-primary" onclick="showPage('pg-marketplace')">Trova trainer →</button>
+        <button class="btn btn-primary" onclick="openMarketplaceOverlay()">Trova trainer →</button>
       </div>`:`
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:12px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius)">
         <div class="avatar">${(myTrainer.name||'T')[0]}</div>
@@ -16353,6 +16353,281 @@ function owOvSaveSystem(){
   var v = document.getElementById('ov-ai-system').value;
   localStorage.setItem('ecp_ai_system', v);
   alert('✅ Istruzioni salvate');
+}
+</script>
+
+<!-- ══ MARKETPLACE TRAINER OVERLAY ══════════════════════════════ -->
+<div id="marketplace-overlay" style="display:none;position:fixed;inset:0;z-index:99998;background:#0f172a;overflow-y:auto">
+
+  <!-- NAVBAR -->
+  <div style="position:sticky;top:0;z-index:10;background:#1e293b;border-bottom:1px solid #334155;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px">
+    <div style="font-family:sans-serif;font-weight:800;font-size:1rem;color:#f1f5f9">
+      <span style="color:#0fd6c2">Trova</span> il tuo <span style="color:#818cf8">Trainer</span>
+    </div>
+    <button onclick="closeMarketplaceOverlay()"
+      style="padding:7px 16px;border-radius:8px;border:1px solid #334155;background:transparent;color:#94a3b8;font-size:13px;cursor:pointer;font-family:sans-serif">
+      ← Chiudi
+    </button>
+  </div>
+
+  <!-- HERO -->
+  <div style="background:linear-gradient(135deg,#0f172a,#1a1040,#0d1a2e);padding:40px 20px;text-align:center">
+    <div style="font-size:11px;font-weight:700;color:#0fd6c2;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px">Trainer Marketplace</div>
+    <h1 style="font-family:sans-serif;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;color:#f1f5f9;margin:0 0 10px">
+      Professionisti <span style="color:#818cf8">certificati</span>
+    </h1>
+    <p style="color:#64748b;font-size:14px;margin:0 0 28px">Risultati garantiti · Prima sessione gratuita</p>
+    <!-- Search -->
+    <div style="max-width:480px;margin:0 auto;position:relative">
+      <svg style="position:absolute;left:16px;top:50%;transform:translateY(-50%);color:#64748b" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="mv2-search" type="search" placeholder="Nome o specializzazione..."
+        style="width:100%;box-sizing:border-box;padding:14px 16px 14px 46px;border-radius:50px;border:1.5px solid #334155;background:#1e293b;color:#f1f5f9;font-size:15px;font-family:sans-serif;outline:none;-webkit-text-fill-color:#f1f5f9"
+        oninput="mvRender()">
+    </div>
+  </div>
+
+  <!-- FILTER TAGS -->
+  <div id="mv2-tags" style="display:flex;gap:8px;overflow-x:auto;padding:16px 20px;background:#0f172a;border-bottom:1px solid #1e293b;scrollbar-width:none">
+    <button class="mv2-tag act" data-spec="" onclick="mvFilter(this,'')">Tutti</button>
+    <button class="mv2-tag" data-spec="Bodybuilding"     onclick="mvFilter(this,'Bodybuilding')">Bodybuilding</button>
+    <button class="mv2-tag" data-spec="Powerlifting"     onclick="mvFilter(this,'Powerlifting')">Powerlifting</button>
+    <button class="mv2-tag" data-spec="Nutrizione"       onclick="mvFilter(this,'Nutrizione')">Nutrizione</button>
+    <button class="mv2-tag" data-spec="CrossFit"         onclick="mvFilter(this,'CrossFit')">CrossFit</button>
+    <button class="mv2-tag" data-spec="HIIT"             onclick="mvFilter(this,'HIIT')">HIIT</button>
+    <button class="mv2-tag" data-spec="Funzionale"       onclick="mvFilter(this,'Funzionale')">Funzionale</button>
+    <button class="mv2-tag" data-spec="Dimagrimento"     onclick="mvFilter(this,'Dimagrimento')">Dimagrimento</button>
+    <button class="mv2-tag" data-spec="Yoga"             onclick="mvFilter(this,'Yoga')">Yoga</button>
+    <button class="mv2-tag" data-spec="Riabilitazione"   onclick="mvFilter(this,'Riabilitazione')">Riabilitazione</button>
+  </div>
+
+  <!-- RESULTS COUNT -->
+  <div style="padding:16px 20px 8px;display:flex;align-items:center;justify-content:space-between">
+    <span id="mv2-count" style="font-size:13px;color:#64748b;font-family:sans-serif"></span>
+    <button onclick="mvBecomeTrainer()" style="font-size:12px;color:#818cf8;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);border-radius:50px;padding:6px 14px;cursor:pointer;font-family:sans-serif">+ Diventa Trainer</button>
+  </div>
+
+  <!-- GRID CARDS -->
+  <div id="mv2-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:8px 20px 40px"></div>
+
+  <!-- TRAINER PROFILE (inside overlay) -->
+  <div id="mv2-profile" style="display:none;position:fixed;inset:0;z-index:10;background:#0f172a;overflow-y:auto">
+    <div style="position:sticky;top:0;background:#1e293b;border-bottom:1px solid #334155;padding:14px 20px;display:flex;align-items:center;gap:12px">
+      <button onclick="mvCloseProfile()" style="padding:7px 14px;border-radius:8px;border:1px solid #334155;background:transparent;color:#94a3b8;font-size:13px;cursor:pointer;font-family:sans-serif">← Torna</button>
+      <span style="font-family:sans-serif;font-weight:700;color:#f1f5f9" id="mv2-profile-title">Profilo Trainer</span>
+    </div>
+    <div id="mv2-profile-content" style="padding:24px;max-width:800px;margin:0 auto"></div>
+  </div>
+
+</div>
+
+<style>
+.mv2-tag{
+  white-space:nowrap;padding:8px 16px;border-radius:50px;border:1px solid #334155;
+  background:transparent;color:#64748b;font-size:13px;cursor:pointer;
+  font-family:sans-serif;transition:.15s;flex-shrink:0;
+}
+.mv2-tag:hover{border-color:#818cf8;color:#818cf8}
+.mv2-tag.act{background:rgba(99,102,241,.15);border-color:#6366f1;color:#818cf8;font-weight:600}
+.mv2-card{
+  background:#1e293b;border:1px solid #334155;border-radius:16px;overflow:hidden;
+  cursor:pointer;transition:.2s;
+}
+.mv2-card:hover{border-color:#818cf8;transform:translateY(-3px);box-shadow:0 12px 40px rgba(99,102,241,.15)}
+.mv2-cover{
+  height:100px;display:flex;align-items:center;justify-content:center;
+  font-family:sans-serif;font-size:2rem;font-weight:800;letter-spacing:2px;color:#fff;
+}
+.mv2-body{padding:16px}
+.mv2-name{font-family:sans-serif;font-size:1.05rem;font-weight:700;color:#f1f5f9;margin-bottom:4px}
+.mv2-stars{color:#fbbf24;font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:4px}
+.mv2-bio{font-size:.83rem;color:#64748b;line-height:1.5;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mv2-specs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.mv2-spec{background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);color:#818cf8;font-size:11px;padding:3px 10px;border-radius:50px}
+.mv2-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #334155;padding-top:12px}
+.mv2-price{font-family:sans-serif;font-size:1.4rem;font-weight:800;color:#0fd6c2}
+.mv2-cta{padding:8px 18px;border:none;border-radius:50px;background:#6366f1;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:sans-serif;transition:.15s}
+.mv2-cta:hover{background:#4f46e5}
+/* Profile styles */
+.mv2-ph-top{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-bottom:24px}
+.mv2-ph-avatar{width:80px;height:80px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:800;color:#fff;flex-shrink:0}
+.mv2-ph-name{font-family:sans-serif;font-size:1.6rem;font-weight:800;color:#f1f5f9;margin-bottom:4px}
+.mv2-ph-rating{color:#fbbf24;font-size:1.1rem;margin-bottom:10px}
+.mv2-ph-bio{color:#94a3b8;font-size:.9rem;line-height:1.7;margin-bottom:12px}
+.mv2-ph-box{background:#1e293b;border:1.5px solid #334155;border-radius:12px;padding:20px;text-align:center;min-width:180px}
+.mv2-ph-price{font-family:sans-serif;font-size:2rem;font-weight:800;color:#0fd6c2}
+.mv2-ph-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.mv2-ph-stat{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:16px;text-align:center}
+.mv2-ph-stat-n{font-family:sans-serif;font-size:1.6rem;font-weight:800;color:#f1f5f9}
+.mv2-ph-stat-l{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+@media(max-width:600px){
+  .mv2-ph-top{flex-direction:column}
+  .mv2-ph-stats{grid-template-columns:1fr 1fr}
+  .mv2-ph-box{width:100%;min-width:0}
+}
+</style>
+
+<script>
+// ══ MARKETPLACE OVERLAY ════════════════════════════════════════
+var _mvFilter = '';
+
+// Colori cover per i trainer
+var _mvColors = [
+  'linear-gradient(135deg,#3b5bdb,#0fd6c2)',
+  'linear-gradient(135deg,#f97316,#f45b8a)',
+  'linear-gradient(135deg,#7c3aed,#3b5bdb)',
+  'linear-gradient(135deg,#059669,#0fd6c2)',
+  'linear-gradient(135deg,#dc2626,#f97316)',
+  'linear-gradient(135deg,#7c3aed,#ec4899)',
+];
+
+function openMarketplaceOverlay(){
+  // Seed demo trainers if none exist
+  var trainers = (typeof getTrainers==='function' ? getTrainers() : []).filter(function(t){ return t.status==='active'; });
+  if(!trainers.length && typeof seedDemoTrainers==='function') seedDemoTrainers();
+  document.getElementById('marketplace-overlay').style.display = 'block';
+  document.getElementById('mv2-profile').style.display = 'none';
+  // Reset search and filter
+  var s = document.getElementById('mv2-search'); if(s) s.value = '';
+  _mvFilter = '';
+  document.querySelectorAll('.mv2-tag').forEach(function(t){ t.classList.remove('act'); });
+  var first = document.querySelector('.mv2-tag[data-spec=""]');
+  if(first) first.classList.add('act');
+  mvRender();
+}
+
+function closeMarketplaceOverlay(){
+  document.getElementById('marketplace-overlay').style.display = 'none';
+}
+
+function mvFilter(btn, spec){
+  _mvFilter = spec;
+  document.querySelectorAll('.mv2-tag').forEach(function(t){ t.classList.remove('act'); });
+  btn.classList.add('act');
+  mvRender();
+}
+
+function mvRender(){
+  var trainers = (typeof getTrainers==='function' ? getTrainers() : []).filter(function(t){ return t.status==='active'; });
+  var search = ((document.getElementById('mv2-search')||{}).value || '').toLowerCase().trim();
+  var filtered = trainers.filter(function(t){
+    var matchSearch = !search ||
+      (t.name||'').toLowerCase().includes(search) ||
+      (t.surname||'').toLowerCase().includes(search) ||
+      (t.specializations||[]).some(function(s){ return s.toLowerCase().includes(search); });
+    var matchFilter = !_mvFilter ||
+      (t.specializations||[]).some(function(s){ return s.toLowerCase().includes(_mvFilter.toLowerCase()); });
+    return matchSearch && matchFilter;
+  });
+  var countEl = document.getElementById('mv2-count');
+  if(countEl) countEl.textContent = filtered.length + ' trainer ' + (filtered.length===1?'disponibile':'disponibili');
+  var grid = document.getElementById('mv2-grid');
+  if(!grid) return;
+  if(!filtered.length){
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#64748b;font-family:sans-serif">Nessun trainer trovato.</div>';
+    return;
+  }
+  // Build each card and append via DOM (no quote conflicts)
+  grid.innerHTML = '';
+  filtered.forEach(function(tr, i){
+    var initials = (tr.photo && tr.photo.length<=2) ? tr.photo : ((tr.name||'?')[0]+((tr.surname||'?')[0]));
+    var color = _mvColors[i % _mvColors.length];
+    var stars = Math.floor(tr.rating||5);
+    var reviews = tr.reviews || (50 + (i*13)%80);
+    var card = document.createElement('div');
+    card.className = 'mv2-card';
+    card.innerHTML =
+      '<div class="mv2-cover" style="background:'+color+'">'+initials+'</div>'
+      +'<div class="mv2-body">'
+      +  '<div class="mv2-name">'+tr.name+' '+(tr.surname||'')+'</div>'
+      +  '<div class="mv2-stars">'
+      +    '<span>'+'★'.repeat(stars)+'</span>'
+      +    '<span style="font-size:12px;font-weight:700;color:#f1f5f9">'+(tr.rating||5).toFixed(1)+'</span>'
+      +    '<span style="font-size:11px;color:#64748b">('+reviews+' recensioni)</span>'
+      +  '</div>'
+      +  '<div class="mv2-bio">'+(tr.bio||'Personal trainer certificato')+'</div>'
+      +  '<div class="mv2-specs">'+(tr.specializations||[]).slice(0,3).map(function(s){ return '<span class="mv2-spec">'+s+'</span>'; }).join('')+'</div>'
+      +  '<div class="mv2-footer">'
+      +    '<div class="mv2-price">€'+(tr.price||89)+'<span style="font-size:12px;color:#64748b;font-weight:400">/mese</span></div>'
+      +    '<button class="mv2-cta">Contatta</button>'
+      +  '</div>'
+      +'</div>';
+    // Safe event listener — no inline quote issues
+    card.addEventListener('click', (function(email, ci){ return function(){ mvShowProfile(email, ci); }; })(tr.email, i));
+    grid.appendChild(card);
+  });
+}
+
+
+
+function mvShowProfile(email, colorIdx){
+  var tr = (typeof getTrainerByEmail==='function') ? getTrainerByEmail(email) : null;
+  if(!tr){ return; }
+  var color = _mvColors[(parseInt(colorIdx)||0) % _mvColors.length];
+  var stars = Math.floor(tr.rating||5);
+  document.getElementById('mv2-profile-title').textContent = tr.name+' '+(tr.surname||'');
+  var content = document.getElementById('mv2-profile-content');
+  if(!content) return;
+  // Build HTML safely
+  content.innerHTML =
+    '<div class="mv2-ph-top">'
+    + '<div class="mv2-ph-avatar" style="background:'+color+'">'
+    +   ((tr.photo&&tr.photo.length<=2)?tr.photo:(tr.name[0]+((tr.surname||'?')[0])))
+    + '</div>'
+    + '<div style="flex:1">'
+    +   '<div class="mv2-ph-name">'+tr.name+' '+(tr.surname||'')+'</div>'
+    +   '<div class="mv2-ph-rating">'+'★'.repeat(stars)+'☆'.repeat(5-stars)+' <span style="color:#94a3b8;font-size:.9rem">'+(tr.rating||5)+'/5</span></div>'
+    +   '<div class="mv2-ph-bio">'+(tr.bio||'Personal trainer certificato')+'</div>'
+    +   '<div style="display:flex;gap:8px;flex-wrap:wrap">'
+    +     (tr.specializations||[]).map(function(s){ return '<span class="mv2-spec">'+s+'</span>'; }).join('')
+    +   '</div>'
+    + '</div>'
+    + '<div class="mv2-ph-box">'
+    +   '<div class="mv2-ph-price">€'+(tr.price||89)+'</div>'
+    +   '<div style="font-size:12px;color:#64748b;margin-bottom:14px">/mese</div>'
+    +   '<div id="mv2-hire-btn-wrap"></div>'
+    +   '<div style="font-size:11px;color:#64748b;margin-top:8px">Prima sessione gratuita</div>'
+    + '</div></div>'
+    + '<div class="mv2-ph-stats">'
+    +   '<div class="mv2-ph-stat"><div class="mv2-ph-stat-n">'+(tr.clients||[]).length+'</div><div class="mv2-ph-stat-l">Clienti attivi</div></div>'
+    +   '<div class="mv2-ph-stat"><div class="mv2-ph-stat-n" style="color:#fbbf24">'+(tr.rating||5)+'</div><div class="mv2-ph-stat-l">Rating</div></div>'
+    +   '<div class="mv2-ph-stat"><div class="mv2-ph-stat-n" style="color:#0fd6c2">✓</div><div class="mv2-ph-stat-l">Verificato</div></div>'
+    + '</div>'
+    + (tr.certifications?'<div style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:16px;margin-bottom:16px"><h4 style="color:#f1f5f9;margin-bottom:8px">Certificazioni</h4><p style="color:#94a3b8;font-size:.85rem">'+tr.certifications+'</p></div>':'')
+    + (tr.experience?'<div style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:16px"><h4 style="color:#f1f5f9;margin-bottom:8px">Esperienza</h4><p style="color:#94a3b8;font-size:.85rem">'+tr.experience+'</p></div>':'');
+  // Add hire button safely via DOM
+  var hireBtn = document.createElement('button');
+  hireBtn.textContent = 'Inizia con '+tr.name;
+  hireBtn.style.cssText = 'width:100%;padding:12px;border:none;border-radius:10px;background:#6366f1;color:#fff;font-weight:700;font-size:14px;cursor:pointer;font-family:sans-serif';
+  hireBtn.addEventListener('click', (function(em){ return function(){ mvHireTrainer(em); }; })(tr.email));
+  var wrap = document.getElementById('mv2-hire-btn-wrap');
+  if(wrap) wrap.appendChild(hireBtn);
+  document.getElementById('mv2-profile').style.display = 'block';
+  document.getElementById('mv2-profile').scrollTop = 0;
+}
+
+
+
+function mvCloseProfile(){
+  document.getElementById('mv2-profile').style.display = 'none';
+}
+
+function mvHireTrainer(email){
+  if(typeof SESSION==='undefined'||!SESSION||!SESSION.email){
+    closeMarketplaceOverlay();
+    if(typeof showPage==='function') showPage('pg-auth','login');
+    if(typeof toast==='function') toast('Accedi per contattare un trainer');
+    return;
+  }
+  SESSION.trainerId = email;
+  if(typeof updateUser==='function') updateUser(SESSION);
+  if(typeof saveSession==='function') saveSession(SESSION);
+  if(typeof toast==='function') toast('✅ Trainer selezionato!','success');
+  closeMarketplaceOverlay();
+}
+
+function mvBecomeTrainer(){
+  closeMarketplaceOverlay();
+  if(typeof showPage==='function') showPage('pg-trainer-reg');
 }
 </script>
 </body></html>
