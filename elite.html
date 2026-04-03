@@ -1481,7 +1481,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
   <div class="footer-logo"><em>EliteCoach</em>Program.fit</div>
   <div class="footer-links">
     <a onclick="document.getElementById('modal-privacy').classList.add('open')" style="cursor:pointer">Privacy</a><a onclick="document.getElementById('modal-termini').classList.add('open')" style="cursor:pointer">Termini</a><a onclick="document.getElementById('modal-cookie').classList.add('open')" style="cursor:pointer">Cookie</a>
-    <a onclick="showPage('pg-owner')" title="Owner">⚙</a>
+    <a onclick="openOwnerOverlay()" title="Owner Panel" style="cursor:pointer">⚙</a>
   </div>
   <div class="footer-copy">© 2025 EliteCoachProgram.fit</div>
 </footer>
@@ -1937,72 +1937,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
 </div>
 </div>
 
-<!-- OWNER DASHBOARD -->
-<div class="pg" id="pg-owner">
 
-<!-- LOGIN SCREEN -->
-<div id="pg-owner-login">
-  <div class="ow-login-wrap">
-    <div class="ow-login-logo"><em>EliteCoach</em>Program.fit</div>
-    <div class="ow-login-sub">Owner Panel — Accesso riservato</div>
-    <div class="ow-login-card">
-      <div class="ow-login-title">Accedi</div>
-      <input id="owner-pw" type="password" class="ow-login-inp" placeholder="Password owner"
-        onkeydown="if(event.key==='Enter'){event.preventDefault();doOwnerLogin();}">
-      <div id="ow-login-err" style="display:none;color:#ef4444;font-size:13px;margin-top:-4px"></div>
-      <button class="ow-login-btn" onclick="doOwnerLogin()">Accedi al pannello</button>
-    </div>
-  </div>
-</div>
-
-<!-- DASHBOARD -->
-<div id="pg-owner-dash" style="display:none;min-height:100vh">
-  <div class="ow-nav">
-    <div class="ow-nav-logo"><em>EliteCoach</em> <span>Owner</span></div>
-    <div class="ow-nav-right">
-      <button class="ow-nav-btn" onclick="owRefreshUsers()">&#8635; Aggiorna</button>
-      <button class="ow-nav-btn ow-nav-exit" onclick="initOwner()">Esci</button>
-    </div>
-  </div>
-  <div class="ow-layout">
-    <aside class="ow-sidebar">
-      <div class="ow-sb-item act" data-sec="stats"    onclick="showOwnerSection('stats')">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-        Dashboard
-      </div>
-      <div class="ow-sb-item" data-sec="users"    onclick="showOwnerSection('users')">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Utenti
-      </div>
-      <div class="ow-sb-item" data-sec="trainers" onclick="showOwnerSection('trainers')">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-        Trainer
-      </div>
-      <div class="ow-sb-item" data-sec="revenue"  onclick="showOwnerSection('revenue')">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-        Revenue
-      </div>
-      <div class="ow-sb-item" data-sec="subs"     onclick="showOwnerSection('subs')">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-        Abbonamenti
-      </div>
-      <div class="ow-sb-item" data-sec="ai"       onclick="showOwnerSection('ai')">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8.01" y2="16" stroke-width="3"/><line x1="16" y1="16" x2="16.01" y2="16" stroke-width="3"/></svg>
-        Config AI
-      </div>
-    </aside>
-    <main class="ow-main">
-      <div class="owner-section act" id="os-stats"></div>
-      <div class="owner-section"     id="os-users"></div>
-      <div class="owner-section"     id="os-trainers"></div>
-      <div class="owner-section"     id="os-revenue"></div>
-      <div class="owner-section"     id="os-subs"></div>
-      <div class="owner-section"     id="os-ai"></div>
-    </main>
-  </div>
-</div>
-
-</div><!-- /pg-owner -->
 
 <!-- MARKETPLACE TRAINER -->
 <div class="pg" id="pg-marketplace" style="padding-top:var(--nav-h)">
@@ -3306,11 +3241,9 @@ function showPage(id, sub){
     }, 200);
   }
   if(id==='pg-marketplace') renderMarketplace();
-  if(id==='pg-owner'){ const s=SESSION; } // keep state
   if(id==='pg-dash') renderDashboard();
   if(id==='pg-trainer-dash') renderTrainerDash();
   if(id==='pg-onboard') initOnboarding();
-  if(id==='pg-owner') initOwner();
   if(id==='pg-trainer-reg') initTrainerReg();
 }
 
@@ -4210,7 +4143,7 @@ async function ownerTogglePro(email){
   } catch(e){ toast('Errore: '+e.message,'error'); }
 }
 async function ownerDeleteUser(email){
-  if(!confirm('Eliminare utente '+email+'?\nTutti i dati e allenamenti saranno cancellati dal database.')) return;
+  if(!confirm('Eliminare utente '+email+': tutti i dati saranno eliminati. Continuare?')) return;
   try {
     var res = await fetch(SERVER_URL + '/api/owner/users/' + encodeURIComponent(email), {
       method: 'DELETE',
@@ -16008,4 +15941,418 @@ async function acceptGoogleTermsAndLogin(){
     </div>
   </div>
 </div>
+
+<!-- ══ OWNER PANEL OVERLAY ══════════════════════════════════════ -->
+<div id="owner-overlay" style="display:none;position:fixed;inset:0;z-index:99999;background:#0f172a;overflow-y:auto">
+
+  <!-- LOGIN -->
+  <div id="owner-ov-login" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px">
+    <div style="width:100%;max-width:380px">
+      <div style="font-family:sans-serif;font-size:1.4rem;font-weight:800;color:#fff;text-align:center;margin-bottom:6px">
+        <span style="color:#818cf8">EliteCoach</span>Program.fit
+      </div>
+      <div style="text-align:center;font-size:13px;color:#94a3b8;margin-bottom:32px">Owner Panel — Accesso riservato</div>
+      <div style="background:#1e293b;border:1px solid #334155;border-radius:16px;padding:28px">
+        <div style="font-size:1rem;font-weight:700;color:#f1f5f9;margin-bottom:16px">Accedi</div>
+        <input id="ov-owner-pw" type="password" placeholder="Password owner"
+          style="width:100%;box-sizing:border-box;padding:13px 16px;border-radius:10px;border:1.5px solid #334155;background:#0f172a;color:#f1f5f9;font-size:16px;font-family:sans-serif;outline:none;display:block;margin-bottom:12px;-webkit-text-fill-color:#f1f5f9"
+          onkeydown="if(event.key==='Enter')doOwnerOverlayLogin()">
+        <div id="ov-login-err" style="display:none;color:#f87171;font-size:13px;margin-bottom:10px;padding:8px 12px;background:rgba(239,68,68,.1);border-radius:8px"></div>
+        <button onclick="doOwnerOverlayLogin()"
+          style="width:100%;padding:13px;border:none;border-radius:10px;background:#6366f1;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:sans-serif">
+          Accedi al pannello →
+        </button>
+        <button onclick="closeOwnerOverlay()"
+          style="width:100%;padding:10px;border:none;border-radius:10px;background:transparent;color:#64748b;font-size:13px;cursor:pointer;margin-top:8px;font-family:sans-serif">
+          ← Torna al sito
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="owner-ov-dash" style="display:none">
+    <!-- Navbar fissa -->
+    <div style="position:sticky;top:0;z-index:10;background:#1e293b;border-bottom:1px solid #334155;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px">
+      <div style="font-family:sans-serif;font-weight:800;font-size:1rem;color:#f1f5f9">
+        <span style="color:#818cf8">EliteCoach</span> <span style="color:#f59e0b">Owner</span>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onclick="owOvRefresh()" style="padding:7px 14px;border-radius:8px;border:1px solid #334155;background:transparent;color:#94a3b8;font-size:13px;cursor:pointer;font-family:sans-serif">&#8635; Aggiorna</button>
+        <button onclick="closeOwnerOverlay()" style="padding:7px 14px;border-radius:8px;border:1px solid #ef4444;background:transparent;color:#ef4444;font-size:13px;cursor:pointer;font-family:sans-serif">Esci</button>
+      </div>
+    </div>
+    <!-- Tab bar -->
+    <div id="owner-ov-tabs" style="background:#1e293b;border-bottom:1px solid #334155;display:flex;overflow-x:auto;padding:0 16px">
+      <button class="ov-tab act" data-sec="stats"    onclick="owOvTab('stats')">Dashboard</button>
+      <button class="ov-tab"     data-sec="users"    onclick="owOvTab('users')">Utenti</button>
+      <button class="ov-tab"     data-sec="trainers" onclick="owOvTab('trainers')">Trainer</button>
+      <button class="ov-tab"     data-sec="revenue"  onclick="owOvTab('revenue')">Revenue</button>
+      <button class="ov-tab"     data-sec="subs"     onclick="owOvTab('subs')">Abbonamenti</button>
+      <button class="ov-tab"     data-sec="ai"       onclick="owOvTab('ai')">Config AI</button>
+    </div>
+    <!-- Contenuto sezioni -->
+    <div style="padding:28px;max-width:1100px;margin:0 auto" id="owner-ov-content"></div>
+  </div>
+
+</div>
+
+<style>
+.ov-tab{
+  padding:14px 18px;border:none;background:transparent;color:#64748b;
+  font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;
+  border-bottom:2px solid transparent;font-family:sans-serif;transition:.15s;
+}
+.ov-tab:hover{color:#f1f5f9}
+.ov-tab.act{color:#818cf8;border-bottom-color:#818cf8;font-weight:700}
+.ov-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;margin-bottom:16px;color:#f1f5f9}
+.ov-card h3,.ov-card h4{color:#f1f5f9;margin-bottom:12px}
+.ov-grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.ov-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ov-stat-num{font-size:2rem;font-weight:800;color:#f1f5f9;line-height:1}
+.ov-stat-lbl{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+.ov-tbl{width:100%;border-collapse:collapse;font-size:.84rem}
+.ov-tbl th{background:#0f172a;color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:10px 12px;text-align:left;font-weight:600}
+.ov-tbl td{padding:11px 12px;border-bottom:1px solid #1e293b;color:#cbd5e1;vertical-align:middle}
+.ov-tbl tr:last-child td{border-bottom:none}
+.ov-tbl tr:hover td{background:rgba(255,255,255,.03)}
+.ov-badge-pro{background:rgba(20,184,166,.15);color:#2dd4bf;border:1px solid rgba(20,184,166,.3);padding:2px 10px;border-radius:50px;font-size:11px;font-weight:700;white-space:nowrap}
+.ov-badge-free{background:rgba(99,102,241,.1);color:#818cf8;border:1px solid rgba(99,102,241,.2);padding:2px 10px;border-radius:50px;font-size:11px}
+.ov-btn{padding:6px 14px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:sans-serif;transition:.15s}
+.ov-btn-teal{background:rgba(20,184,166,.15);color:#2dd4bf;border:1px solid rgba(20,184,166,.3)}
+.ov-btn-teal:hover{background:rgba(20,184,166,.25)}
+.ov-btn-ghost{background:rgba(255,255,255,.06);color:#94a3b8;border:1px solid #334155}
+.ov-btn-ghost:hover{background:rgba(255,255,255,.1)}
+.ov-btn-red{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2)}
+.ov-btn-red:hover{background:rgba(239,68,68,.2)}
+.ov-inp{width:100%;box-sizing:border-box;padding:10px 14px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:#f1f5f9;font-size:14px;font-family:sans-serif;outline:none;-webkit-text-fill-color:#f1f5f9}
+.ov-inp::placeholder{color:#475569}
+.ov-inp:focus{border-color:#6366f1}
+@media(max-width:600px){.ov-grid4{grid-template-columns:1fr 1fr}.ov-grid2{grid-template-columns:1fr}}
+</style>
+
+<script>
+// ══ OWNER OVERLAY SYSTEM ═══════════════════════════════════════
+var _ovPw = null;
+
+function openOwnerOverlay(){
+  document.getElementById('owner-overlay').style.display='block';
+  document.getElementById('owner-ov-login').style.display='flex';
+  document.getElementById('owner-ov-dash').style.display='none';
+  var pw = document.getElementById('ov-owner-pw');
+  if(pw){ pw.value=''; setTimeout(function(){ pw.focus(); },100); }
+  document.getElementById('ov-login-err').style.display='none';
+}
+
+function closeOwnerOverlay(){
+  document.getElementById('owner-overlay').style.display='none';
+  _ovPw = null;
+}
+
+function doOwnerOverlayLogin(){
+  var pw = document.getElementById('ov-owner-pw').value.trim();
+  var errEl = document.getElementById('ov-login-err');
+  if(!pw){ errEl.textContent='Inserisci la password'; errEl.style.display='block'; return; }
+  // Verifica: tenta una chiamata API con questa password
+  var btn = document.querySelector('#owner-ov-login button');
+  errEl.style.display='none';
+  if(btn){ btn.textContent='Verifica...'; btn.disabled=true; }
+  fetch((window.SERVER_URL||'https://elitecoach-server-production.up.railway.app')+'/api/owner/users',{
+    headers:{'x-owner-password':pw}
+  }).then(function(r){
+    if(btn){ btn.textContent='Accedi al pannello →'; btn.disabled=false; }
+    if(r.status===403){ errEl.textContent='Password non corretta'; errEl.style.display='block'; return; }
+    if(!r.ok && r.status!==200){ errEl.textContent='Errore server '+r.status+'. Riprova.'; errEl.style.display='block'; return; }
+    // Password OK
+    _ovPw = pw;
+    localStorage.setItem('ecp_owner_pw', pw);
+    document.getElementById('owner-ov-login').style.display='none';
+    document.getElementById('owner-ov-dash').style.display='block';
+    owOvTab('stats');
+  }).catch(function(e){
+    if(btn){ btn.textContent='Accedi al pannello →'; btn.disabled=false; }
+    // Se offline, usa la password hardcoded
+    if(pw==='matteo92'){
+      _ovPw = pw; localStorage.setItem('ecp_owner_pw', pw);
+      document.getElementById('owner-ov-login').style.display='none';
+      document.getElementById('owner-ov-dash').style.display='block';
+      owOvTab('stats');
+    } else {
+      errEl.textContent='Connessione non disponibile. Riprova.'; errEl.style.display='block';
+    }
+  });
+}
+
+function owOvTab(sec){
+  document.querySelectorAll('.ov-tab').forEach(function(t){ t.classList.remove('act'); });
+  document.querySelectorAll('.ov-tab[data-sec="'+sec+'"]').forEach(function(t){ t.classList.add('act'); });
+  owOvRenderSection(sec);
+}
+
+function owOvRefresh(){
+  var activeSec = document.querySelector('.ov-tab.act');
+  owOvTab(activeSec ? activeSec.dataset.sec : 'stats');
+}
+
+function owOvRenderSection(sec){
+  var ct = document.getElementById('owner-ov-content');
+  if(!ct) return;
+  if(sec==='stats') return owOvStats(ct);
+  if(sec==='users') return owOvUsers(ct);
+  if(sec==='trainers') return owOvTrainers(ct);
+  if(sec==='revenue') return owOvRevenue(ct);
+  if(sec==='subs') return owOvSubs(ct);
+  if(sec==='ai') return owOvAI(ct);
+}
+
+// ── STATS ───────────────────────────────────────────────────
+function owOvStats(ct){
+  ct.innerHTML='<div style="color:#94a3b8;padding:20px">Caricamento...</div>';
+  var pw = _ovPw || localStorage.getItem('ecp_owner_pw') || 'matteo92';
+  fetch((window.SERVER_URL||'https://elitecoach-server-production.up.railway.app')+'/api/owner/users',{
+    headers:{'x-owner-password':pw}
+  }).then(function(r){ return r.json(); }).then(function(users){
+    if(!Array.isArray(users)) throw new Error('Risposta non valida');
+    var pro = users.filter(function(u){ return u.pro; }).length;
+    var free = users.length - pro;
+    var mrr = pro * 14.99;
+    ct.innerHTML=
+      '<h2 style="color:#f1f5f9;margin-bottom:20px;font-size:1.3rem">Dashboard Owner</h2>'
+      +'<div class="ov-grid4">'
+      +'<div class="ov-card" style="text-align:center"><div class="ov-stat-num">'+users.length+'</div><div class="ov-stat-lbl">Utenti totali</div></div>'
+      +'<div class="ov-card" style="text-align:center"><div class="ov-stat-num" style="color:#2dd4bf">'+pro+'</div><div class="ov-stat-lbl">Utenti Pro</div></div>'
+      +'<div class="ov-card" style="text-align:center"><div class="ov-stat-num" style="color:#fbbf24">€'+mrr.toFixed(0)+'</div><div class="ov-stat-lbl">MRR</div></div>'
+      +'<div class="ov-card" style="text-align:center"><div class="ov-stat-num" style="color:#818cf8">'+free+'</div><div class="ov-stat-lbl">Utenti Free</div></div>'
+      +'</div>'
+      +'<div class="ov-grid2">'
+      +'<div class="ov-card"><h4>Distribuzione piani</h4>'
+      +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
+      +'<div style="flex:1;height:18px;background:#0f172a;border-radius:4px;overflow:hidden"><div style="height:100%;width:'+(users.length?Math.round(pro/users.length*100):0)+'%;background:#2dd4bf;border-radius:4px"></div></div>'
+      +'<span style="font-size:12px;color:#94a3b8;white-space:nowrap">PRO '+Math.round(users.length?pro/users.length*100:0)+'%</span></div>'
+      +'<div style="display:flex;align-items:center;gap:10px">'
+      +'<div style="flex:1;height:18px;background:#0f172a;border-radius:4px;overflow:hidden"><div style="height:100%;width:'+(users.length?Math.round(free/users.length*100):0)+'%;background:#818cf8;border-radius:4px"></div></div>'
+      +'<span style="font-size:12px;color:#94a3b8;white-space:nowrap">Free '+Math.round(users.length?free/users.length*100:0)+'%</span></div></div>'
+      +'<div class="ov-card"><h4>Proiezione Revenue</h4>'
+      +'<div style="font-size:1.4rem;font-weight:800;color:#fbbf24;margin-bottom:6px">€'+mrr.toFixed(0)+'/mese</div>'
+      +'<div style="font-size:.85rem;color:#64748b">ARR proiezione: €'+(mrr*12).toFixed(0)+'</div>'
+      +'<div style="font-size:.85rem;color:#64748b;margin-top:4px">LTV medio: €'+(pro>0?(mrr*12/pro).toFixed(0):'0')+'</div>'
+      +'</div></div>';
+  }).catch(function(e){
+    ct.innerHTML='<div class="ov-card"><p style="color:#f87171">Errore: '+e.message+'</p><p style="color:#64748b;font-size:.85rem;margin-top:8px">Verifica che il server Railway sia online e DATABASE_URL sia configurato.</p></div>';
+  });
+}
+
+// ── UTENTI ──────────────────────────────────────────────────
+function owOvUsers(ct){
+  ct.innerHTML='<div style="color:#94a3b8;padding:20px">Caricamento utenti dal database...</div>';
+  var pw = _ovPw || localStorage.getItem('ecp_owner_pw') || 'matteo92';
+  fetch((window.SERVER_URL||'https://elitecoach-server-production.up.railway.app')+'/api/owner/users',{
+    headers:{'x-owner-password':pw}
+  }).then(function(r){ return r.json(); }).then(function(users){
+    if(!Array.isArray(users)) throw new Error('Risposta non valida');
+    window._ovUsers = users;
+    owOvRenderUsers(ct, users);
+  }).catch(function(e){
+    ct.innerHTML='<div class="ov-card"><p style="color:#f87171">Errore: '+e.message+'</p></div>';
+  });
+}
+
+function owOvRenderUsers(ct, users){
+  var search = '';
+  ct.innerHTML=
+    '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px">'
+    +'<h2 style="color:#f1f5f9;font-size:1.3rem;margin:0">Utenti <span style="font-size:.9rem;color:#64748b;font-weight:400">('+users.length+' totali)</span></h2>'
+    +"<button class='ov-btn ov-btn-ghost' onclick='owOvTab(\"users\")'>&#8635; Aggiorna</button>"
+    +'</div>'
+    +'<div class="ov-card" style="overflow-x:auto">'
+    +(users.length
+      ?'<table class="ov-tbl"><thead><tr><th>Utente</th><th>Email</th><th>Piano</th><th>Sessioni</th><th>Iscrizione</th><th>Azioni</th></tr></thead><tbody>'
+        +users.map(function(u){
+          return '<tr>'
+            +'<td><strong style="color:#f1f5f9">'+(u.name||'')+' '+(u.surname||'')+'</strong></td>'
+            +'<td style="color:#94a3b8;font-size:.82rem">'+(u.email||'')+'</td>'
+            +'<td>'+(u.pro?'<span class="ov-badge-pro">PRO</span>':'<span class="ov-badge-free">Free</span>')+'</td>'
+            +'<td style="color:#64748b">'+(u.sessions_count||0)+'</td>'
+            +'<td style="color:#64748b;font-size:.8rem">'+(u.join_date?String(u.join_date).slice(0,10):'-')+'</td>'
+            +'<td><div style="display:flex;gap:6px">'
+            +'<button class="ov-btn '+(u.pro?'ov-btn-ghost':'ov-btn-teal')+'" data-em="'+u.email+'" onclick="owOvTogglePro(this.dataset.em)">'+(u.pro?'Rimuovi PRO':'Attiva PRO')+'</button>'
+            +'<button class="ov-btn ov-btn-red" data-em="'+u.email+'" onclick="owOvDeleteUser(this.dataset.em)">Elimina</button>'
+            +'</div></td>'
+            +'</tr>';
+        }).join('')+'</tbody></table>'
+      :'<p style="color:#64748b;text-align:center;padding:24px">Nessun utente trovato nel database</p>')
+    +'</div>';
+}
+
+async function owOvTogglePro(email){
+  if(!email) return;
+  var pw = _ovPw || localStorage.getItem('ecp_owner_pw') || 'matteo92';
+  var users = window._ovUsers || [];
+  var u = users.find(function(x){ return x.email===email; });
+  var newPro = u ? !u.pro : true;
+  try{
+    var r = await fetch((window.SERVER_URL||'https://elitecoach-server-production.up.railway.app')+'/api/owner/users/'+encodeURIComponent(email)+'/pro',{
+      method:'PUT',headers:{'Content-Type':'application/json','x-owner-password':pw},
+      body:JSON.stringify({pro:newPro})
+    });
+    var d = await r.json();
+    if(d.ok){
+      if(u) u.pro=newPro;
+      owOvRenderUsers(document.getElementById('owner-ov-content'), users);
+      alert((newPro?'✅ PRO attivato':'PRO rimosso')+' per '+email);
+    } else { alert('Errore: '+(d.error||'Aggiornamento fallito')); }
+  }catch(e){ alert('Errore: '+e.message); }
+}
+
+async function owOvDeleteUser(email){
+  if(!confirm('Eliminare utente '+email+': tutti i dati saranno eliminati. Continuare?')) return;
+  var pw = _ovPw || localStorage.getItem('ecp_owner_pw') || 'matteo92';
+  try{
+    var r = await fetch((window.SERVER_URL||'https://elitecoach-server-production.up.railway.app')+'/api/owner/users/'+encodeURIComponent(email),{
+      method:'DELETE',headers:{'Content-Type':'application/json','x-owner-password':pw}
+    });
+    var d = await r.json();
+    if(d.ok){
+      window._ovUsers=(window._ovUsers||[]).filter(function(u){ return u.email!==email; });
+      owOvRenderUsers(document.getElementById('owner-ov-content'), window._ovUsers);
+      alert('✅ Utente eliminato');
+    } else { alert('Errore: '+(d.error||'Eliminazione fallita')); }
+  }catch(e){ alert('Errore: '+e.message); }
+}
+
+// ── TRAINER ─────────────────────────────────────────────────
+function owOvTrainers(ct){
+  var trainers = (typeof getTrainers==='function' ? getTrainers() : []);
+  ct.innerHTML=
+    '<h2 style="color:#f1f5f9;font-size:1.3rem;margin-bottom:16px">Trainer ('+trainers.length+')</h2>'
+    +'<div class="ov-card" style="overflow-x:auto">'
+    +(trainers.length
+      ?'<table class="ov-tbl"><thead><tr><th>Nome</th><th>Email</th><th>Stato</th><th>Specializzazioni</th><th>Azioni</th></tr></thead><tbody>'
+        +trainers.map(function(tr){
+          var statusColor = tr.status==='active'?'#2dd4bf':tr.status==='pending'?'#fbbf24':'#f87171';
+          return '<tr>'
+            +'<td><strong style="color:#f1f5f9">'+(tr.name||'')+' '+(tr.surname||'')+'</strong></td>'
+            +'<td style="color:#94a3b8;font-size:.82rem">'+(tr.email||'')+'</td>'
+            +'<td><span style="color:'+statusColor+';font-weight:600;font-size:.82rem">'+(tr.status||'-')+'</span></td>'
+            +'<td style="font-size:.8rem;color:#64748b">'+((tr.specializations||[]).join(', ')||'-')+'</td>'
+            +'<td><div style="display:flex;gap:6px">'
+            +(tr.status==='pending'?'<button class="ov-btn ov-btn-teal" data-em="'+tr.email+'" onclick="owOvApproveTrainer(this.dataset.em)">Approva</button>':'')
+            +(tr.status==='active'?'<button class="ov-btn ov-btn-ghost" data-em="'+tr.email+'" onclick="owOvSuspendTrainer(this.dataset.em)">Sospendi</button>':'')
+            +(tr.status==='suspended'?'<button class="ov-btn ov-btn-teal" data-em="'+tr.email+'" onclick="owOvApproveTrainer(this.dataset.em)">Riattiva</button>':'')
+            +'<button class="ov-btn ov-btn-red" data-em="'+tr.email+'" onclick="owOvDeleteTrainer(this.dataset.em)">Elimina</button>'
+            +'</div></td></tr>';
+        }).join('')+'</tbody></table>'
+      :'<p style="color:#64748b;text-align:center;padding:24px">Nessun trainer registrato</p>')
+    +'</div>';
+}
+function owOvApproveTrainer(email){ if(typeof ownerApprove==='function') ownerApprove(email); owOvTrainers(document.getElementById('owner-ov-content')); }
+function owOvSuspendTrainer(email){ if(typeof ownerSuspend==='function') ownerSuspend(email); owOvTrainers(document.getElementById('owner-ov-content')); }
+function owOvDeleteTrainer(email){ if(typeof ownerDeleteTrainer==='function') ownerDeleteTrainer(email); owOvTrainers(document.getElementById('owner-ov-content')); }
+
+// ── REVENUE ─────────────────────────────────────────────────
+function owOvRevenue(ct){
+  var pw = _ovPw || localStorage.getItem('ecp_owner_pw') || 'matteo92';
+  fetch((window.SERVER_URL||'https://elitecoach-server-production.up.railway.app')+'/api/owner/users',{
+    headers:{'x-owner-password':pw}
+  }).then(function(r){ return r.json(); }).then(function(users){
+    if(!Array.isArray(users)) throw new Error();
+    var pro=users.filter(function(u){return u.pro;}).length;
+    var mrr=pro*14.99;
+    ct.innerHTML=
+      '<h2 style="color:#f1f5f9;font-size:1.3rem;margin-bottom:16px">Revenue</h2>'
+      +'<div class="ov-grid4">'
+      +'<div class="ov-card" style="text-align:center"><div class="ov-stat-num" style="color:#2dd4bf">€'+mrr.toFixed(0)+'</div><div class="ov-stat-lbl">MRR</div></div>'
+      +'<div class="ov-card" style="text-align:center"><div class="ov-stat-num" style="color:#818cf8">€'+(mrr*12).toFixed(0)+'</div><div class="ov-stat-lbl">ARR proiezione</div></div>'
+      +'<div class="ov-card" style="text-align:center"><div class="ov-stat-num" style="color:#fbbf24">€'+(pro>0?(mrr*12/pro).toFixed(0):'0')+'</div><div class="ov-stat-lbl">LTV medio</div></div>'
+      +'<div class="ov-card" style="text-align:center"><div class="ov-stat-num" style="color:#f1f5f9">'+pro+'</div><div class="ov-stat-lbl">Abbonati PRO</div></div>'
+      +'</div>'
+      +'<div class="ov-card"><p style="color:#64748b;font-size:.85rem">Integra Stripe per dati revenue in tempo reale. Questi numeri si basano su €14,99/mese per utente PRO.</p></div>';
+  }).catch(function(){
+    ct.innerHTML='<div class="ov-card"><p style="color:#f87171">Errore caricamento dati revenue</p></div>';
+  });
+}
+
+// ── ABBONAMENTI ──────────────────────────────────────────────
+function owOvSubs(ct){
+  var promos = JSON.parse(localStorage.getItem('ecp_promos')||'[]');
+  ct.innerHTML=
+    '<h2 style="color:#f1f5f9;font-size:1.3rem;margin-bottom:16px">Abbonamenti & Promo</h2>'
+    +'<div class="ov-card">'
+    +'<h4>Codici sconto</h4>'
+    +'<div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">'
+    +'<input id="ov-promo-code" class="ov-inp" placeholder="Codice (es. ELITE20)" style="max-width:180px">'
+    +'<input id="ov-promo-disc" class="ov-inp" placeholder="% sconto" type="number" min="5" max="90" style="max-width:100px">'
+    +'<button onclick="owOvAddPromo()" class="ov-btn ov-btn-teal" style="padding:10px 20px">+ Aggiungi</button>'
+    +'</div>'
+    +'<div id="ov-promo-list">'
+    +(promos.length
+      ?promos.map(function(p,i){
+        return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;padding:10px;background:#0f172a;border-radius:8px">'
+          +'<span style="color:#fbbf24;font-weight:700;font-size:.9rem">'+p.code+'</span>'
+          +'<span style="color:#64748b;font-size:.85rem">'+p.disc+'% sconto</span>'
+          +'<button class="ov-btn ov-btn-red" style="margin-left:auto" data-i="'+i+'" onclick="owOvDeletePromo(this.dataset.i)">Rimuovi</button>'
+          +'</div>';
+      }).join('')
+      :'<p style="color:#64748b;font-size:.85rem">Nessun codice promo attivo</p>')
+    +'</div></div>';
+}
+function owOvAddPromo(){
+  var code=document.getElementById('ov-promo-code').value.trim().toUpperCase();
+  var disc=parseInt(document.getElementById('ov-promo-disc').value||0);
+  if(!code||!disc){alert('Inserisci codice e percentuale');return;}
+  var p=JSON.parse(localStorage.getItem('ecp_promos')||'[]');
+  p.push({code:code,disc:disc}); localStorage.setItem('ecp_promos',JSON.stringify(p));
+  owOvSubs(document.getElementById('owner-ov-content'));
+}
+function owOvDeletePromo(i){
+  var p=JSON.parse(localStorage.getItem('ecp_promos')||'[]');
+  p.splice(i,1); localStorage.setItem('ecp_promos',JSON.stringify(p));
+  owOvSubs(document.getElementById('owner-ov-content'));
+}
+
+// ── CONFIG AI ────────────────────────────────────────────────
+function owOvAI(ct){
+  var model = localStorage.getItem('ecp_ai_model') || 'claude-haiku-4-5-20251001';
+  var sys   = localStorage.getItem('ecp_ai_system') || 'Sei il coach personale su EliteCoachProgram.fit. Rispondi in italiano, sii diretto e specifico.';
+  var isH = model === 'claude-haiku-4-5-20251001';
+  var isS = model === 'claude-sonnet-4-5';
+  var html = '<h2 style="color:#f1f5f9;font-size:1.3rem;margin-bottom:16px">Configurazione AI</h2>'
+    + '<div class="ov-card" style="margin-bottom:16px;border-left:3px solid #2dd4bf">'
+    +   '<h4>Chiave API Anthropic</h4>'
+    +   '<p style="font-size:.85rem;color:#64748b">Configurata su Railway &rarr; Variables &rarr; <code style="color:#2dd4bf">ANTHROPIC_API_KEY</code></p>'
+    + '</div>'
+    + '<div class="ov-card" style="margin-bottom:16px"><h4>Modello AI</h4>'
+    +   '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px">'
+    +   '<div data-m="claude-haiku-4-5-20251001" onclick="owOvSetModel(this.dataset.m)"'
+    +     ' style="padding:16px;border-radius:10px;cursor:pointer;border:2px solid '+(isH?'#6366f1':'#334155')+';background:'+(isH?'rgba(99,102,241,.1)':'#0f172a')+'">'
+    +   '<div style="font-weight:700;color:#f1f5f9;margin-bottom:4px">&#9889; Claude Haiku</div>'
+    +   '<div style="font-size:.8rem;color:#64748b">Veloce &middot; Economico &middot; 6-10s</div>'
+    +   (isH?'<div style="font-size:.75rem;color:#818cf8;margin-top:6px;font-weight:700">&#10003; ATTIVO</div>':'')
+    + '</div>'
+    + '<div data-m="claude-sonnet-4-5" onclick="owOvSetModel(this.dataset.m)"'
+    +   ' style="padding:16px;border-radius:10px;cursor:pointer;border:2px solid '+(isS?'#6366f1':'#334155')+';background:'+(isS?'rgba(99,102,241,.1)':'#0f172a')+'">'
+    +   '<div style="font-weight:700;color:#f1f5f9;margin-bottom:4px">&#129504; Claude Sonnet</div>'
+    +   '<div style="font-size:.8rem;color:#64748b">Potente &middot; Preciso &middot; 20-30s</div>'
+    +   (isS?'<div style="font-size:.75rem;color:#818cf8;margin-top:6px;font-weight:700">&#10003; ATTIVO</div>':'')
+    + '</div></div></div>'
+    + '<div class="ov-card">'
+    +   '<h4>Istruzioni Sistema AI Coach</h4>'
+    +   '<textarea id="ov-ai-system" class="ov-inp" rows="8" style="resize:vertical;line-height:1.6;font-size:.84rem"></textarea>'
+    +   '<button onclick="owOvSaveSystem()" style="margin-top:10px;padding:10px 24px;border:none;border-radius:8px;background:#6366f1;color:#fff;font-weight:700;cursor:pointer;font-family:sans-serif">Salva istruzioni</button>'
+    + '</div>';
+  ct.innerHTML = html;
+  var ta = document.getElementById('ov-ai-system');
+  if(ta) ta.value = sys;
+}
+
+function owOvSetModel(m){
+  localStorage.setItem('ecp_ai_model', m);
+  owOvAI(document.getElementById('owner-ov-content'));
+}
+function owOvSaveSystem(){
+  var v = document.getElementById('ov-ai-system').value;
+  localStorage.setItem('ecp_ai_system', v);
+  alert('✅ Istruzioni salvate');
+}
+</script>
 </body></html>
