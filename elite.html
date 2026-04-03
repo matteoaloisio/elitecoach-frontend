@@ -15388,35 +15388,7 @@ function getTrainerSession(){
   try { return JSON.parse(localStorage.getItem('ecp_trainer_session')||'null'); } catch(e){ return null; }
 }
 
-function openMarketplaceOverlay(){
-  closeMobileMenu();
-  var el = document.getElementById('marketplace-overlay');
-  if(!el){ console.error('marketplace-overlay NOT FOUND'); return; }
-  // Set stile esplicito hardcoded
-  el.style.display = 'block';
-  el.style.position = 'fixed';
-  el.style.top = '0';
-  el.style.left = '0';
-  el.style.right = '0';
-  el.style.bottom = '0';
-  el.style.width = '100%';
-  el.style.height = '100%';
-  el.style.zIndex = '99998';
-  el.style.background = '#0b0b14';
-  el.style.overflowY = 'auto';
-  // Reset ricerca e filtri
-  var profile = document.getElementById('mv-profile');
-  if(profile) profile.style.display = 'none';
-  var search = document.getElementById('mv-search');
-  if(search) search.value = '';
-  _mvFilter = '';
-  document.querySelectorAll('.mv-tag').forEach(function(t){ t.classList.remove('act'); });
-  var first = document.querySelector('.mv-tag[data-spec=""]');
-  if(first) first.classList.add('act');
-  // Render trainer cards
-  mvRender();
-  console.log('[Marketplace] Aperto con', getTrainers().length, 'trainer');
-}
+
 
 function closeMarketplaceOverlay(){
   var el = document.getElementById('marketplace-overlay');
@@ -15425,28 +15397,7 @@ function closeMarketplaceOverlay(){
   document.documentElement.style.overflow = '';
 }
 
-function openTrainerLogin(){
-  var el = document.getElementById('trainer-login-overlay');
-  if(!el){ console.error('trainer-login-overlay NOT FOUND'); return; }
-  // Nascondi altri overlay trainer
-  var other = ['trainer-reg-overlay','trainer-dash-overlay'];
-  other.forEach(function(id){ var o=document.getElementById(id); if(o) o.style.display='none'; });
-  // Mostra con stile completo hardcoded
-  el.style.display = 'block';
-  el.style.position = 'fixed';
-  el.style.top = '0';
-  el.style.left = '0';
-  el.style.right = '0';
-  el.style.bottom = '0';
-  el.style.width = '100%';
-  el.style.height = '100%';
-  el.style.zIndex = '999999';
-  el.style.background = '#0b0b14';
-  el.style.overflowY = 'auto';
-  el.style.webkitOverflowScrolling = 'touch';
-  // NON bloccare il body scroll — l'overlay stesso è scrollabile
-  setTimeout(function(){ var e=document.getElementById('tlov-email'); if(e) e.focus(); }, 300);
-}
+
 
 function openTrainerReg(){
   var el = document.getElementById('trainer-reg-overlay');
@@ -16777,160 +16728,26 @@ var _mvFilter = '';
 var _mvTrainers = [];
 
 // ── Demo trainers ─────────────────────────────────────────
-function seedDemoTrainers(){
-  return [
-    { name:'Marco', surname:'Vitale', email:'marco.vitale@demo.it', pass:'demo123',
-      bio:'Specializzato in bodybuilding naturale e powerlifting. 8 anni di esperienza come personal trainer certificato. Approccio scientifico basato su evidenze.',
-      specializations:['Bodybuilding','Powerlifting','Nutrizione'], rating:4.9, price:89, photo:'MV',
-      status:'active', reviews:50, color:'linear-gradient(135deg,#1a1aff,#0fd6c2)' },
-    { name:'Sofia', surname:'Ricci', email:'sofia.ricci@demo.it', pass:'demo123',
-      bio:'Coach specializzata in trasformazione fisica femminile, fitness funzionale e yoga integrato. Certificata CONI e FIF.',
-      specializations:['Fitness Femminile','Yoga','Funzionale'], rating:4.8, price:75, photo:'SR',
-      status:'active', reviews:63, color:'linear-gradient(135deg,#ff6b35,#f7c59f)' },
-    { name:'Luca', surname:'Ferrantino', email:'luca@demo.it', pass:'demo123',
-      bio:'Preparatore atletico con background CrossFit. Specializzato in condizionamento fisico, HIIT e performance atletica di alto livello.',
-      specializations:['CrossFit','HIIT','Performance'], rating:5.0, price:95, photo:'LF',
-      status:'active', reviews:76, color:'linear-gradient(135deg,#6a11cb,#8b5cf6)' },
-    { name:'Anna', surname:'Colombo', email:'anna@demo.it', pass:'demo123',
-      bio:'Personal trainer certificata con specializzazione in riabilitazione post-infortunio e allenamento per Over 40.',
-      specializations:['Riabilitazione','Over 40','Pilates'], rating:4.7, price:70, photo:'AC',
-      status:'active', reviews:89, color:'linear-gradient(135deg,#0fd6c2,#059669)' },
-    { name:'Davide', surname:'Russo', email:'davide@demo.it', pass:'demo123',
-      bio:'Coach di forza con esperienza agonistica in powerlifting. Specializzato in programmazione della forza massimale e tecnica olimpica.',
-      specializations:['Powerlifting','Forza','Tecnica'], rating:4.9, price:99, photo:'DR',
-      status:'active', reviews:102, color:'linear-gradient(135deg,#f97316,#ef4444)' },
-    { name:'Elena', surname:'Martini', email:'elena@demo.it', pass:'demo123',
-      bio:'Nutrizionista sportiva e personal trainer. Specializzata in dimagrimento, ricomposizione corporea e alimentazione sportiva.',
-      specializations:['Dimagrimento','Nutrizione','Ricomposizione'], rating:4.8, price:80, photo:'EM',
-      status:'active', reviews:94, color:'linear-gradient(135deg,#ec4899,#8b5cf6)' },
-  ];
-}
 
-function getTrainers(){
-  var demos = seedDemoTrainers();
-  try {
-    var stored = JSON.parse(localStorage.getItem('ecp_trainers')||'[]');
-    if(!Array.isArray(stored)) return demos;
-    var emails = stored.map(function(t){ return t.email; });
-    demos.forEach(function(d){
-      if(emails.indexOf(d.email) === -1) stored.unshift(d);
-    });
-    return stored.length ? stored : demos;
-  } catch(e){ return demos; }
-}
 
-function getTrainerByEmail(email){
-  return getTrainers().find(function(t){ return t.email===email; })||null;
-}
 
-function addTrainer(t){
-  try {
-    var list = JSON.parse(localStorage.getItem('ecp_trainers')||'[]');
-    list.push(t);
-    localStorage.setItem('ecp_trainers', JSON.stringify(list));
-  } catch(e){ console.warn('addTrainer error:',e); }
-}
+
+
+
+
 
 // ── Overlay open/close ────────────────────────────────────
-function openMarketplaceOverlay(){
-  closeMobileMenu();
-  var el = document.getElementById('marketplace-overlay');
-  if(!el){ console.error('marketplace-overlay NOT FOUND'); return; }
-  // Set stile esplicito hardcoded
-  el.style.display = 'block';
-  el.style.position = 'fixed';
-  el.style.top = '0';
-  el.style.left = '0';
-  el.style.right = '0';
-  el.style.bottom = '0';
-  el.style.width = '100%';
-  el.style.height = '100%';
-  el.style.zIndex = '99998';
-  el.style.background = '#0b0b14';
-  el.style.overflowY = 'auto';
-  // Reset ricerca e filtri
-  var profile = document.getElementById('mv-profile');
-  if(profile) profile.style.display = 'none';
-  var search = document.getElementById('mv-search');
-  if(search) search.value = '';
-  _mvFilter = '';
-  document.querySelectorAll('.mv-tag').forEach(function(t){ t.classList.remove('act'); });
-  var first = document.querySelector('.mv-tag[data-spec=""]');
-  if(first) first.classList.add('act');
-  // Render trainer cards
-  mvRender();
-  console.log('[Marketplace] Aperto con', getTrainers().length, 'trainer');
-}
 
-function closeMarketplaceOverlay(){
-  var el = document.getElementById('marketplace-overlay');
-  if(el) el.style.display = 'none';
-  document.body.style.overflow = '';
-  document.documentElement.style.overflow = '';
-}
+
+
 
 // ── Filter & Render ───────────────────────────────────────
-function mvFilter(btn, spec){
-  _mvFilter = spec;
-  document.querySelectorAll('.mv-tag').forEach(function(t){ t.classList.remove('act'); });
-  btn.classList.add('act');
-  mvRender();
-}
 
-function mvRender(){
-  var grid = document.getElementById('mv-grid');
-  var countEl = document.getElementById('mv-count');
-  if(!grid) return;
-  var all = getTrainers().filter(function(t){ return t.status==='active'; });
-  var search = ((document.getElementById('mv-search')||{}).value||'').toLowerCase().trim();
-  var filtered = all.filter(function(t){
-    var nameMatch = !search ||
-      (t.name||'').toLowerCase().includes(search) ||
-      (t.surname||'').toLowerCase().includes(search) ||
-      (t.specializations||[]).some(function(s){ return s.toLowerCase().includes(search); });
-    var specMatch = !_mvFilter ||
-      (t.specializations||[]).some(function(s){ return s.toLowerCase().includes(_mvFilter.toLowerCase()); });
-    return nameMatch && specMatch;
-  });
-  if(countEl) countEl.textContent = filtered.length + ' trainer disponibili';
-  if(!filtered.length){
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#475569;font-family:sans-serif"><p>Nessun trainer trovato</p></div>';
-    return;
-  }
-  grid.innerHTML = filtered.map(function(tr){
-    var initials = tr.photo && tr.photo.length<=2 ? tr.photo : ((tr.name||'')[0]||'')+((tr.surname||'')[0]||'');
-    var stars = '★'.repeat(Math.round(tr.rating||5))+'☆'.repeat(5-Math.round(tr.rating||5));
-    var specs = (tr.specializations||[]).slice(0,3).map(function(s){
-      return '<span class="mv-card-spec">'+s+'</span>';
-    }).join('');
-    var color = tr.color||'linear-gradient(135deg,#1e3a5f,#0fd6c2)';
-    var idx2 = getTrainers().indexOf(tr);
-    return '<div class="mv-card" data-tidx="'+idx2+'" onclick="mvShowProfileByIdx('+idx2+')">'+
-      '<div class="mv-card-cover" style="background:'+color+'">'+initials+'</div>'+
-      '<div class="mv-card-body">'+
-        '<div class="mv-card-name">'+tr.name+' '+(tr.surname||'')+'</div>'+
-        '<div class="mv-card-stars"><span>'+stars+'</span><span class="mv-card-rating">'+(tr.rating||5).toFixed(1)+'</span><span class="mv-card-reviews">('+( tr.reviews||50)+' rec.)</span></div>'+
-        '<div class="mv-card-bio">'+(tr.bio||'')+'</div>'+
-        '<div class="mv-card-specs">'+specs+'</div>'+
-        '<div class="mv-card-footer">'+
-          '<div class="mv-card-price">€'+(tr.price||89)+'<span>/mese</span></div>'+
-          '<button class="mv-card-btn" onclick="event.stopPropagation();mvContactByIdx('+idx2+')">Contatta</button>'+
-        '</div>'+
-      '</div>'+
-    '</div>';
-  }).join('');
-}
 
-function mvShowProfileByIdx(idx2){
-  var tr = getTrainers()[idx2];
-  if(!tr) return;
-  mvShowProfile(tr);
-}
-function mvContactByIdx(idx2){
-  var tr = getTrainers()[idx2];
-  if(!tr) return;
-  mvContact(tr.email||'');
-}
+
+
+
+
 
 
 function mvShowProfile(tr){
@@ -16972,9 +16789,7 @@ function mvShowProfile(tr){
   document.getElementById('mv-profile').style.display = 'block';
 }
 
-function mvCloseProfile(){
-  document.getElementById('mv-profile').style.display = 'none';
-}
+
 
 function mvContact(email){
   if(!SESSION){
@@ -16987,10 +16802,7 @@ function mvContact(email){
   toast('Funzione chat trainer in arrivo!','success');
 }
 
-function mvBecomeTrainer(){
-  closeMarketplaceOverlay();
-  openTrainerReg();
-}
+
 
 // Chiudi con ESC o click esterno
 document.addEventListener('keydown', function(e){
@@ -17115,42 +16927,12 @@ function ownerSecretClick(){
 // ══════════════════════════════════════════════════════════════════
 
 // ── Session ───────────────────────────────────────────────────────
-function saveTrainerSession(tr){
-  localStorage.setItem('ecp_trainer_session', JSON.stringify(tr));
-  window.TR_SESSION = tr;
-}
-function getTrainerSession(){
-  try { return JSON.parse(localStorage.getItem('ecp_trainer_session')||'null'); } catch(e){ return null; }
-}
-function clearTrainerSession(){
-  localStorage.removeItem('ecp_trainer_session');
-  window.TR_SESSION = null;
-}
+
+
+
 
 // ── Login ─────────────────────────────────────────────────────────
-function doTrainerLogin(){
-  var email = (document.getElementById('tr-log-email')||{}).value?.trim().toLowerCase()||'';
-  var pass  = (document.getElementById('tr-log-pass')||{}).value||'';
-  var err   = document.getElementById('tr-auth-err');
-  if(err) err.style.display='none';
-  if(!email||!pass){ if(err){err.textContent='Compila tutti i campi.';err.style.display='block';} return; }
-  var trainer = getTrainerByEmail(email);
-  if(!trainer){
-    // Demo auto-create for testing
-    if(email.endsWith('@demo.it') && pass==='demo123'){
-      var demos = seedDemoTrainers();
-      trainer = demos.find(function(d){ return d.email===email; });
-    }
-    if(!trainer){ if(err){err.textContent='Trainer non trovato. Registrati.';err.style.display='block';} return; }
-  }
-  if(trainer.pass !== pass && !(email.endsWith('@demo.it') && pass==='demo123')){
-    if(err){err.textContent='Password non corretta.';err.style.display='block';} return;
-  }
-  saveTrainerSession(trainer);
-  openTrainerDash();
-  renderTrainerDash();
-  toast('Bentornato '+trainer.name+'! 💪','success');
-}
+
 
 // ── Register ──────────────────────────────────────────────────────
 function doTrainerReg(){
@@ -17192,20 +16974,7 @@ function doTrainerLogout(){
 }
 
 // ── Render Dashboard ──────────────────────────────────────────────
-function renderTrainerDash(){
-  var tr = getTrainerSession() || TR_SESSION;
-  if(!tr){ openTrainerLogin(); return; }
-  window.TR_SESSION = tr;
-  // Update nav
-  var av = document.getElementById('tr-nav-avatar');
-  var nm = document.getElementById('tr-nav-name');
-  if(av){ av.textContent = (tr.name||'T')[0]+(tr.surname||'')[0]||'T'; av.style.background=tr.color||'linear-gradient(135deg,#6366f1,#0fd6c2)'; }
-  if(nm) nm.textContent = tr.name+' '+(tr.surname||'');
-  // Build sidebar
-  buildTrainerSidebar();
-  // Show default section
-  trShowSection('overview');
-}
+
 
 // ── Sidebar ───────────────────────────────────────────────────────
 var TR_NAV_ITEMS = [
@@ -17562,131 +17331,17 @@ function trSaveProfilo(){
 
 
 // TRAINER OVERLAY SYSTEM
-function openTrainerLogin(){
-  var el = document.getElementById('trainer-login-overlay');
-  if(!el){ console.error('trainer-login-overlay NOT FOUND'); return; }
-  // Nascondi altri overlay trainer
-  var other = ['trainer-reg-overlay','trainer-dash-overlay'];
-  other.forEach(function(id){ var o=document.getElementById(id); if(o) o.style.display='none'; });
-  // Mostra con stile completo hardcoded
-  el.style.display = 'block';
-  el.style.position = 'fixed';
-  el.style.top = '0';
-  el.style.left = '0';
-  el.style.right = '0';
-  el.style.bottom = '0';
-  el.style.width = '100%';
-  el.style.height = '100%';
-  el.style.zIndex = '999999';
-  el.style.background = '#0b0b14';
-  el.style.overflowY = 'auto';
-  el.style.webkitOverflowScrolling = 'touch';
-  // NON bloccare il body scroll — l'overlay stesso è scrollabile
-  setTimeout(function(){ var e=document.getElementById('tlov-email'); if(e) e.focus(); }, 300);
-}
-function openTrainerReg(){
-  var el = document.getElementById('trainer-reg-overlay');
-  if(!el){ console.error('trainer-reg-overlay NOT FOUND'); return; }
-  var other = ['trainer-login-overlay','trainer-dash-overlay'];
-  other.forEach(function(id){ var o=document.getElementById(id); if(o) o.style.display='none'; });
-  el.style.display = 'block';
-  el.style.position = 'fixed';
-  el.style.top = '0';
-  el.style.left = '0';
-  el.style.right = '0';
-  el.style.bottom = '0';
-  el.style.width = '100%';
-  el.style.height = '100%';
-  el.style.zIndex = '999999';
-  el.style.background = '#0b0b14';
-  el.style.overflowY = 'auto';
-}
-function openTrainerDash(){
-  var tr = window.TR_SESSION || getTrainerSession();
-  if(!tr){ openTrainerLogin(); return; }
-  var el = document.getElementById('trainer-dash-overlay');
-  if(!el){ console.error('trainer-dash-overlay NOT FOUND'); return; }
-  var other = ['trainer-login-overlay','trainer-reg-overlay'];
-  other.forEach(function(id){ var o=document.getElementById(id); if(o) o.style.display='none'; });
-  el.style.display = 'block';
-  el.style.position = 'fixed';
-  el.style.top = '0';
-  el.style.left = '0';
-  el.style.right = '0';
-  el.style.bottom = '0';
-  el.style.width = '100%';
-  el.style.height = '100%';
-  el.style.zIndex = '999998';
-  el.style.background = '#0b0b14';
-  el.style.overflow = 'hidden';
-  trdInit(tr);
-}
-function closeTrainerArea(){
-  ['trainer-login-overlay','trainer-reg-overlay','trainer-dash-overlay'].forEach(function(id){
-    var el = document.getElementById(id);
-    if(el) el.style.display = 'none';
-  });
-  document.body.style.overflow = '';
-  document.documentElement.style.overflow = '';
-}
+
+
+
+
 function openTrainerArea(){openTrainerLogin();}
 
-async function trainerLoginAction(){
-  var emailEl=document.getElementById('tlov-email'),passEl=document.getElementById('tlov-pass');
-  var errEl=document.getElementById('tlov-err'),btn=document.getElementById('tlov-btn');
-  var email=(emailEl?emailEl.value:'').trim().toLowerCase();
-  var pass=passEl?passEl.value:'';
-  if(errEl)errEl.style.display='none';
-  if(!email||!pass){if(errEl){errEl.textContent='Inserisci email e password.';errEl.style.display='block';}return;}
-  if(btn){btn.disabled=true;btn.textContent='Accesso in corso...';}
-  
-  try{
-    var res=await fetch(SERVER_URL+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pass})});
-    var data=await res.json();
-    if(data.token&&data.user){
-      var td=data.user;td.pass=pass;if(!td.name)td.name=email.split('@')[0];
-      saveTrainerSession(td);window.TR_SESSION=td;
-      closeTrainerArea();openTrainerDash();
-      toast('Bentornato '+td.name+'!','success');
-      if(btn){btn.disabled=false;btn.textContent='Accedi';}return;
-    }
-  }catch(e){}
-  
-  var trainer=getTrainerByEmail(email);
-  if(!trainer){var demos=seedDemoTrainers();trainer=demos.find(function(d){return d.email===email;})||null;}
-  if(!trainer){if(errEl){errEl.textContent='Trainer non trovato. Registrati prima.';errEl.style.display='block';}if(btn){btn.disabled=false;btn.textContent='Accedi';}return;}
-  var ok=trainer.pass===pass||(email.endsWith('@demo.it')&&pass==='demo123');
-  if(!ok){if(errEl){errEl.textContent='Password non corretta.';errEl.style.display='block';}if(btn){btn.disabled=false;btn.textContent='Accedi';}return;}
-  saveTrainerSession(trainer);window.TR_SESSION=trainer;
-  closeTrainerArea();openTrainerDash();
-  toast('Bentornato '+trainer.name+'!','success');
-  if(btn){btn.disabled=false;btn.textContent='Accedi';}
-}
+async 
 
-function trainerRegAction(){
-  var n=(document.getElementById('trov-name')||{}).value||'';
-  var sn=(document.getElementById('trov-surname')||{}).value||'';
-  var em=((document.getElementById('trov-email')||{}).value||'').trim().toLowerCase();
-  var pw=(document.getElementById('trov-pass')||{}).value||'';
-  var bio=(document.getElementById('trov-bio')||{}).value||'';
-  var price=parseInt((document.getElementById('trov-price')||{}).value||'89')||89;
-  var specs=Array.from(document.querySelectorAll('#trov-specs input:checked')).map(function(i){return i.value;});
-  var err=document.getElementById('trov-err');
-  if(err)err.style.display='none';
-  n=n.trim();sn=sn.trim();
-  if(!n||!em||!pw){if(err){err.textContent='Nome, email e password obbligatori.';err.style.display='block';}return;}
-  if(pw.length<8){if(err){err.textContent='Password minimo 8 caratteri.';err.style.display='block';}return;}
-  if(getTrainerByEmail(em)){if(err){err.textContent='Email gia registrata.';err.style.display='block';}return;}
-  var cols=['linear-gradient(135deg,#1a1aff,#0fd6c2)','linear-gradient(135deg,#6a11cb,#8b5cf6)','linear-gradient(135deg,#f97316,#ef4444)','linear-gradient(135deg,#ec4899,#8b5cf6)','linear-gradient(135deg,#059669,#0fd6c2)'];
-  var nt={name:n,surname:sn,email:em,pass:pw,bio:bio||'Trainer certificato',specializations:specs.length?specs:['Fitness'],price:price,rating:5.0,reviews:0,photo:(n[0]||'T')+(sn[0]||''),color:cols[Math.floor(Math.random()*cols.length)],status:'active',clients:[],joined:new Date().toISOString()};
-  addTrainer(nt);saveTrainerSession(nt);window.TR_SESSION=nt;
-  closeTrainerArea();openTrainerDash();
-  toast('Benvenuto '+n+'! Profilo creato!','success');
-}
 
-function trainerLogoutAction(){
-  clearTrainerSession();window.TR_SESSION=null;closeTrainerArea();toast('Arrivederci!','success');
-}
+
+
 
 var TRD_SECS=[
   {id:'overview',label:'Dashboard',p:'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'},
