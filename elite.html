@@ -10926,9 +10926,15 @@ function handleGoogleLoginResponse(response) {
 // ─── APPLE SIGN-IN ────────────────────────────────────────────
 // ─── GOOGLE OAUTH via SUPABASE (login/registrazione unificata) ───
 async function signInWithGoogle() {
-  // Google OAuth non disponibile senza Supabase — usa login normale
-  toast('Accedi con email e password', 'info');
-  showPage('pg-auth');
+  if(typeof google === 'undefined' || !google.accounts || !google.accounts.id){
+    toast('Google non disponibile. Usa email e password.', 'error');
+    return;
+  }
+  google.accounts.id.prompt(function(notification){
+    if(notification.isNotDisplayed() || notification.isSkippedMoment()){
+      toast('Accedi con email e password', 'info');
+    }
+  });
   return;
   try {
     const sb = getSupabase();
@@ -13112,6 +13118,8 @@ addEventListener('DOMContentLoaded', ()=>{
 document.addEventListener('keydown',(e)=>{
   if(e.key==='Escape'){
     document.querySelectorAll('.modal-bg.open').forEach(m=>m.classList.remove('open'));
+    if(typeof closeForgotPassword==='function') closeForgotPassword();
+    if(typeof closeMarketplaceOverlay==='function'){ var mo=document.getElementById('marketplace-overlay'); if(mo&&mo.style.display==='block') closeMarketplaceOverlay(); }
     const ytIframe=document.getElementById('yt-iframe'); if(ytIframe) ytIframe.src='';
   }
 });
@@ -14965,45 +14973,47 @@ async function owSaveSystem(){
 
 <!-- ═══ LIBERATORIA ═══ -->
 <div class="modal-bg" id="modal-liberatoria">
-<div class="modal" style="max-width:640px;max-height:85vh;overflow-y:auto;padding:32px">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;position:sticky;top:0;background:var(--card);padding-bottom:12px;border-bottom:1px solid var(--border2)">
-    <h2 style="font-family:var(--font2);font-size:1.2rem">️ Liberatoria e Dichiarazione di Idoneità</h2>
-    <button onclick="document.getElementById('modal-liberatoria').classList.remove('open')" style="background:none;border:none;color:var(--sub);font-size:1.4rem;cursor:pointer">✕</button>
+<div class="modal" style="max-width:640px;max-height:90vh;overflow-y:auto;padding:0">
+  <div style="position:sticky;top:0;background:var(--card);padding:20px 24px 14px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;z-index:2">
+    <h2 style="font-family:var(--font2);font-size:1.1rem;margin:0">⚠️ Liberatoria di Responsabilità</h2>
+    <button onclick="document.getElementById('modal-liberatoria').classList.remove('open')" style="background:none;border:none;color:var(--sub);font-size:1.4rem;cursor:pointer;line-height:1">✕</button>
   </div>
-  <div style="font-size:.88rem;line-height:1.75;color:var(--sub)">
-    <div style="background:rgba(245,200,66,.08);border:1px solid rgba(245,200,66,.25);border-radius:10px;padding:16px;margin-bottom:20px;color:var(--text)">
-      <strong style="color:var(--gold)">⚠️ PREMESSA IMPORTANTE</strong><br><br>
-      Questo programma è destinato a individui che <strong>non presentano patologie né disabilità fisiche o mentali</strong> e che sono capaci di eseguire correttamente gli esercizi suggeriti.<br><br>
-      La responsabilità di soddisfare tali requisiti ricade su chi acquista e utilizza il programma, o su chi lo acquista per altri.<br><br>
-      <strong>EliteCoachProgram.fit non si assume alcuna responsabilità</strong> per un uso inadeguato del programma da parte di chi non ha effettuato una visita medica che autorizzi l'attività fisica non agonistica, né per chi non si è assicurato di saper eseguire correttamente gli esercizi proposti.<br><br>
-      È importante ricordare che per affrontare questo tipo di allenamento è fondamentale essere <strong>ben nutriti, idratati e riposati</strong>.
-    </div>
-    <h3 style="color:var(--text);margin-bottom:10px;font-size:1rem">LIBERATORIA DA RESPONSABILITÀ</h3>
-    <p>Il sottoscritto dichiara quanto segue:</p>
-    <ol style="margin:12px 0 16px 20px;display:flex;flex-direction:column;gap:8px">
-      <li>Di essere maggiorenne e in buone condizioni di salute al momento dell'iscrizione;</li>
-      <li>Di non essere affetto da patologie cardiovascolari, ortopediche, metaboliche che sconsiglino l'attività fisica intensa;</li>
-      <li>Di aver consultato o essere disposto a consultare il proprio medico prima di iniziare qualsiasi programma;</li>
-      <li>Di riconoscere che l'attività fisica comporta rischi intrinseci e di assumersene la piena responsabilità;</li>
-      <li>Di sollevare EliteCoachProgram.fit, i suoi fondatori, collaboratori, trainer e partner da qualsiasi responsabilità derivante da infortuni causati dall'utilizzo improprio dei programmi;</li>
-      <li>Di aver letto le istruzioni tecniche e di impegnarsi a seguire le indicazioni su riscaldamento, tecnica e progressione dei carichi;</li>
-      <li>Di interrompere immediatamente qualsiasi esercizio in caso di dolore, vertigini o difficoltà respiratorie.</li>
-    </ol>
-    <h3 style="color:var(--text);margin-bottom:10px;font-size:1rem;margin-top:20px">AVVERTENZE PER LA SICUREZZA</h3>
-    <ul style="margin:0 0 16px 20px;display:flex;flex-direction:column;gap:6px">
-      <li>Esegui sempre un riscaldamento adeguato (almeno 10 minuti) prima di ogni sessione;</li>
-      <li>Rispetta i tempi di recupero indicati tra le serie e tra le sessioni;</li>
-      <li>Aumenta i carichi in modo graduale e progressivo;</li>
-      <li>Mantieni sempre una corretta tecnica di esecuzione, preferendo un peso inferiore se necessario;</li>
-      <li>Assicurati di essere adeguatamente idratato prima, durante e dopo l'allenamento;</li>
-      <li>Non allenarti in caso di febbre, dolori articolari acuti o affaticamento estremo.</li>
+  <div style="padding:20px 24px;font-size:.88rem;color:var(--sub);line-height:1.8">
+    <p style="margin-bottom:16px"><strong style="color:var(--text)">Leggere attentamente prima di procedere.</strong></p>
+    <h4 style="color:var(--text);margin:16px 0 8px">1. Dichiarazione di Idoneità Fisica</h4>
+    <p>Dichiarando di procedere, confermo di:</p>
+    <ul style="margin:8px 0 12px 20px;padding-left:4px">
+      <li style="margin-bottom:6px">Essere in buono stato di salute, non affetto da patologie cardiovascolari, muscolo-scheletriche o sistemiche che controindichino l'attività fisica intensa.</li>
+      <li style="margin-bottom:6px">Non aver ricevuto dal medico curante indicazioni contrarie alla pratica sportiva.</li>
+      <li style="margin-bottom:6px">Essere consapevole che i programmi AI non sostituiscono il parere di un medico sportivo certificato.</li>
     </ul>
-    <p style="font-size:.8rem;color:var(--muted);border-top:1px solid var(--border);padding-top:12px;margin-top:12px">Data di accettazione: registrata automaticamente al momento della creazione dell'account. IP e timestamp conservati per 5 anni ai fini legali.</p>
+    <h4 style="color:var(--text);margin:16px 0 8px">2. Limitazione di Responsabilità</h4>
+    <p>EliteCoachProgram.fit <strong style="color:var(--text)">non è responsabile</strong> per:</p>
+    <ul style="margin:8px 0 12px 20px;padding-left:4px">
+      <li style="margin-bottom:6px">Infortuni o danni fisici derivanti dall'esecuzione degli esercizi proposti.</li>
+      <li style="margin-bottom:6px">Peggioramento di condizioni mediche preesistenti.</li>
+      <li style="margin-bottom:6px">Risultati fisici non raggiunti a causa di fattori individuali.</li>
+    </ul>
+    <h4 style="color:var(--text);margin:16px 0 8px">3. Consenso Informato</h4>
+    <ul style="margin:8px 0 12px 20px;padding-left:4px">
+      <li style="margin-bottom:6px">I programmi AI sono suggerimenti personalizzati, non prescrizioni mediche.</li>
+      <li style="margin-bottom:6px">Devo consultare un medico prima di qualsiasi programma di allenamento intenso.</li>
+      <li style="margin-bottom:6px">In caso di dolore o malessere devo interrompere immediatamente.</li>
+      <li style="margin-bottom:6px">Dichiaro di avere almeno 18 anni o il consenso di un genitore/tutore.</li>
+    </ul>
+    <div style="background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:12px;padding:14px;margin-top:16px">
+      <p style="color:var(--text);font-weight:600;margin:0 0 6px">⚠️ Avvertenza medica</p>
+      <p style="margin:0;font-size:.82rem">Consultare sempre un medico prima di iniziare un nuovo programma di allenamento, specialmente in presenza di condizioni mediche preesistenti.</p>
+    </div>
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border2)">
+      <button onclick="document.getElementById('modal-liberatoria').classList.remove('open')" class="btn btn-primary" style="width:100%;padding:14px;font-size:15px">
+        ✓ Ho letto e accetto la liberatoria
+      </button>
+    </div>
   </div>
 </div>
 </div>
 
-<!-- ═══ PRIVACY POLICY ═══ -->
 <div class="modal-bg" id="modal-privacy">
 <div class="modal" style="max-width:640px;max-height:85vh;overflow-y:auto;padding:32px">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;position:sticky;top:0;background:var(--card);padding-bottom:12px;border-bottom:1px solid var(--border2)">
@@ -16280,6 +16290,92 @@ document.addEventListener('keydown', function(e){
     }
   }
 });
+
+
+// ── rejectCookies ─────────────────────────────────────────
+function rejectCookies(){
+  localStorage.setItem('ecp_cookies','essential');
+  var banner = document.getElementById('cookie-banner');
+  if(banner) banner.style.display='none';
+  toast('Solo cookie essenziali attivati','success');
+}
+
+// ── endSession ────────────────────────────────────────────
+function endSession(){
+  if(typeof stopSession === 'function') stopSession();
+  else {
+    sessionActive = false;
+    var btn = document.getElementById('btn-complete-workout');
+    if(btn) btn.style.display='none';
+    toast('Sessione terminata','success');
+  }
+}
+
+// ── generateProgram ───────────────────────────────────────
+function generateProgram(){
+  if(!SESSION){ showPage('pg-auth','register'); return; }
+  showDashSection('schede');
+  toast('Vai su Schede per generare il tuo programma AI 💪','success');
+}
+
+// ── owTogglePro ───────────────────────────────────────────
+function owTogglePro(email){
+  if(!email) return;
+  var users = window._owAllUsers || [];
+  var user = users.find(function(u){ return u.email === email; });
+  if(!user) return;
+  // Toggle via API
+  if(typeof ownerTogglePro === 'function') ownerTogglePro(email);
+  else toast('Funzione Pro toggle: connettiti al server','success');
+}
+
+// ── renderOwnerPanel ──────────────────────────────────────
+function renderOwnerPanel(){
+  if(typeof initOwner === 'function') initOwner();
+}
+
+// ── renderTrainerSection ──────────────────────────────────
+function renderTrainerSection(sec){
+  if(typeof showTrainerSection === 'function') showTrainerSection(sec);
+}
+
+
+// ── Reset Password ─────────────────────────────────────
+async function doResetPassword(){
+  var pass1 = (document.getElementById('reset-pass1')||{}).value||'';
+  var pass2 = (document.getElementById('reset-pass2')||{}).value||'';
+  var msg = document.getElementById('reset-msg');
+  var btn = document.getElementById('reset-btn');
+  if(!pass1 || pass1.length < 8){
+    if(msg){ msg.textContent='Password deve essere almeno 8 caratteri.'; msg.style.display='block'; }
+    return;
+  }
+  if(pass1 !== pass2){
+    if(msg){ msg.textContent='Le password non coincidono.'; msg.style.display='block'; }
+    return;
+  }
+  var token = new URLSearchParams(window.location.search).get('reset_token')||
+               new URLSearchParams(window.location.search).get('token')||'';
+  if(!token){ if(msg){ msg.textContent='Link non valido.'; msg.style.display='block'; } return; }
+  if(btn){ btn.disabled=true; btn.textContent='Salvataggio...'; }
+  try {
+    var r = await fetch(SERVER_URL+'/api/auth/reset-password',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({token:token, password:pass1})
+    });
+    var data = await r.json();
+    if(data.ok){
+      if(msg){ msg.textContent='Password cambiata! Accedi ora.'; msg.style.color='var(--teal)'; msg.style.display='block'; }
+      setTimeout(function(){ showPage('pg-auth','login'); }, 2000);
+    } else {
+      if(msg){ msg.textContent = data.error||'Errore. Richiedi un nuovo link.'; msg.style.display='block'; }
+      if(btn){ btn.disabled=false; btn.textContent='Salva nuova password'; }
+    }
+  } catch(e){
+    if(msg){ msg.textContent='Errore di connessione.'; msg.style.display='block'; }
+    if(btn){ btn.disabled=false; btn.textContent='Salva nuova password'; }
+  }
+}
 
 </script>
 
