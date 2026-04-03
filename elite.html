@@ -1865,9 +1865,9 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
       </button>
       <div id="ep-name" class="ep-topbar-title">ESERCIZIO</div>
-      <button class="ep-topbar-vol" id="ep-vol-btn" onclick="epToggleVol()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-      </button>
+      <a id="ep-yt-link" href="#" target="_blank" class="ep-topbar-vol" style="text-decoration:none;color:#fff">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.55 3.5 12 3.5 12 3.5s-7.55 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.03 0 12 0 12s0 3.97.5 5.81a3.02 3.02 0 002.12 2.14C4.45 20.5 12 20.5 12 20.5s7.55 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.97 24 12 24 12s0-3.97-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>
+      </a>
     </div>
     <!-- Media content -->
     <div id="ep-media-content" style="width:100%;height:100%"></div>
@@ -5330,7 +5330,7 @@ function ytSearchUrlEn(exName){
   return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(query);
 }
 
-function openYT(ex){
+function _openYTOriginal(ex){
   if(!ex || !ex.name) return;
   const url = getYTLink(ex);
   const videoId = url ? getYTVideoId(url) : null;
@@ -16079,7 +16079,7 @@ function _epBuildSuggestions(){
   if(rx&&rx.tip) items.push({dot:'var(--green)',text:'Tecnica RX: '+rx.tip});
   if(!items.length) items.push({dot:'var(--accent-xl)',text:'Mantieni la tecnica corretta per tutto il set. Respira: espira nella fase concentrica, inspira nella fase eccentrica.'});
   el.innerHTML=items.map(function(it){
-    return '<div class="ep-hint" onclick="this.classList.toggle('tapped')">'
+    return '<div class="ep-hint" onclick="this.classList.toggle(\'tapped\')">'
       +'<div class="ep-hint-dot" style="background:'+it.dot+'"></div>'
       +'<div class="ep-hint-text">'+it.text+'</div>'
       +'</div>';
@@ -16092,7 +16092,7 @@ function _epRpeGuide(rpe){
   if(n===7) return 'sforzo medio — potresti fare ancora 3 reps';
   if(n===8) return 'sforzo alto — potresti fare ancora 2 reps';
   if(n===9) return 'sforzo molto alto — potresti fare ancora 1 rep';
-  return 'massimo sforzo — non potresti fare un'altra rep';
+  return 'massimo sforzo — non potresti fare un\'altra rep';
 }
 
 function _epLoadNote(){
@@ -16153,28 +16153,27 @@ function epSaveKgRow(s,val){
   }
 }
 
-// ── Override openYTDirect ──
+// ── openYTDirect: always open player ──
 function openYTDirect(name){
-  var ex=null;
-  if(SESSION&&SESSION.program&&currentDayIdx!=null){
+  if(!name) return;
+  // 1. Try to find in current day exercises
+  var ex=null, ei=null, dayKey=null;
+  if(SESSION&&SESSION.program&&typeof currentDayIdx!=='undefined'&&currentDayIdx!=null){
     var dayExs=((SESSION.program.days||[])[currentDayIdx]||{}).exercises||[];
-    ex=dayExs.find(function(e){return (e.name||'').toLowerCase()===(name||'').toLowerCase();});
+    for(var i=0;i<dayExs.length;i++){
+      if((dayExs[i].name||'').toLowerCase()===(name||'').toLowerCase()){ex=dayExs[i];ei=i;break;}
+    }
+    dayKey='d'+currentDayIdx;
   }
+  // 2. Fallback to library
   if(!ex) ex=(ALL_EXERCISES||[]).find(function(e){return (e.name||'').toLowerCase()===(name||'').toLowerCase();});
   if(!ex) ex={name:name};
-  var ei=null;
-  if(SESSION&&SESSION.program&&currentDayIdx!=null){
-    var exs=((SESSION.program.days||[])[currentDayIdx]||{}).exercises||[];
-    for(var i=0;i<exs.length;i++){if((exs[i].name||'').toLowerCase()===(name||'').toLowerCase()){ei=i;break;}}
-  }
-  var dayKey=currentDayIdx!=null?'d'+currentDayIdx:null;
   openExPlayer(ex,dayKey,ei);
 }
 
-// ── Override openYT from library ──
-var _origOpenYT=window.openYT;
+// ── Single openYT router ──
 function openYT(ex){
-  if(sessionActive&&ex&&ex.name){
+  if(ex&&ex.name&&(sessionActive||(typeof currentDayIdx!=='undefined'&&currentDayIdx!=null&&SESSION&&SESSION.program))){
     var dayKey=currentDayIdx!=null?'d'+currentDayIdx:null;
     var ei=null;
     if(SESSION&&SESSION.program&&currentDayIdx!=null){
@@ -16182,12 +16181,13 @@ function openYT(ex){
       for(var i=0;i<exs.length;i++){if((exs[i].name||'').toLowerCase()===(ex.name||'').toLowerCase()){ei=i;break;}}
     }
     openExPlayer(ex,dayKey,ei);
-  } else if(_origOpenYT){
-    _origOpenYT(ex);
+  } else {
+    _openYTOriginal(ex);
   }
 }
 
 
+function showGoogleTermsModal(mode){
   _googleLoginMode = mode || 'login';
   // Su mobile il click sull'iframe Google non funziona
   // Mostriamo il modale termini e poi usiamo google.accounts.id.prompt()
