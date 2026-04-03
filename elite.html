@@ -2292,6 +2292,144 @@ document.addEventListener('keydown', function(e){
 <div id="toast"></div>
 
 <script>
+
+// ════════════════════════════════════════════════════════
+// OVERLAY BUILDER — crea overlays al runtime se non trovati
+// ════════════════════════════════════════════════════════
+function ensureOverlay(id, html, style){
+  var el = document.getElementById(id);
+  if(el) return el;
+  // Crea e inserisci nel body
+  var div = document.createElement('div');
+  div.id = id;
+  div.innerHTML = html;
+  Object.assign(div.style, {
+    display: 'none',
+    position: 'fixed',
+    top: '0', left: '0', right: '0', bottom: '0',
+    width: '100%', height: '100%',
+    background: '#0b0b14',
+    overflowY: 'auto',
+    zIndex: style && style.zIndex ? style.zIndex : '99999',
+    webkitOverflowScrolling: 'touch'
+  });
+  if(style) Object.assign(div.style, style);
+  document.body.appendChild(div);
+  console.log('[OVERLAY] Creato dinamicamente:', id);
+  return div;
+}
+
+function buildMarketplaceHTML(){
+  return '<div style="position:sticky;top:0;z-index:10;background:rgba(11,11,20,.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.07);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px">' +
+    '<div style="font-weight:800;font-size:1rem;color:#f1f5f9"><span style="color:#0fd6c2">Trova</span> il tuo <span style="color:#818cf8">Trainer</span></div>' +
+    '<button onclick="closeMarketplaceOverlay()" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:7px 16px;color:#94a3b8;cursor:pointer;font-size:13px">&#8592; Chiudi</button>' +
+    '</div>' +
+    '<div style="background:linear-gradient(135deg,#0b0b14,#110a2e,#061624);padding:44px 20px;text-align:center;border-bottom:1px solid rgba(255,255,255,.05)">' +
+      '<div style="font-size:11px;font-weight:700;color:#0fd6c2;text-transform:uppercase;letter-spacing:2.5px;margin-bottom:14px">Trainer Marketplace</div>' +
+      '<h1 style="font-family:sans-serif;font-size:clamp(1.7rem,5vw,2.6rem);font-weight:800;color:#f1f5f9;margin:0 0 10px;line-height:1.15">Professionisti <span style="color:#818cf8">certificati</span></h1>' +
+      '<p style="color:#475569;font-size:14px;margin:0 0 28px">Risultati garantiti · Prima sessione gratuita</p>' +
+      '<div style="max-width:500px;margin:0 auto;position:relative">' +
+        '<input id="mv-search" type="search" placeholder="Nome o specializzazione..." oninput="mvRender()" style="width:100%;box-sizing:border-box;padding:14px 16px 14px 48px;border-radius:50px;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#f1f5f9;font-size:15px;outline:none">' +
+      '</div>' +
+    '</div>' +
+    '<div id="mv-tags" style="display:flex;gap:8px;overflow-x:auto;padding:14px 20px;background:#0b0b14;border-bottom:1px solid rgba(255,255,255,.04);scrollbar-width:none">' +
+      '<button class="mv-tag act" data-spec="" onclick="mvFilter(this,\'\')">Tutti</button>' +
+      '<button class="mv-tag" data-spec="Bodybuilding" onclick="mvFilter(this,\'Bodybuilding\')">Bodybuilding</button>' +
+      '<button class="mv-tag" data-spec="Powerlifting" onclick="mvFilter(this,\'Powerlifting\')">Powerlifting</button>' +
+      '<button class="mv-tag" data-spec="Nutrizione" onclick="mvFilter(this,\'Nutrizione\')">Nutrizione</button>' +
+      '<button class="mv-tag" data-spec="CrossFit" onclick="mvFilter(this,\'CrossFit\')">CrossFit</button>' +
+      '<button class="mv-tag" data-spec="HIIT" onclick="mvFilter(this,\'HIIT\')">HIIT</button>' +
+      '<button class="mv-tag" data-spec="Funzionale" onclick="mvFilter(this,\'Funzionale\')">Funzionale</button>' +
+      '<button class="mv-tag" data-spec="Dimagrimento" onclick="mvFilter(this,\'Dimagrimento\')">Dimagrimento</button>' +
+      '<button class="mv-tag" data-spec="Yoga" onclick="mvFilter(this,\'Yoga\')">Yoga</button>' +
+    '</div>' +
+    '<div style="padding:14px 20px 6px;display:flex;align-items:center;justify-content:space-between">' +
+      '<span id="mv-count" style="font-size:13px;color:#475569"></span>' +
+      '<button onclick="mvBecomeTrainer()" style="font-size:12px;color:#818cf8;background:rgba(129,140,248,.1);border:1px solid rgba(129,140,248,.2);border-radius:50px;padding:7px 16px;cursor:pointer">+ Diventa Trainer</button>' +
+    '</div>' +
+    '<div id="mv-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:12px 20px 60px"></div>' +
+    '<div id="mv-profile" style="display:none;position:absolute;inset:0;z-index:10;background:#0b0b14;overflow-y:auto">' +
+      '<div style="position:sticky;top:0;background:rgba(11,11,20,.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.07);padding:14px 20px;display:flex;align-items:center;gap:12px">' +
+        '<button onclick="mvCloseProfile()" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:7px 14px;color:#94a3b8;cursor:pointer;font-size:13px">&#8592; Torna</button>' +
+        '<span style="font-weight:700;color:#f1f5f9" id="mv-profile-title">Profilo Trainer</span>' +
+      '</div>' +
+      '<div id="mv-profile-content" style="padding:28px 20px;max-width:760px;margin:0 auto"></div>' +
+    '</div>';
+}
+
+function buildTrainerLoginHTML(){
+  return '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px">' +
+    '<div style="width:100%;max-width:420px">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:32px">' +
+        '<div><h1 style="font-family:sans-serif;font-size:1.7rem;font-weight:800;margin:0 0 4px;color:#f1f5f9">Area Trainer</h1>' +
+        '<p style="color:#94a3b8;font-size:.88rem;margin:0">Accedi al pannello professionale</p></div>' +
+        '<button onclick="closeTrainerArea()" style="background:#1e1e2e;border:1px solid #3d3d5c;border-radius:10px;padding:8px 18px;color:#94a3b8;cursor:pointer;font-size:14px;font-weight:600">&#10005; Chiudi</button>' +
+      '</div>' +
+      '<div style="background:#1a1a2e;border:1px solid #2d2d44;border-radius:16px;padding:28px 24px;margin-bottom:14px">' +
+        '<div style="margin-bottom:16px"><label style="font-size:.8rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">Email</label>' +
+        '<input id="tlov-email" type="email" placeholder="trainer@email.com" style="width:100%;padding:12px 14px;background:#0d0d1a;border:1.5px solid #2d2d44;border-radius:10px;color:#f1f5f9;font-size:16px;outline:none;box-sizing:border-box" onkeydown="if(event.key===\'Enter\')trainerLoginAction()"></div>' +
+        '<div style="margin-bottom:20px"><label style="font-size:.8rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">Password</label>' +
+        '<input id="tlov-pass" type="password" placeholder="..." style="width:100%;padding:12px 14px;background:#0d0d1a;border:1.5px solid #2d2d44;border-radius:10px;color:#f1f5f9;font-size:16px;outline:none;box-sizing:border-box" onkeydown="if(event.key===\'Enter\')trainerLoginAction()"></div>' +
+        '<div id="tlov-err" style="display:none;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:10px 14px;color:#f87171;font-size:.85rem;margin-bottom:16px"></div>' +
+        '<button id="tlov-btn" onclick="trainerLoginAction()" style="width:100%;padding:15px;background:linear-gradient(135deg,#6366f1,#818cf8);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;cursor:pointer">Accedi &#8594;</button>' +
+        '<p style="text-align:center;margin-top:14px;font-size:.85rem;color:#94a3b8">Non registrato? <a onclick="openTrainerReg()" style="color:#818cf8;cursor:pointer;font-weight:600">Diventa Trainer</a></p>' +
+      '</div>' +
+      '<div onclick="document.getElementById(\'tlov-email\').value=\'marco.vitale@demo.it\';document.getElementById(\'tlov-pass\').value=\'demo123\'" style="background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:12px;padding:12px 16px;cursor:pointer;text-align:center">' +
+        '<div style="font-size:.78rem;color:#94a3b8;margin-bottom:3px">Demo - clicca per compilare</div>' +
+        '<div style="font-size:.85rem;color:#818cf8;font-weight:600">marco.vitale@demo.it / demo123</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+// Override openMarketplaceOverlay to use dynamic creation
+function openMarketplaceOverlay(){
+  closeMobileMenu();
+  var el = document.getElementById('marketplace-overlay');
+  if(!el){
+    console.log('[Marketplace] Creo overlay dinamicamente...');
+    el = ensureOverlay('marketplace-overlay', buildMarketplaceHTML(), {zIndex:'99998'});
+  }
+  el.style.display = 'block';
+  el.style.position = 'fixed';
+  el.style.top = '0'; el.style.left = '0'; el.style.right = '0'; el.style.bottom = '0';
+  el.style.width = '100%'; el.style.height = '100%';
+  el.style.zIndex = '99998';
+  el.style.background = '#0b0b14';
+  el.style.overflowY = 'auto';
+  // Reset filtri
+  _mvFilter = '';
+  document.querySelectorAll('.mv-tag').forEach(function(t){t.classList.remove('act');});
+  var first = document.querySelector('.mv-tag[data-spec=""]');
+  if(first) first.classList.add('act');
+  var search = document.getElementById('mv-search');
+  if(search) search.value = '';
+  var profile = document.getElementById('mv-profile');
+  if(profile) profile.style.display = 'none';
+  mvRender();
+  console.log('[Marketplace] Aperto con', getTrainers().length, 'trainer');
+}
+
+// Override openTrainerLogin to use dynamic creation
+function openTrainerLogin(){
+  var ids = ['trainer-reg-overlay','trainer-dash-overlay','marketplace-overlay'];
+  ids.forEach(function(id){ var o=document.getElementById(id); if(o) o.style.display='none'; });
+  var el = document.getElementById('trainer-login-overlay');
+  if(!el){
+    console.log('[Trainer] Creo login overlay dinamicamente...');
+    el = ensureOverlay('trainer-login-overlay', buildTrainerLoginHTML(), {zIndex:'999999'});
+  }
+  el.style.display = 'block';
+  el.style.position = 'fixed';
+  el.style.top = '0'; el.style.left = '0'; el.style.right = '0'; el.style.bottom = '0';
+  el.style.width = '100%'; el.style.height = '100%';
+  el.style.zIndex = '999999';
+  el.style.background = '#0b0b14';
+  el.style.overflowY = 'auto';
+  setTimeout(function(){var e=document.getElementById('tlov-email'); if(e)e.focus();}, 300);
+}
+
+
 // ═══════════════════════════════════════════════════════════════
 // ELITE COACH — Configurazione Server REST
 // ═══════════════════════════════════════════════════════════════
@@ -14468,27 +14606,31 @@ nav {
   </div>
   <scr"+"ipt>window.print();<\/scr"+"ipt>
   
-<!-- ════════════════════════════════════════════
-     MARKETPLACE OVERLAY — Trova il tuo Trainer
-     ════════════════════════════════════════════ -->
-<div id="marketplace-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;z-index:99998;background:#0b0b14;overflow-y:auto;-webkit-overflow-scrolling:touch">
 
-  <div class="mv-nav">
-    <div class="mv-nav-title"><span style="color:#0fd6c2">Trova</span> il tuo <span style="color:#818cf8">Trainer</span></div>
-    <button class="mv-close" onclick="closeMarketplaceOverlay()">&#8592; Chiudi</button>
+<!-- ═══════════════════════════════════════════════════
+     MARKETPLACE OVERLAY — Trova il tuo Trainer
+═══════════════════════════════════════════════════ -->
+<div id="marketplace-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;z-index:99998;background:#0b0b14;overflow-y:auto">
+
+  <!-- NAV -->
+  <div style="position:sticky;top:0;z-index:10;background:rgba(11,11,20,.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.07);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px">
+    <div style="font-weight:800;font-size:1rem;color:#f1f5f9;font-family:sans-serif"><span style="color:#0fd6c2">Trova</span> il tuo <span style="color:#818cf8">Trainer</span></div>
+    <button onclick="closeMarketplaceOverlay()" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:7px 16px;color:#94a3b8;cursor:pointer;font-family:sans-serif;font-size:13px">&#8592; Chiudi</button>
   </div>
 
-  <div class="mv-hero">
-    <div class="mv-badge">Trainer Marketplace</div>
-    <h1 class="mv-title">Professionisti <span>certificati</span></h1>
-    <p class="mv-sub">Risultati garantiti &middot; Prima sessione gratuita</p>
-    <div class="mv-search-wrap">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input id="mv-search" class="mv-search" type="search" placeholder="Nome o specializzazione..." oninput="mvRender()">
+  <!-- HERO + SEARCH -->
+  <div style="background:linear-gradient(135deg,#0b0b14 0%,#110a2e 50%,#061624 100%);padding:44px 20px;text-align:center;border-bottom:1px solid rgba(255,255,255,.05)">
+    <div style="font-size:11px;font-weight:700;color:#0fd6c2;text-transform:uppercase;letter-spacing:2.5px;margin-bottom:14px">Trainer Marketplace</div>
+    <h1 style="font-family:sans-serif;font-size:clamp(1.7rem,5vw,2.6rem);font-weight:800;color:#f1f5f9;margin:0 0 10px;line-height:1.15">Professionisti <span style="color:#818cf8">certificati</span></h1>
+    <p style="color:#475569;font-size:14px;margin:0 0 28px">Risultati garantiti &middot; Prima sessione gratuita</p>
+    <div style="max-width:500px;margin:0 auto;position:relative">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);pointer-events:none"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="mv-search" type="search" placeholder="Nome o specializzazione..." oninput="mvRender()" style="width:100%;box-sizing:border-box;padding:14px 16px 14px 48px;border-radius:50px;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#f1f5f9;font-size:15px;font-family:sans-serif;outline:none">
     </div>
   </div>
 
-  <div class="mv-tags" id="mv-tags">
+  <!-- FILTRI -->
+  <div style="display:flex;gap:8px;overflow-x:auto;padding:14px 20px;background:#0b0b14;border-bottom:1px solid rgba(255,255,255,.04);scrollbar-width:none">
     <button class="mv-tag act" data-spec="" onclick="mvFilter(this,'')">Tutti</button>
     <button class="mv-tag" data-spec="Bodybuilding" onclick="mvFilter(this,'Bodybuilding')">Bodybuilding</button>
     <button class="mv-tag" data-spec="Powerlifting" onclick="mvFilter(this,'Powerlifting')">Powerlifting</button>
@@ -14501,20 +14643,22 @@ nav {
     <button class="mv-tag" data-spec="Riabilitazione" onclick="mvFilter(this,'Riabilitazione')">Riabilitazione</button>
   </div>
 
-  <div class="mv-toolbar">
-    <span id="mv-count" class="mv-count"></span>
-    <button class="mv-become" onclick="mvBecomeTrainer()">&#43; Diventa Trainer</button>
+  <!-- TOOLBAR -->
+  <div style="padding:14px 20px 6px;display:flex;align-items:center;justify-content:space-between">
+    <span id="mv-count" style="font-size:13px;color:#475569;font-family:sans-serif"></span>
+    <button onclick="mvBecomeTrainer()" style="font-size:12px;color:#818cf8;background:rgba(129,140,248,.1);border:1px solid rgba(129,140,248,.2);border-radius:50px;padding:7px 16px;cursor:pointer;font-family:sans-serif">+ Diventa Trainer</button>
   </div>
 
-  <div id="mv-grid" class="mv-grid"></div>
+  <!-- GRID -->
+  <div id="mv-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:12px 20px 60px"></div>
 
-  <!-- Profilo Trainer (pannello interno) -->
-  <div id="mv-profile">
-    <div class="mv-profile-nav">
-      <button class="mv-back" onclick="mvCloseProfile()">&#8592; Torna</button>
+  <!-- PROFILO INTERNO -->
+  <div id="mv-profile" style="display:none;position:absolute;inset:0;z-index:10;background:#0b0b14;overflow-y:auto">
+    <div style="position:sticky;top:0;background:rgba(11,11,20,.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.07);padding:14px 20px;display:flex;align-items:center;gap:12px">
+      <button onclick="mvCloseProfile()" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:7px 14px;color:#94a3b8;cursor:pointer;font-family:sans-serif;font-size:13px">&#8592; Torna</button>
       <span style="font-family:sans-serif;font-weight:700;color:#f1f5f9" id="mv-profile-title">Profilo Trainer</span>
     </div>
-    <div id="mv-profile-content" class="mv-profile-content"></div>
+    <div id="mv-profile-content" style="padding:28px 20px;max-width:760px;margin:0 auto"></div>
   </div>
 
 </div>
