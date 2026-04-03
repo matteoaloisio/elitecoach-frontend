@@ -1256,7 +1256,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
 <!-- HERO -->
 <section class="hero">
   <div class="hero-badge"><div class="dot"></div> AI-Powered · Personalizzato · 700+ Esercizi</div>
-  <h1 id="hh1">Il tuo coach AI<br><span class="grad" id="hh2">personalizzato con AI</span></h1>
+  <h1 id="hh1">Il tuo coach AI</h1>
   <p class="hero-sub" id="hsub">Programmi personalizzati con intelligenza artificiale, trainer certificati e tracciamento avanzato dei progressi.</p>
   <div class="hero-btns">
     <button class="btn btn-xl btn-primary" onclick="showPage('pg-auth','register')" id="hcta">Crea il tuo programma gratis →</button>
@@ -1405,7 +1405,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
           <li class="y">Gamification completa</li>
           <li class="y">Trainer marketplace</li>
         </ul>
-        <button class="btn btn-teal btn-full" onclick="openPayModal()">Attiva Pro →</button>
+        <button class="btn btn-teal btn-full" onclick="showPage('pg-auth','register')">Inizia gratis →</button>
       </div>
       <div class="price-card">
         <div class="price-name">Coach</div>
@@ -2060,7 +2060,7 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
   <div class="modal" style="max-width:480px">
     <div class="modal-hd">
       <h3>Attiva Piano Pro</h3>
-      <button class="modal-close" onclick="closeModal('pay-modal')">✕</button>
+      <button class="modal-close" onclick="forceClosePayModal()" style="position:relative;z-index:9999;pointer-events:all;cursor:pointer">✕</button>
     </div>
 
     <!-- Plan summary -->
@@ -2141,6 +2141,8 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
     </div>
   </div>
 </div>
+
+
 
 <div class="modal-bg" id="yt-modal">
   <div class="modal" style="max-width:740px;padding:0;overflow:hidden;border-radius:var(--r-xl)">
@@ -3142,31 +3144,31 @@ let restTimerInterval = null;
 
 // ─── TRANSLATIONS ────────────────────────────────────────
 const TR = {
-  it:{nav_login:'Accedi',nav_cta:'Inizia gratis →',hero_h1:'Il tuo coach AI',hero_h1b:'personalizzato con AI',
+  it:{nav_login:'Accedi',nav_cta:'Inizia gratis →',hero_h1:'Il tuo coach AI',hero_h1b:'',
     hero_sub:'Programmi personalizzati, trainer certificati, tracking avanzato.',
     hero_cta:'Crea il tuo programma gratis →',hero_cta2:'Trova un Trainer',
     hero_note:'✓ Gratis per sempre · ✓ Nessuna carta · ✓ Cancella quando vuoi',
     toast_fill:'Compila tutti i campi',toast_saved:'Salvato!',toast_err:'Errore',
     toast_pro_active:'Piano Pro attivato!'},
-  en:{nav_login:'Login',nav_cta:'Start free →',hero_h1:'Your AI coach',hero_h1b:'personalized with AI',
+  en:{nav_login:'Login',nav_cta:'Start free →',hero_h1:'Your AI coach',hero_h1b:'',
     hero_sub:'Personalized programs, certified trainers, advanced tracking.',
     hero_cta:'Create your free program →',hero_cta2:'Find a Trainer',
     hero_note:'✓ Free forever · ✓ No card required · ✓ Cancel anytime',
     toast_fill:'Fill all fields',toast_saved:'Saved!',toast_err:'Error',
     toast_pro_active:'Pro plan activated!'},
-  es:{nav_login:'Entrar',nav_cta:'Comenzar gratis →',hero_h1:'Tu entrenador AI',hero_h1b:'personalizado con IA',
+  es:{nav_login:'Entrar',nav_cta:'Comenzar gratis →',hero_h1:'Tu entrenador AI',hero_h1b:'',
     hero_sub:'Programas personalizados, entrenadores certificados, seguimiento avanzado.',
     hero_cta:'Crea tu programa gratis →',hero_cta2:'Encuentra un Entrenador',
     hero_note:'✓ Gratis para siempre · ✓ Sin tarjeta · ✓ Cancela cuando quieras',
     toast_fill:'Rellena todos los campos',toast_saved:'¡Guardado!',toast_err:'Error',
     toast_pro_active:'Plan Pro activado!'},
-  fr:{nav_login:'Connexion',nav_cta:'Commencer →',hero_h1:'Ton coach IA',hero_h1b:'personnalisé avec IA',
+  fr:{nav_login:'Connexion',nav_cta:'Commencer →',hero_h1:'Ton coach IA',hero_h1b:'',
     hero_sub:'Programmes personnalisés, coachs certifiés, suivi avancé.',
     hero_cta:'Créer mon programme gratuit →',hero_cta2:'Trouver un Coach',
     hero_note:'✓ Gratuit à vie · ✓ Sans CB · ✓ Annulez quand vous voulez',
     toast_fill:'Remplissez tous les champs',toast_saved:'Enregistré!',toast_err:'Erreur',
     toast_pro_active:'Plan Pro activé!'},
-  de:{nav_login:'Anmelden',nav_cta:'Kostenlos starten →',hero_h1:'Dein KI-Trainer',hero_h1b:'personalisiert mit AI',
+  de:{nav_login:'Anmelden',nav_cta:'Kostenlos starten →',hero_h1:'Dein KI-Trainer',hero_h1b:'',
     hero_sub:'Personalisierte Programme, zertifizierte Trainer, fortschrittliches Tracking.',
     hero_cta:'Kostenloses Programm erstellen →',hero_cta2:'Trainer finden',
     hero_note:'✓ Für immer kostenlos · ✓ Keine Karte · ✓ Jederzeit kündigen',
@@ -3181,7 +3183,7 @@ function setLang(code){
   document.querySelectorAll('.lb').forEach(b=>b.classList.toggle('act',b.dataset.lang===code));
   const els={
     'nav-login':t('nav_login'),'nav-cta':t('nav_cta'),
-    'hh1':t('hero_h1'),'hh2':t('hero_h1b'),'hsub':t('hero_sub'),
+    'hh1':t('hero_h1'),'hh2':'','hsub':t('hero_sub'),
     'hcta':t('hero_cta'),'hcta2':t('hero_cta2'),'hnote':t('hero_note')
   };
   Object.entries(els).forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.textContent=v;});
@@ -5605,6 +5607,12 @@ function filterLibrary(){
   renderLibGrid();
 }
 
+
+function openExPlayer(ex, dayKey, ei){
+  if(!ex || !ex.name) return;
+  var url = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(ex.name + ' esercizio tecnica');
+  window.open(url, '_blank');
+}
 
 function openYTDirect(name){
   // Find exercise by name
@@ -8760,7 +8768,7 @@ function renderDashPiano(){
             <li>3 schede AI al mese</li><li>Libreria base</li>
             <li>Tracker progressi</li>
           </ul>
-          <button class="btn btn-teal" style="width:100%;margin-top:8px" onclick="openPayModal()">Aggiorna a Pro →</button>`}
+          <button class="btn btn-teal" style="width:100%;margin-top:8px" onclick="toast('Funzione pagamento in arrivo!','success')">Aggiorna a Pro →</button>`}
       </div>
       <div class="card">
         <h4 style="margin-bottom:12px">Storico fatture</h4>
@@ -10397,110 +10405,24 @@ function wodTimerSkip(){ if(wodInterval) clearInterval(wodInterval); wodCfg.runn
 let ANTHROPIC_KEY = localStorage.getItem('ecp_anthropic_key') || '';
 function getAIModel(){ return localStorage.getItem('ecp_ai_model')||'claude-haiku-4-5-20251001'; }
 
-const STRIPE_PUBLIC_KEY = 'pk_test_YOUR_STRIPE_PUBLISHABLE_KEY';
 // Backend URL — replace when you deploy the backend
 const BACKEND_URL = window.ELITE_SERVER_URL || 'https://elitecoach-server-production.up.railway.app';
 
-// Pricing config — update Product/Price IDs from Stripe Dashboard
-const STRIPE_PRICES = {
-  pro_monthly: 'price_YOUR_MONTHLY_PRICE_ID',   // €14,99/mese
-  pro_yearly:  'price_YOUR_YEARLY_PRICE_ID',    // €119/anno (2 mesi omaggio)
-};
+// Stripe config removed
+const STRIPE_PRICES = { pro_monthly: '', pro_yearly: '' };
 
-let stripeInstance = null;
-let stripeCardElement = null;
-let stripePaymentIntent = null;
-let activePromoDiscount = 0;
-let amount = 0; // global amount per pagamento
 
 // ── Load Stripe.js dynamically ────────────────────────────────────
-function loadStripeJS(){
-  return new Promise((resolve, reject) => {
-    if(window.Stripe){ resolve(window.Stripe); return; }
-    const script = document.createElement('script');
-    script.src = 'https://js.stripe.com/v3/';
-    script.onload = () => resolve(window.Stripe);
-    script.onerror = () => reject(new Error('Stripe.js failed to load'));
-    document.head.appendChild(script);
-  });
-}
+
 
 // ── Initialize Stripe Elements ────────────────────────────────────
-async function initStripeElements(){
-  try {
-    const Stripe = await loadStripeJS();
-    stripeInstance = Stripe(STRIPE_PUBLIC_KEY);
-    const elements = stripeInstance.elements({
-      appearance: {
-        theme: 'night',
-        variables: {
-          colorPrimary: '#5b5ef4',
-          colorBackground: '#0e0e1a',
-          colorText: '#eeeef8',
-          colorDanger: '#f87171',
-          colorSuccess: '#2dd4a0',
-          fontFamily: 'DM Sans, sans-serif',
-          borderRadius: '7px',
-          spacingUnit: '4px',
-        },
-        rules: {
-          '.Input': { border: '1px solid rgba(255,255,255,.13)', padding: '10px 13px' },
-          '.Input:focus': { border: '1px solid #5b5ef4', boxShadow: 'none' },
-          '.Label': { color: '#9999bb', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '.5px', fontWeight: '600' },
-        }
-      }
-    });
-    stripeCardElement = elements.create('card', {
-      hidePostalCode: true,
-      style: {
-        base: { fontSize: '14px', color: '#eeeef8', '::placeholder': { color: '#55557a' } },
-        invalid: { color: '#f87171' }
-      }
-    });
-    const mountEl = document.getElementById('stripe-card-element');
-    if(mountEl) stripeCardElement.mount('#stripe-card-element');
-    stripeCardElement.on('change', event => {
-      const errEl = document.getElementById('stripe-card-errors');
-      if(errEl){
-        errEl.style.display = event.error ? '' : 'none';
-        errEl.textContent = event.error ? event.error.message : '';
-      }
-    });
-  } catch(e){
-    console.error('Stripe init error:', e);
-    // Fallback to manual card form
-    const el = document.getElementById('stripe-card-element');
-    if(el) el.innerHTML = `
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <div style="grid-column:1/-1"><input class="inp" id="cc-number" placeholder="1234 5678 9012 3456" maxlength="19"
-          oninput="this.value=this.value.replace(/[^0-9]/g,'').replace(/(\d{4})/g,'$1 ').trim()"></div>
-        <input class="inp" id="cc-exp" placeholder="MM/AA" maxlength="5">
-        <input class="inp" id="cc-cvv" placeholder="CVV" maxlength="4" type="password">
-      </div>`;
-  }
-}
+async 
 
 // ── Open payment modal ────────────────────────────────────────────
-function openPayModal(){
-  if(!SESSION){ showPage('pg-auth','login'); return; }
-  openModal('pay-modal');
-  switchPayTab('card');
-  setTimeout(()=> initStripeElements(), 100);
-  // Try to initialize PayPal as well
-  setTimeout(()=> initPayPal(), 200);
-}
+
 
 // ── Switch tabs (Card / PayPal / Apple Pay) ───────────────────────
-function switchPayTab(tab){
-  ['card','paypal','apple'].forEach(t=>{
-    const tabEl = document.getElementById('pay-tab-'+t);
-    const btnEl = document.getElementById('ptab-'+t);
-    if(tabEl) tabEl.style.display = t===tab ? '' : 'none';
-    if(btnEl) btnEl.classList.toggle('act', t===tab);
-  });
-  if(tab==='paypal') initPayPal();
-  if(tab==='apple') checkApplePay();
-}
+
 
 // ── Create PaymentIntent on backend ──────────────────────────────
 async function createPaymentIntent(){
@@ -10525,45 +10447,7 @@ async function createPaymentIntent(){
 }
 
 // ── Submit Stripe card payment ────────────────────────────────────
-async function stripeSubmit(){
-  const btn = document.getElementById('stripe-submit-btn');
-  const nameEl = document.getElementById('stripe-name');
-  if(!nameEl?.value.trim()){ toast('Inserisci il nome titolare','error'); return; }
-  if(!stripeInstance || !stripeCardElement){
-    // Demo fallback
-    activateProAfterPayment('demo');
-    return;
-  }
-  if(btn){ btn.disabled = true; btn.textContent = '⏳ Elaborazione...'; }
-  try {
-    const clientSecret = await createPaymentIntent();
-    if(!clientSecret){
-      // Demo mode — no backend
-      activateProAfterPayment('demo');
-      return;
-    }
-    const { error, paymentIntent } = await stripeInstance.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: stripeCardElement,
-        billing_details: {
-          name: nameEl.value.trim(),
-          email: SESSION.email,
-        }
-      }
-    });
-    if(error){
-      const errEl = document.getElementById('stripe-card-errors');
-      if(errEl){ errEl.style.display=''; errEl.textContent = error.message; }
-      toast('Pagamento fallito: ' + error.message, 'error');
-    } else if(paymentIntent.status === 'succeeded'){
-      activateProAfterPayment(paymentIntent.id);
-    }
-  } catch(e){
-    toast('Errore di connessione. Riprova.', 'error');
-  } finally {
-    if(btn){ btn.disabled = false; btn.textContent = 'Paga €14,99 — Attiva Pro'; }
-  }
-}
+async 
 
 // ── Create Stripe Checkout Session (alternative flow) ────────────
 async function openStripeCheckout(priceId){
@@ -10576,7 +10460,7 @@ async function openStripeCheckout(priceId){
         'Authorization': `Bearer ${localStorage.getItem('ecp_jwt')}`
       },
       body: JSON.stringify({
-        priceId: priceId || STRIPE_PRICES.pro_monthly,
+        priceId: priceId || '',
         userId: SESSION.id,
         email: SESSION.email,
         successUrl: window.location.origin + '?payment=success',
@@ -10644,7 +10528,7 @@ async function openStripeCheckout(priceId){
         'Authorization':`Bearer ${localStorage.getItem('ecp_jwt')}`
       },
       body: JSON.stringify({
-        priceId: priceId || STRIPE_PRICES.pro_monthly,
+        priceId: priceId || '',
         userId: SESSION.id,
         email: SESSION.email,
         successUrl: window.location.origin + '?payment=success',
@@ -10661,45 +10545,10 @@ async function openStripeCheckout(priceId){
 
 
 // ── Apply promo code ──────────────────────────────────────────────
-function applyStripePromo(){
-  const code = document.getElementById('stripe-promo')?.value.trim().toUpperCase();
-  const resultEl = document.getElementById('stripe-promo-result');
-  if(!code){ if(resultEl){ resultEl.textContent='Inserisci un codice'; resultEl.style.color='var(--red)'; } return; }
-  // Check against stored promos
-  const promos = JSON.parse(localStorage.getItem('ecp_promos')||'[]');
-  const promo = promos.find(p=>p.code===code);
-  if(promo){
-    activePromoDiscount = promo.disc;
-    const newPrice = (14.99 * (1-promo.disc/100)).toFixed(2);
-    if(resultEl){ resultEl.innerHTML = `<span style="color:var(--green)">✅ ${promo.disc}% sconto applicato! Nuovo prezzo: <strong>€${newPrice}</strong></span>`; }
-    const btn = document.getElementById('stripe-submit-btn');
-    if(btn) btn.textContent = `Paga €${newPrice} — Attiva Pro`;
-    toast(`Sconto ${promo.disc}% applicato!`, 'success');
-  } else {
-    activePromoDiscount = 0;
-    if(resultEl){ resultEl.innerHTML = `<span style="color:var(--red)">❌ Codice non valido</span>`; }
-  }
-}
+
 
 // ── PayPal integration ────────────────────────────────────────────
-function initPayPal(){
-  const container = document.getElementById('paypal-button-container');
-  if(!container || container.children.length > 0) return;
-  // Load PayPal SDK
-  const existingScript = document.querySelector('script[src*="paypal"]');
-  if(!existingScript){
-    const script = document.createElement('script');
-    // Replace YOUR_PAYPAL_CLIENT_ID with your real client ID from developer.paypal.com
-    script.src = 'https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=EUR&intent=capture';
-    script.onload = () => mountPayPalButtons();
-    script.onerror = () => {
-      if(container) container.innerHTML = '<p style="font-size:12px;color:var(--sub);text-align:center">PayPal non disponibile. Usa la carta.</p>';
-    };
-    document.head.appendChild(script);
-  } else {
-    mountPayPalButtons();
-  }
-}
+
 
 function mountPayPalButtons(){
   const container = document.getElementById('paypal-button-container');
@@ -10788,44 +10637,9 @@ function checkPaymentRedirect(){
 }
 
 // ── Manage subscription (cancel / update) ────────────────────────
-async function cancelStripeSubscription(){
-  if(!confirm('Sei sicuro di voler cancellare il Piano Pro?')) return;
-  try {
-    const resp = await fetch(`${BACKEND_URL}/api/stripe/cancel-subscription`, {
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('ecp_jwt')}`
-      },
-      body: JSON.stringify({ userId: SESSION?.id })
-    });
-    if(resp.ok){
-      SESSION.pro = false; updateUser(SESSION); saveSession(SESSION);
-      toast('Abbonamento cancellato. Accesso Pro attivo fino alla fine del periodo.','');
-      renderDashPiano();
-    }
-  } catch(e){
-    SESSION.pro = false; updateUser(SESSION); saveSession(SESSION);
-    toast('Abbonamento cancellato',''); renderDashPiano();
-  }
-}
+async 
 
-async function openCustomerPortal(){
-  try {
-    const resp = await fetch(`${BACKEND_URL}/api/stripe/customer-portal`, {
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('ecp_jwt')}`
-      },
-      body: JSON.stringify({ userId: SESSION?.id, returnUrl: window.location.href })
-    });
-    const { url } = await resp.json();
-    window.location.href = url;
-  } catch(e){
-    toast('Portale non disponibile. Contatta il supporto.', 'error');
-  }
-}
+async 
 
 // Aliases for backward compatibility
 function completePay(){ stripeSubmit(); }
@@ -13414,7 +13228,7 @@ addEventListener('DOMContentLoaded', ()=>{
     // Nascondi header, navbar e tutto il resto
     var _toHide = document.querySelectorAll('header, nav, .nav, #main-nav, .hero, #pg-land, #cookie-banner');
     _toHide.forEach(function(el){ if(el) el.style.display='none'; });
-    document.body.style.overflow = 'hidden';
+    /* removed */;
     var _pgReset = document.getElementById('pg-reset');
     if(_pgReset){ _pgReset.style.display='flex'; }
     return; // Non eseguire il resto del login flow
@@ -16928,6 +16742,33 @@ function doTrainerLoginOverlay(){
   if(typeof renderTrainerDash==='function') renderTrainerDash();
 }
 
+
+
+
+// ── Robust modal close: click outside ──
+document.addEventListener('click', function(e){
+  var bg = e.target.closest ? e.target.closest('.modal-bg') : null;
+  if(!bg) return;
+  // If click is directly on the bg (not on modal content)
+  if(e.target === bg){
+    bg.classList.remove('open');
+    bg.style.display = 'none';
+    setTimeout(function(){ bg.style.display = ''; }, 50);
+    // Clean Stripe if pay modal
+    
+  }
+}, true); // capture phase — fires before Stripe iframe can intercept
+
+// ESC key closes any open modal
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){
+    document.querySelectorAll('.modal-bg.open').forEach(function(m){
+      m.classList.remove('open');
+    });
+    forceClosePayModal();
+  }
+});
+
 </script>
 
 
@@ -16935,8 +16776,8 @@ function doTrainerLoginOverlay(){
 <nav>
   <a class="nav-logo" onclick="showPage('pg-land')"><em>EliteCoach</em>Program.fit</a>
   <div class="nav-right">
-    <button class="btn-nav ghost" onclick="showPage('pg-trainer-login')">Login Trainer</button>
-    <button class="btn-nav primary" onclick="showPage('pg-trainer-reg')">Diventa Trainer</button>
+    <button class="btn-nav ghost" onclick="openTrainerLoginOverlay()">Login Trainer</button>
+    <button class="btn-nav primary" onclick="openTrainerRegOverlay()">Diventa Trainer</button>
   </div>
 </nav>
 <div class="container" style="padding-top:40px;padding-bottom:60px">
@@ -16962,86 +16803,13 @@ function doTrainerLoginOverlay(){
 <!-- TRAINER PROFILE -->
 
 <!-- PLAYER MODAL -->
-<div id="ex-player-modal">
-  <!-- TOP BAR -->
-  <div class="ep-topbar">
-    <button class="ep-close" onclick="closeExPlayer()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
-    </button>
-    <div style="flex:1;min-width:0">
-      <div class="ep-title" id="ep-name">Esercizio</div>
-      <div id="ep-progress-label" style="font-size:11px;color:var(--sub);margin-top:2px">Serie 1 di 4</div>
-    </div>
-    <a id="ep-yt-link" href="#" target="_blank" style="display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:rgba(255,0,0,.15);color:#ff4444;flex-shrink:0;text-decoration:none">
-      <svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.55 3.5 12 3.5 12 3.5s-7.55 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.03 0 12 0 12s0 3.97.5 5.81a3.02 3.02 0 002.12 2.14C4.45 20.5 12 20.5 12 20.5s7.55 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.97 24 12 24 12s0-3.97-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>
-    </a>
-  </div>
 
-  <!-- VIDEO -->
-  <div class="ep-video-wrap" id="ep-video-wrap"></div>
-
-  <!-- SCROLLABLE BODY -->
-  <div class="ep-body">
-
-    <!-- META BADGES -->
-    <div class="ep-meta" id="ep-meta"></div>
-
-    <!-- SETS GRID -->
-    <div>
-      <div class="ep-section-label">Serie — tocca per completare</div>
-      <div class="ep-sets-grid" id="ep-sets-grid"></div>
-    </div>
-
-    <!-- COMPLETE SET BUTTON -->
-    <button class="ep-complete-btn ready" id="ep-complete-btn" onclick="epCompleteCurrentSet()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      <span id="ep-btn-label">Completa serie 1</span>
-    </button>
-
-    <!-- REST TIMER (hidden until needed) -->
-    <div id="ep-timer-wrap" class="ep-timer-wrap" style="display:none">
-      <div class="ep-timer-ring">
-        <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" stroke-width="8" stroke="var(--border2)"/><circle id="ep-timer-circle" cx="50" cy="50" r="44" stroke-width="8" stroke-dasharray="276.46" stroke-dashoffset="0"/></svg>
-        <div class="ep-timer-num" id="ep-timer-num">90s</div>
-      </div>
-      <div style="flex:1">
-        <div style="font-weight:700;color:var(--teal);font-size:.95rem;margin-bottom:3px">Recupero</div>
-        <div style="font-size:.82rem;color:var(--sub);margin-bottom:10px" id="ep-timer-sub">Prossima: serie 2</div>
-        <button onclick="epSkipRest()" style="padding:7px 16px;border-radius:50px;border:1px solid var(--border2);background:var(--bg3);color:var(--sub);font-size:13px;cursor:pointer;font-family:var(--font)">Salta recupero →</button>
-      </div>
-    </div>
-
-    <!-- SUGGESTIONS -->
-    <div id="ep-suggestions-wrap">
-      <div class="ep-section-label">Suggerimenti — tocca per leggere</div>
-      <div id="ep-suggestions" style="display:flex;flex-direction:column;gap:8px"></div>
-    </div>
-
-    <!-- NOTES -->
-    <div>
-      <div class="ep-section-label">Note personali</div>
-      <textarea class="ep-note" id="ep-note-input"
-        placeholder="Carico usato, sensazioni, difficoltà..."
-        oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';epSaveNote(this.value)"></textarea>
-    </div>
-
-    <!-- YT SEARCH FALLBACK -->
-    <div id="ep-yt-search" style="display:none;flex-direction:column;gap:8px">
-      <div class="ep-section-label">Cerca video tecnica</div>
-      <a id="ep-yt-it" href="#" target="_blank" class="btn btn-primary" style="text-decoration:none;justify-content:center;gap:8px">
-        <svg width="14" height="14" viewBox="0 0 24 24"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.55 3.5 12 3.5 12 3.5s-7.55 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.03 0 12 0 12s0 3.97.5 5.81a3.02 3.02 0 002.12 2.14C4.45 20.5 12 20.5 12 20.5s7.55 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.97 24 12 24 12s0-3.97-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>
-        Cerca su YouTube
-      </a>
-    </div>
-
-  </div><!-- end ep-body -->
-</div><!-- end ex-player-modal -->
 
 
   <div class="modal" style="max-width:480px">
     <div class="modal-hd">
       <h3>Attiva Piano Pro</h3>
-      <button class="modal-close" onclick="closeModal('pay-modal')">✕</button>
+      <button class="modal-close" onclick="forceClosePayModal()" style="position:relative;z-index:9999;pointer-events:all;cursor:pointer">✕</button>
     </div>
 
     <!-- Plan summary -->
