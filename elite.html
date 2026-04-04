@@ -16821,7 +16821,7 @@ function ownerSecretClick(){
   _ownerClicks++;
   if(_ownerClicks >= 3){
     _ownerClicks = 0;
-    showPage('pg-owner');
+    openOwnerOverlay();
   }
   setTimeout(function(){ _ownerClicks = 0; }, 2000);
 }
@@ -17940,6 +17940,7 @@ window.showPage=function(id,sub){
   if(id==='pg-trainer-login'||id==='pg-trainer-dash'&&!tLoad()){tOpenLogin();return;}
   if(id==='pg-trainer-reg'){tOpenReg();return;}
   if(id==='pg-trainer-dash'){tOpenDash();return;}
+  if(id==='pg-owner'){openOwnerOverlay();return;}
   if(typeof _sp0==='function')_sp0(id,sub);
 };
 
