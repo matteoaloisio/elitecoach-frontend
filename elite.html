@@ -1463,33 +1463,76 @@ document.addEventListener('keydown', function(e){
 <!-- LIBRERIA ESERCIZI -->
 <section class="lib-section" id="libreria-section">
   <div class="container">
-    <div class="sec-label">Libreria esercizi</div>
+    <div class="sec-label">Libreria Esercizi</div>
     <h2 class="sec-title">700+ esercizi con <span>video guidati</span></h2>
-    <p class="sec-sub" style="margin-bottom:28px">Ogni esercizio con link YouTube verificato, istruzioni tecniche e filtri avanzati.</p>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center">
-      <input class="inp" id="lib-search" placeholder="Cerca esercizio o muscolo..." style="max-width:260px;border-radius:50px" oninput="filterLibrary()">
-      <select class="inp" id="lib-cat" style="max-width:170px;border-radius:50px" onchange="filterLibrary()">
+    <p class="sec-sub" style="margin-bottom:28px">Video YouTube verificati, istruzioni tecniche, filtri avanzati. Cerca in italiano o inglese.</p>
+
+    <!-- FILTRI -->
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;align-items:center">
+      <div style="position:relative;flex:1;min-width:200px;max-width:320px">
+        <input class="inp" id="lib-search" placeholder="Cerca in IT o EN (es: bench press, panca...)"
+          style="width:100%;border-radius:50px;padding-left:38px;box-sizing:border-box"
+          oninput="LIB.filter()" autocomplete="off">
+        <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none"
+          width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </div>
+      <select class="inp" id="lib-muscle" style="border-radius:50px" onchange="LIB.filter()">
         <option value="">Tutti i muscoli</option>
-        <option>Petto</option><option>Schiena</option><option>Gambe</option>
-        <option>Spalle</option><option>Bicipiti</option><option>Tricipiti</option>
-        <option>Core</option><option>Cardio</option><option>Funzionale</option>
-        <option>Mobilità</option><option>Powerlifting</option><option>Olimpico</option>
-        <option>CrossFit</option>
+        <option>Petto</option><option>Schiena</option><option>Spalle</option>
+        <option>Bicipiti</option><option>Tricipiti</option><option>Gambe</option>
+        <option>Glutei</option><option>Addome</option><option>Polpacci</option>
+        <option>Cardio</option><option>Funzionale</option><option>Olimpico</option>
+        <option>Powerlifting</option>
       </select>
-      <select class="inp" id="lib-equip" style="max-width:170px;border-radius:50px" onchange="filterLibrary()">
-        <option value="">Tutta l'attrezzatura</option>
-        <option>manubri</option><option>bilanciere</option><option>macchina</option>
-        <option>cavi</option><option>corpo libero</option><option>kettlebell</option>
+      <select class="inp" id="lib-equip" style="border-radius:50px" onchange="LIB.filter()">
+        <option value="">Tutta l&#39;attrezzatura</option>
+        <option value="bilanciere">Bilanciere</option>
+        <option value="manubri">Manubri</option>
+        <option value="cavi">Cavi</option>
+        <option value="macchina">Macchine</option>
+        <option value="corpo libero">Corpo libero</option>
+        <option value="kettlebell">Kettlebell</option>
       </select>
-      <select class="inp" id="lib-level" style="max-width:150px;border-radius:50px" onchange="filterLibrary()">
+      <select class="inp" id="lib-level" style="border-radius:50px" onchange="LIB.filter()">
         <option value="">Tutti i livelli</option>
-        <option>principiante</option><option>intermedio</option><option>avanzato</option>
+        <option value="principiante">Principiante</option>
+        <option value="intermedio">Intermedio</option>
+        <option value="avanzato">Avanzato</option>
       </select>
-      <span id="lib-count" style="font-size:12px;color:var(--muted);margin-left:4px"></span>
+      <span id="lib-count" style="font-size:12px;color:var(--muted);white-space:nowrap"></span>
     </div>
+
+    <!-- GRID -->
     <div class="lib-grid" id="lib-grid"></div>
-    <div style="text-align:center;margin-top:20px">
-      <button class="btn btn-ghost" id="lib-load-more" onclick="loadMoreLib()">Carica altri esercizi</button>
+
+    <!-- LOAD MORE -->
+    <div style="text-align:center;margin-top:24px">
+      <button class="btn btn-ghost" id="lib-load-more" onclick="LIB.more()" style="display:none;border-radius:50px;padding:12px 32px">
+        Carica altri esercizi
+      </button>
+    </div>
+  </div>
+
+  <!-- VIDEO MODAL -->
+  <div id="lib-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.88);z-index:99999;align-items:center;justify-content:center;padding:16px;box-sizing:border-box">
+    <div style="width:100%;max-width:760px;background:var(--card2);border-radius:18px;overflow:hidden;position:relative;max-height:92vh;display:flex;flex-direction:column">
+      <!-- Header -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);flex-shrink:0">
+        <div style="min-width:0;flex:1">
+          <div id="lib-modal-title" style="font-family:var(--font2);font-size:1rem;font-weight:800;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Esercizio</div>
+          <div id="lib-modal-muscle" style="font-size:.75rem;color:var(--accent);font-weight:600;margin-top:2px"></div>
+        </div>
+        <button onclick="LIB.closeModal()" style="background:var(--bg3);border:none;border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;margin-left:12px;color:var(--text);font-size:1.1rem">&times;</button>
+      </div>
+      <!-- Player -->
+      <div id="lib-player" style="background:#000;flex-shrink:0"></div>
+      <!-- Info + Buttons -->
+      <div style="padding:16px 20px;overflow-y:auto">
+        <p id="lib-modal-desc" style="color:var(--sub);font-size:.88rem;line-height:1.7;margin:0 0 14px"></p>
+        <div id="lib-modal-actions" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+      </div>
     </div>
   </div>
 </section>
@@ -3476,20 +3519,8 @@ function toast(msg, type=''){
 }
 
 // ─── MODAL ───────────────────────────────────────────────
-function openModal(id){ document.getElementById(id).classList.add('open'); }
-function closeModal(id){
-  var el=document.getElementById(id);
-  if(!el) return;
-  el.classList.remove('open');
-  el.style.zIndex='';
-  document.body.style.overflow='';
-  if(id==='yt-modal'){
-    var p=document.getElementById('yt-player-content');
-    if(p) p.innerHTML='';
-    var a=document.getElementById('yt-modal-actions');
-    if(a) a.innerHTML='';
-  }
-}
+
+
 
 // ─── LOCAL STORAGE HELPERS ───────────────────────────────
 function getUsers(){ try{return JSON.parse(localStorage.getItem('ecp_users')||'[]');}catch{return[];} }
@@ -5198,6 +5229,63 @@ desc:'EMOM trazioni. Ogni minuto esegui X trazioni. Usato per costruire volume d
 
 
 
+
+var EX_NEW_V2 = [
+  {name:'Floor Press Bilanciere',muscle:'Petto',equip:'Bilanciere',level:'Intermedio',en:'Floor Press',yt:'https://www.youtube.com/watch?v=LK7-vSYl43s',desc:'Panca piana sul pavimento. Limita il ROM e protegge le spalle.'},
+  {name:'Panca Smith Machine',muscle:'Petto',equip:'Macchina',level:'Principiante',en:'Smith Machine Bench',yt:'https://www.youtube.com/watch?v=5CWHMmBHRKU',desc:'Bilanciere guidato. Ottimo per isolare il petto in sicurezza.'},
+  {name:'Push-up con Anelli',muscle:'Petto',equip:'Anelli',level:'Avanzato',en:'Ring Push-up',yt:'https://www.youtube.com/watch?v=RdLVAfZFd_g',desc:'L instabilità degli anelli aumenta l attivazione muscolare del petto.'},
+  {name:'Cable Crossover Low',muscle:'Petto',equip:'Cavi',level:'Intermedio',en:'Low Cable Crossover',yt:'https://www.youtube.com/watch?v=VDiALnxLSqM',desc:'Croci cavi bassi. Isola la parte alta del petto.'},
+  {name:'Pseudo Planche Push-up',muscle:'Petto',equip:'Corpo libero',level:'Intermedio',en:'Pseudo Planche Push-up',yt:'https://www.youtube.com/watch?v=YrRFk29gCz4',desc:'Mani spostate verso i fianchi. Prepara alla planche.'},
+  {name:'T-Bar Row con Supporto',muscle:'Schiena',equip:'Macchina',level:'Intermedio',en:'Chest Supported T-Bar Row',yt:'https://www.youtube.com/watch?v=j3JnZwGCGpg',desc:'T-Bar con supporto pettorale. Max attivazione dorsale senza stress lombare.'},
+  {name:'Seal Row',muscle:'Schiena',equip:'Bilanciere',level:'Intermedio',en:'Seal Row',yt:'https://www.youtube.com/watch?v=YSPPfZY6NzU',desc:'Rematore su panca alta. Zero compensi lombari.'},
+  {name:'Australian Pull-up',muscle:'Schiena',equip:'Corpo libero',level:'Principiante',en:'Australian Pull-up',yt:'https://www.youtube.com/watch?v=dvkIaarnf0g',desc:'Trazioni australiane (corpo inclinato). Primo step per le trazioni.'},
+  {name:'Leaning Lateral Raise',muscle:'Spalle',equip:'Manubri',level:'Intermedio',en:'Leaning Lateral Raise',yt:'https://www.youtube.com/watch?v=xBVNNxDjHEY',desc:'Alzate laterali con inclinazione. ROM maggiore e tensione superiore.'},
+  {name:'W Press',muscle:'Spalle',equip:'Manubri',level:'Principiante',en:'W Press',yt:'https://www.youtube.com/watch?v=UF0zbNmSQVs',desc:'Press con gomiti a W. Deltoide posteriore e cuffia.'},
+  {name:'Behind The Neck Press',muscle:'Spalle',equip:'Bilanciere',level:'Avanzato',en:'Behind Neck Press',yt:'https://www.youtube.com/watch?v=l5a7fHXSbBY',desc:'Press dietro la nuca. Solo per spalle sane.'},
+  {name:'21s Curl Bilanciere',muscle:'Bicipiti',equip:'Bilanciere',level:'Intermedio',en:'21s Barbell Curl',yt:'https://www.youtube.com/watch?v=av7-8CnMRQw',desc:'7 reps metà bassa, 7 metà alta, 7 complete. Distrugge i bicipiti.'},
+  {name:'Spider Curl',muscle:'Bicipiti',equip:'Manubri',level:'Intermedio',en:'Spider Curl',yt:'https://www.youtube.com/watch?v=7tXCOx2Jjbk',desc:'Curl su panca frontale. Tensione costante nel picco.'},
+  {name:'Chin-up Presa Stretta',muscle:'Bicipiti',equip:'Corpo libero',level:'Avanzato',en:'Close Grip Chin-up',yt:'https://www.youtube.com/watch?v=brhRXlOhsAM',desc:'Trazioni supine strette. Max bicipiti.'},
+  {name:'Overhead Tricep Cable',muscle:'Tricipiti',equip:'Cavi',level:'Principiante',en:'Cable Overhead Tricep Extension',yt:'https://www.youtube.com/watch?v=_gsUck-7M74',desc:'Estensione sopra la testa con cavo. Testa lunga al massimo stretch.'},
+  {name:'Tricep Kickback',muscle:'Tricipiti',equip:'Manubri',level:'Principiante',en:'Tricep Kickback',yt:'https://www.youtube.com/watch?v=6SS6K3lAwZ8',desc:'Estensione posteriore con manubrio. Isolamento puro.'},
+  {name:'Step Up con Manubri',muscle:'Gambe',equip:'Manubri',level:'Principiante',en:'Dumbbell Step Up',yt:'https://www.youtube.com/watch?v=aajqRMrMXGw',desc:'Salita su gradino. Funzionale, glutei e quad.'},
+  {name:'Reverse Lunge',muscle:'Gambe',equip:'Corpo libero',level:'Principiante',en:'Reverse Lunge',yt:'https://www.youtube.com/watch?v=7mLQNlCBGO0',desc:'Affondo all indietro. Meno stress sulle ginocchia.'},
+  {name:'Lateral Lunge',muscle:'Gambe',equip:'Corpo libero',level:'Principiante',en:'Lateral Lunge',yt:'https://www.youtube.com/watch?v=H4i09UWv6eQ',desc:'Affondo laterale. Interno coscia e abduttori.'},
+  {name:'Seated Leg Curl',muscle:'Gambe',equip:'Macchina',level:'Principiante',en:'Seated Leg Curl',yt:'https://www.youtube.com/watch?v=zVFiLKwQjsE',desc:'Femorali seduto. ROM aumentato dalla posizione.'},
+  {name:'Cable Pull Through',muscle:'Glutei',equip:'Cavi',level:'Principiante',en:'Cable Pull Through',yt:'https://www.youtube.com/watch?v=pGbMnFKSV4o',desc:'Cerniera anca con cavo. Imparare il pattern RDL.'},
+  {name:'Sumo Deadlift',muscle:'Glutei',equip:'Bilanciere',level:'Intermedio',en:'Sumo Deadlift',yt:'https://www.youtube.com/watch?v=jarl_cDDkgA',desc:'Presa larga. Enfasi glutei e interno coscia.'},
+  {name:'Cable Kickback Glutei',muscle:'Glutei',equip:'Cavi',level:'Principiante',en:'Cable Kickback',yt:'https://www.youtube.com/watch?v=4SY0CIgjFNM',desc:'Isola il grande gluteo.'},
+  {name:'Clamshell con Banda',muscle:'Glutei',equip:'Banda elastica',level:'Principiante',en:'Clamshell',yt:'https://www.youtube.com/watch?v=LsHFEMFWAYA',desc:'Apertura conchiglia. Gluteo medio e piccolo.'},
+  {name:'X-Band Walk',muscle:'Glutei',equip:'Banda elastica',level:'Principiante',en:'X-Band Walk',yt:'https://www.youtube.com/watch?v=Ux6MZvCGpQ4',desc:'Camminata laterale. Attiva il gluteo medio.'},
+  {name:'45 Degree Hip Extension',muscle:'Glutei',equip:'Macchina',level:'Principiante',en:'45 Hip Extension',yt:'https://www.youtube.com/watch?v=pk2bBQFcFQc',desc:'Glutei, lombari, femorali.'},
+  {name:'Single Leg Hip Thrust',muscle:'Glutei',equip:'Corpo libero',level:'Intermedio',en:'Single Leg Hip Thrust',yt:'https://www.youtube.com/watch?v=F5BO2Rlwrmk',desc:'Corregge squilibri. Intensità maggiore.'},
+  {name:'L-Sit su Parallele',muscle:'Addome',equip:'Corpo libero',level:'Avanzato',en:'L-Sit',yt:'https://www.youtube.com/watch?v=16a529pNN4Y',desc:'Core, tricipiti e flessori anca al limite.'},
+  {name:'Reverse Crunch',muscle:'Addome',equip:'Corpo libero',level:'Principiante',en:'Reverse Crunch',yt:'https://www.youtube.com/watch?v=hyv5U61KimA',desc:'Retto addominale inferiore.'},
+  {name:'Russian Twist con Peso',muscle:'Addome',equip:'Piastre',level:'Intermedio',en:'Weighted Russian Twist',yt:'https://www.youtube.com/watch?v=JyUqwkVpsi8',desc:'Obliqui e addome trasverso.'},
+  {name:'Plank con Tocco Spalla',muscle:'Addome',equip:'Corpo libero',level:'Intermedio',en:'Plank Shoulder Tap',yt:'https://www.youtube.com/watch?v=8AuJEUCJzrM',desc:'Anti-rotazione e stabilità del core.'},
+  {name:'Single Leg Calf Raise',muscle:'Polpacci',equip:'Corpo libero',level:'Intermedio',en:'Single Leg Calf Raise',yt:'https://www.youtube.com/watch?v=QO2BfY0LZ3Y',desc:'Monolaterlale. Corregge squilibri.'},
+  {name:'Ski Jump Laterale',muscle:'Cardio',equip:'Corpo libero',level:'Intermedio',en:'Lateral Ski Jump',yt:'https://www.youtube.com/watch?v=NCShHKNGUGs',desc:'Salti laterali. Potenza e agilità.'},
+  {name:'Ski Erg',muscle:'Cardio',equip:'Macchina',level:'Principiante',en:'Ski Erg',yt:'https://www.youtube.com/watch?v=f4MFb-r0_9s',desc:'Upper body cardio. Dorsali e core.'},
+  {name:'Sprint su Tapis Roulant',muscle:'Cardio',equip:'Macchina',level:'Intermedio',en:'Treadmill Sprint',yt:'https://www.youtube.com/watch?v=lPt8-SYJFGM',desc:'Velocità e condizionamento cardiovascolare.'},
+  {name:'KB Turkish Get Up',muscle:'Full Body',equip:'Kettlebell',level:'Avanzato',en:'Turkish Get Up',yt:'https://www.youtube.com/watch?v=XNj6x8K4w8w',desc:'Dal suolo in piedi con KB overhead. Stabilità completa.'},
+  {name:'KB Bottoms Up Press',muscle:'Spalle',equip:'Kettlebell',level:'Avanzato',en:'KB Bottoms Up Press',yt:'https://www.youtube.com/watch?v=kRMlLVqA4cY',desc:'KB fondo in su. Grip e stabilità della cuffia.'},
+  {name:'KB Halo',muscle:'Spalle',equip:'Kettlebell',level:'Principiante',en:'KB Halo',yt:'https://www.youtube.com/watch?v=IGDnA38HMws',desc:'Cerchi intorno alla testa. Mobilità spalle e torace.'},
+  {name:'KB Figure 8',muscle:'Full Body',equip:'Kettlebell',level:'Intermedio',en:'KB Figure 8',yt:'https://www.youtube.com/watch?v=3f_-oJy3W3s',desc:'Otto tra le gambe. Coordinazione, core e grip.'},
+  {name:'KB Windmill',muscle:'Core',equip:'Kettlebell',level:'Avanzato',en:'KB Windmill',yt:'https://www.youtube.com/watch?v=PGMvBdFkpJk',desc:'Mobilità anca, core laterale e stabilità spalla.'},
+  {name:'KB Swing Americano',muscle:'Glutei',equip:'Kettlebell',level:'Intermedio',en:'American KB Swing',yt:'https://www.youtube.com/watch?v=_LDFkvUsHpg',desc:'Swing fino sopra la testa. Full body esplosivo.'},
+  {name:'Skin the Cat',muscle:'Spalle',equip:'Anelli',level:'Avanzato',en:'Skin The Cat',yt:'https://www.youtube.com/watch?v=RyZnYj-H2lI',desc:'Mobilità spalle e forza del core agli anelli.'},
+  {name:'Log Press',muscle:'Spalle',equip:'Log Bar',level:'Avanzato',en:'Log Press',yt:'https://www.youtube.com/watch?v=f3MpEoMRkVk',desc:'Strongman. Impugnatura neutra.'},
+  {name:'Yoke Walk',muscle:'Full Body',equip:'Bilanciere',level:'Avanzato',en:'Yoke Walk',yt:'https://www.youtube.com/watch?v=RiLMJO3hTHc',desc:'Trasporto giogo strongman.'},
+  {name:'Clean and Jerk',muscle:'Full Body',equip:'Bilanciere',level:'Avanzato',en:'Clean and Jerk',yt:'https://www.youtube.com/watch?v=g1B3F8P8KzI',desc:'Distensione olimpica completa.'},
+  {name:'Hip 90/90',muscle:'Mobilità',equip:'Corpo libero',level:'Principiante',en:'Hip 90/90 Stretch',yt:'https://www.youtube.com/watch?v=0_2ORgRZwBk',desc:'Rotazione interna ed esterna anca.'},
+  {name:'Medicine Ball Rotational Throw',muscle:'Core',equip:'Palla medica',level:'Intermedio',en:'Med Ball Rotational Throw',yt:'https://www.youtube.com/watch?v=8pcMCMrFBG0',desc:'Potenza di rotazione. Sport con racchetta.'},
+  {name:'Devil Press',muscle:'Full Body',equip:'Manubri',level:'Avanzato',en:'Devil Press',yt:'https://www.youtube.com/watch?v=gf0XKRzGVQo',desc:'Burpee + snatch. Devastante per il condizionamento.'},
+  {name:'Tabata Bike Sprint',muscle:'Cardio',equip:'Macchina',level:'Principiante',en:'Tabata Bike',yt:'https://www.youtube.com/watch?v=kGJIBFMM4Ic',desc:'20 sec massimale, 10 sec riposo x 8.'},
+  {name:'Band External Rotation',muscle:'Spalle',equip:'Banda elastica',level:'Principiante',en:'Band External Rotation',yt:'https://www.youtube.com/watch?v=vEpnld6Cyss',desc:'Rotazione esterna con banda. Cuffia dei rotatori.'},
+  {name:'Band Pull Apart',muscle:'Spalle',equip:'Banda elastica',level:'Principiante',en:'Band Pull Apart',yt:'https://www.youtube.com/watch?v=7tf1i5u_N10',desc:'Retrazione scapole. Deltoide posteriore.'},
+  {name:'YTW Raise',muscle:'Spalle',equip:'Manubri',level:'Principiante',en:'YTW Raise',yt:'https://www.youtube.com/watch?v=D7pphNHEgN0',desc:'Y, T e W. Cuffia e romboidei.'},
+  {name:'Wrist Roller',muscle:'Avambracci',equip:'Corpo libero',level:'Principiante',en:'Wrist Roller',yt:'https://www.youtube.com/watch?v=LGXkKnL_r_g',desc:'Rinforza avambracci e grip.'}
+];
+
 function buildExerciseLibrary(){
   const combined = [];
   if(typeof EXERCISE_LIBRARY !== 'undefined') combined.push(...EXERCISE_LIBRARY);
@@ -5207,6 +5295,7 @@ function buildExerciseLibrary(){
   if(typeof EX_V5_EXTRA2   !== 'undefined') combined.push(...EX_V5_EXTRA2);
   if(typeof EX_FINAL       !== 'undefined') combined.push(...EX_FINAL);
   if(typeof EX_CARDIO      !== 'undefined') combined.push(...EX_CARDIO);
+  if(typeof EX_NEW_V2     !== 'undefined') combined.push(...EX_NEW_V2);
   if(typeof EX_MACHINES    !== 'undefined') combined.push(...EX_MACHINES);
   if(typeof EX_CROSSFIT    !== 'undefined') combined.push(...EX_CROSSFIT);
   const seen = new Set();
@@ -5237,330 +5326,86 @@ const YT_MAP = {
   'Panca Declinata Bilanciere': 'https://www.youtube.com/watch?v=LfyQMlGvfV0',
   'Panca Piana Manubri': 'https://www.youtube.com/watch?v=VmB1G1K7v94',
   'Panca Inclinata Manubri': 'https://www.youtube.com/watch?v=DbFgADa2PL8',
-  'Panca Declinata Manubri': 'https://www.youtube.com/watch?v=LfyQMlGvfV0',
   'Croci Piana Manubri': 'https://www.youtube.com/watch?v=eozdVDA78K0',
   'Croci Inclinata Manubri': 'https://www.youtube.com/watch?v=Iwe6AmxVf7o',
-  'Croci Cavi Bassi': 'https://www.youtube.com/watch?v=Iwe6AmxVf7o',
   'Croci Cavi Alti': 'https://www.youtube.com/watch?v=taI4XduLpTk',
-  'Croci Cavi Medi': 'https://www.youtube.com/watch?v=Iwe6AmxVf7o',
   'Push-up': 'https://www.youtube.com/watch?v=IODxDxX7oi4',
-  'Push-up Larghi': 'https://www.youtube.com/watch?v=IODxDxX7oi4',
   'Push-up Stretti': 'https://www.youtube.com/watch?v=ZWjJ9eCRbKc',
-  'Push-up Declinati': 'https://www.youtube.com/watch?v=IODxDxX7oi4',
-  'Push-up Inclinati': 'https://www.youtube.com/watch?v=IODxDxX7oi4',
   'Dips Petto': 'https://www.youtube.com/watch?v=2z8JmcrW-As',
-  'Dips Parallele': 'https://www.youtube.com/watch?v=2z8JmcrW-As',
   'Chest Press Machine': 'https://www.youtube.com/watch?v=xUm0BiZCe_s',
-  'Pec Deck / Butterfly Machine': 'https://www.youtube.com/watch?v=xUm0BiZCe_s',
   'Pullover Manubri': 'https://www.youtube.com/watch?v=FK4rHfPuGFk',
-  'Cable Crossover Alto': 'https://www.youtube.com/watch?v=Iwe6AmxVf7o',
-  'Archer Push Up': 'https://www.youtube.com/watch?v=IODxDxX7oi4',
-  'Diamond Push Up': 'https://www.youtube.com/watch?v=ZWjJ9eCRbKc',
-  'Decline Push Up': 'https://www.youtube.com/watch?v=IODxDxX7oi4',
-  'Dumbbell Fly': 'https://www.youtube.com/watch?v=eozdVDA78K0',
-  'Incline Dumbbell Press': 'https://www.youtube.com/watch?v=8iPEnn-ltC8',
-  'Bench Press': 'https://www.youtube.com/watch?v=rT7DgCr-3pg',
-  'Push Up': 'https://www.youtube.com/watch?v=IODxDxX7oi4',
-  'Dips': 'https://www.youtube.com/watch?v=2z8JmcrW-As',
-  'Cable Fly': 'https://www.youtube.com/watch?v=Iwe6AmxVf7o',
-  'Cable Crossover': 'https://www.youtube.com/watch?v=Iwe6AmxVf7o',
   'Stacco da Terra': 'https://www.youtube.com/watch?v=op9kVnSso6Q',
   'Stacco Rumeno': 'https://www.youtube.com/watch?v=7j-2w7J4now',
   'Stacco Sumo': 'https://www.youtube.com/watch?v=D6GEGqCcIfs',
   'Rematore Bilanciere Prono': 'https://www.youtube.com/watch?v=FWJR5Ve8bnQ',
-  'Rematore Bilanciere Supino': 'https://www.youtube.com/watch?v=FWJR5Ve8bnQ',
   'Rematore Manubrio': 'https://www.youtube.com/watch?v=pYcpY20QaE8',
   'Rematore Cavo': 'https://www.youtube.com/watch?v=xQNrFHEMhI4',
   'Trazioni Presa Larga': 'https://www.youtube.com/watch?v=eGo4IYlbE5g',
-  'Trazioni Presa Stretta': 'https://www.youtube.com/watch?v=eGo4IYlbE5g',
-  'Trazioni Presa Neutra': 'https://www.youtube.com/watch?v=eGo4IYlbE5g',
   'Lat Machine Presa Larga': 'https://www.youtube.com/watch?v=CAwf7n6Luuc',
-  'Lat Machine Presa Stretta': 'https://www.youtube.com/watch?v=CAwf7n6Luuc',
-  'Lat Machine Presa Neutra': 'https://www.youtube.com/watch?v=CAwf7n6Luuc',
   'Face Pull Cavi': 'https://www.youtube.com/watch?v=rep-qVOkqgk',
   'Good Morning': 'https://www.youtube.com/watch?v=YA-h3n9L4YU',
   'Shrug Bilanciere': 'https://www.youtube.com/watch?v=cJRVVxmytaM',
-  'Shrug Manubri': 'https://www.youtube.com/watch?v=cJRVVxmytaM',
   'Pulley Basso': 'https://www.youtube.com/watch?v=GZbfZ033f74',
-  'Seated Row Machine': 'https://www.youtube.com/watch?v=GZbfZ033f74',
-  'Chest Supported Row': 'https://www.youtube.com/watch?v=GZbfZ033f74',
   'Hyperextension': 'https://www.youtube.com/watch?v=ph3pddpKzzw',
   'Superman Hold': 'https://www.youtube.com/watch?v=cc6UVVB25Pg',
-  'Inverted Row': 'https://www.youtube.com/watch?v=GZbfZ033f74',
-  'Assisted Pull-Up Machine': 'https://www.youtube.com/watch?v=CAwf7n6Luuc',
   'T-Bar Row': 'https://www.youtube.com/watch?v=j3Igk5nyZE4',
-  'Pendlay Row': 'https://www.youtube.com/watch?v=FWJR5Ve8bnQ',
-  'Meadows Row': 'https://www.youtube.com/watch?v=FWJR5Ve8bnQ',
-  'Yates Row': 'https://www.youtube.com/watch?v=FWJR5Ve8bnQ',
-  'Trap Bar Deadlift': 'https://www.youtube.com/watch?v=op9kVnSso6Q',
-  'Dumbbell Pullover': 'https://www.youtube.com/watch?v=FK4rHfPuGFk',
-  'Dumbbell Shrug': 'https://www.youtube.com/watch?v=cJRVVxmytaM',
-  'Single Arm Dumbbell Row': 'https://www.youtube.com/watch?v=pYcpY20QaE8',
-  'Pull Up': 'https://www.youtube.com/watch?v=eGo4IYlbE5g',
-  'Barbell Row': 'https://www.youtube.com/watch?v=FWJR5Ve8bnQ',
-  'Lat Pulldown': 'https://www.youtube.com/watch?v=CAwf7n6Luuc',
-  'Deadlift': 'https://www.youtube.com/watch?v=op9kVnSso6Q',
-  'Incline Barbell Row': 'https://www.youtube.com/watch?v=FWJR5Ve8bnQ',
-  'Reverse Hypers': 'https://www.youtube.com/watch?v=ph3pddpKzzw',
   'Squat Bilanciere High Bar': 'https://www.youtube.com/watch?v=bEv6CCg2BC8',
   'Squat Bilanciere Low Bar': 'https://www.youtube.com/watch?v=ob9OoNuuF1I',
   'Squat Bilanciere Frontale': 'https://www.youtube.com/watch?v=m4ytaCJZpl0',
   'Leg Press 45 Gradi': 'https://www.youtube.com/watch?v=IZxyjW7MPJQ',
   'Hack Squat Machine': 'https://www.youtube.com/watch?v=gsNoPYwWXeM',
   'Affondi Bilanciere': 'https://www.youtube.com/watch?v=L8fvypPrzzs',
-  'Affondi Manubri': 'https://www.youtube.com/watch?v=L8fvypPrzzs',
-  'Affondi Cammino': 'https://www.youtube.com/watch?v=L8fvypPrzzs',
   'Bulgarian Split Squat': 'https://www.youtube.com/watch?v=2C-uNgKwPLE',
   'Leg Extension Machine': 'https://www.youtube.com/watch?v=YyvSfVjQeL0',
   'Leg Curl Machine Disteso': 'https://www.youtube.com/watch?v=1Tq3QdYUuHs',
-  'Leg Curl Machine Seduto': 'https://www.youtube.com/watch?v=1Tq3QdYUuHs',
   'Hip Thrust Bilanciere': 'https://www.youtube.com/watch?v=SEdqd9BoBLI',
-  'Hip Thrust Manubri': 'https://www.youtube.com/watch?v=SEdqd9BoBLI',
-  'Glute Bridge': 'https://www.youtube.com/watch?v=SEdqd9BoBLI',
   'Calf Raise In Piedi': 'https://www.youtube.com/watch?v=-M4-G8p1fCI',
-  'Calf Raise Seduto': 'https://www.youtube.com/watch?v=-M4-G8p1fCI',
   'Step Up Manubri': 'https://www.youtube.com/watch?v=dQqApCGd5Ss',
   'Sumo Squat': 'https://www.youtube.com/watch?v=MxsFDhcyFyE',
-  'Goblet Squat': 'https://www.youtube.com/watch?v=MxsFDhcyFyE',
   'Box Jump': 'https://www.youtube.com/watch?v=NBY9-kTuHEk',
   'Nordic Hamstring Curl': 'https://www.youtube.com/watch?v=VY_oMbzMFVk',
   'Pistol Squat': 'https://www.youtube.com/watch?v=vq5-vdgJc0I',
   'Shrimp Squat': 'https://www.youtube.com/watch?v=TKt0-c2Y2nE',
-  'Wall Sit': 'https://www.youtube.com/watch?v=gsNoPYwWXeM',
-  'Lateral Lunge': 'https://www.youtube.com/watch?v=L8fvypPrzzs',
-  'Romanian Deadlift': 'https://www.youtube.com/watch?v=7j-2w7J4now',
-  'Leg Press': 'https://www.youtube.com/watch?v=IZxyjW7MPJQ',
-  'Walking Lunge': 'https://www.youtube.com/watch?v=L8fvypPrzzs',
-  'Leg Curl': 'https://www.youtube.com/watch?v=1Tq3QdYUuHs',
-  'Leg Extension': 'https://www.youtube.com/watch?v=YyvSfVjQeL0',
-  'Hip Thrust': 'https://www.youtube.com/watch?v=SEdqd9BoBLI',
-  'Calf Raise': 'https://www.youtube.com/watch?v=-M4-G8p1fCI',
-  'Front Squat': 'https://www.youtube.com/watch?v=m4ytaCJZpl0',
-  'Zercher Squat': 'https://www.youtube.com/watch?v=gsNoPYwWXeM',
-  'Overhead Squat': 'https://www.youtube.com/watch?v=gsNoPYwWXeM',
-  'Barbell Hip Thrust': 'https://www.youtube.com/watch?v=SEdqd9BoBLI',
-  'Barbell Glute Bridge': 'https://www.youtube.com/watch?v=SEdqd9BoBLI',
-  'Barbell Lunges': 'https://www.youtube.com/watch?v=L8fvypPrzzs',
-  'Dumbbell Romanian Deadlift': 'https://www.youtube.com/watch?v=7j-2w7J4now',
-  'Dumbbell Sumo Squat': 'https://www.youtube.com/watch?v=MxsFDhcyFyE',
-  'Dumbbell Step Up': 'https://www.youtube.com/watch?v=dQqApCGd5Ss',
-  'Dumbbell Lateral Lunge': 'https://www.youtube.com/watch?v=L8fvypPrzzs',
-  'Hip Extension Machine': 'https://www.youtube.com/watch?v=SEdqd9BoBLI',
-  'Hip Abduction Machine': 'https://www.youtube.com/watch?v=SEdqd9BoBLI',
-  'Adductor Machine': 'https://www.youtube.com/watch?v=SEdqd9BoBLI',
-  'Seated Calf Raise Machine': 'https://www.youtube.com/watch?v=-M4-G8p1fCI',
-  'Single Leg Calf Raise Machine': 'https://www.youtube.com/watch?v=-M4-G8p1fCI',
-  'Leg Press 45': 'https://www.youtube.com/watch?v=IZxyjW7MPJQ',
-  'Cable Pullthrough': 'https://www.youtube.com/watch?v=SEdqd9BoBLI',
-  'Glute Kickback Cavo': 'https://www.youtube.com/watch?v=SEdqd9BoBLI',
-  'Squat': 'https://www.youtube.com/watch?v=bEv6CCg2BC8',
-  'Broad Jump': 'https://www.youtube.com/watch?v=NBY9-kTuHEk',
-  'Lateral Bound': 'https://www.youtube.com/watch?v=NBY9-kTuHEk',
-  'Lateral Band Walk': 'https://www.youtube.com/watch?v=SEdqd9BoBLI',
-  'Monster Walk': 'https://www.youtube.com/watch?v=SEdqd9BoBLI',
-  'Safety Bar Squat': 'https://www.youtube.com/watch?v=gsNoPYwWXeM',
-  'Hack Deadlift': 'https://www.youtube.com/watch?v=op9kVnSso6Q',
-  'Pause Squat': 'https://www.youtube.com/watch?v=bEv6CCg2BC8',
-  'Deficit Deadlift': 'https://www.youtube.com/watch?v=op9kVnSso6Q',
-  'Box Squat': 'https://www.youtube.com/watch?v=ob9OoNuuF1I',
-  'Romanian Deadlift con Pausa': 'https://www.youtube.com/watch?v=7j-2w7J4now',
-  'Pin Squat': 'https://www.youtube.com/watch?v=bEv6CCg2BC8',
-  'Prone Leg Curl': 'https://www.youtube.com/watch?v=1Tq3QdYUuHs',
-  'Sissy Squat': 'https://www.youtube.com/watch?v=YyvSfVjQeL0',
   'Lento Avanti Bilanciere': 'https://www.youtube.com/watch?v=2yjwXTZQDDI',
-  'Lento Avanti Manubri': 'https://www.youtube.com/watch?v=2yjwXTZQDDI',
   'Arnold Press': 'https://www.youtube.com/watch?v=6Z15_WdXmVw',
   'Alzate Laterali Manubri': 'https://www.youtube.com/watch?v=3VcKaXpzqRo',
-  'Alzate Laterali Cavi': 'https://www.youtube.com/watch?v=3VcKaXpzqRo',
   'Alzate Frontali Manubri': 'https://www.youtube.com/watch?v=sOiBVkMSqmQ',
-  'Alzate Frontali Bilanciere': 'https://www.youtube.com/watch?v=sOiBVkMSqmQ',
   'Alzate Posteriori Manubri': 'https://www.youtube.com/watch?v=EA7u4Q_8HQ0',
-  'Reverse Pec Deck': 'https://www.youtube.com/watch?v=EA7u4Q_8HQ0',
-  'Face Pull': 'https://www.youtube.com/watch?v=rep-qVOkqgk',
-  'Shoulder Press Machine': 'https://www.youtube.com/watch?v=2yjwXTZQDDI',
-  'Cable Lateral Raise': 'https://www.youtube.com/watch?v=3VcKaXpzqRo',
   'Push Press': 'https://www.youtube.com/watch?v=iaBVSJm78ko',
-  'Bradford Press': 'https://www.youtube.com/watch?v=2yjwXTZQDDI',
-  'Overhead Press': 'https://www.youtube.com/watch?v=2yjwXTZQDDI',
-  'Lateral Raise': 'https://www.youtube.com/watch?v=3VcKaXpzqRo',
-  'Rear Delt Fly': 'https://www.youtube.com/watch?v=EA7u4Q_8HQ0',
-  'Bent Over Rear Delt Raise': 'https://www.youtube.com/watch?v=EA7u4Q_8HQ0',
-  'Dumbbell Front Raise': 'https://www.youtube.com/watch?v=sOiBVkMSqmQ',
   'Handstand Push Up': 'https://www.youtube.com/watch?v=b6tKaFi_RZg',
   'Pike Push Up': 'https://www.youtube.com/watch?v=x7_I5SO4_QA',
-  'Dumbbell Lateral Raise Drop Set': 'https://www.youtube.com/watch?v=3VcKaXpzqRo',
   'Curl Bilanciere': 'https://www.youtube.com/watch?v=LY1V6UbRHFM',
-  'Curl Bilanciere EZ': 'https://www.youtube.com/watch?v=LY1V6UbRHFM',
   'Curl Manubri Alternati': 'https://www.youtube.com/watch?v=TwD-YGVP4Bk',
-  'Curl Manubri Simultanei': 'https://www.youtube.com/watch?v=LY1V6UbRHFM',
-  'Curl Martello': 'https://www.youtube.com/watch?v=TwD-YGVP4Bk',
   'Curl Panca Scott': 'https://www.youtube.com/watch?v=fIWP-FRFNU0',
   'Curl Concentrato': 'https://www.youtube.com/watch?v=Jvj2wV0vOYU',
-  'Curl Cavo Basso': 'https://www.youtube.com/watch?v=LY1V6UbRHFM',
-  'Curl Spider': 'https://www.youtube.com/watch?v=fIWP-FRFNU0',
-  'Curl Inclinato Manubri': 'https://www.youtube.com/watch?v=LY1V6UbRHFM',
-  'Preacher Curl Machine': 'https://www.youtube.com/watch?v=fIWP-FRFNU0',
   'Curl Inverso': 'https://www.youtube.com/watch?v=nRgxYX2Ve9w',
-  'Barbell Curl': 'https://www.youtube.com/watch?v=LY1V6UbRHFM',
-  'Hammer Curl': 'https://www.youtube.com/watch?v=TwD-YGVP4Bk',
-  'Preacher Curl': 'https://www.youtube.com/watch?v=fIWP-FRFNU0',
-  'EZ Bar Curl': 'https://www.youtube.com/watch?v=LY1V6UbRHFM',
-  'Reverse Curl': 'https://www.youtube.com/watch?v=nRgxYX2Ve9w',
-  'Zottman Curl': 'https://www.youtube.com/watch?v=TwD-YGVP4Bk',
-  'Incline Dumbbell Curl': 'https://www.youtube.com/watch?v=LY1V6UbRHFM',
-  'Concentration Curl': 'https://www.youtube.com/watch?v=Jvj2wV0vOYU',
-  'Cross Cable Curl': 'https://www.youtube.com/watch?v=LY1V6UbRHFM',
-  'Rope Hammer Curl': 'https://www.youtube.com/watch?v=TwD-YGVP4Bk',
   'French Press': 'https://www.youtube.com/watch?v=d_KZxkY_0cM',
-  'Skull Crusher Bilanciere': 'https://www.youtube.com/watch?v=d_KZxkY_0cM',
-  'Skull Crusher Manubri': 'https://www.youtube.com/watch?v=d_KZxkY_0cM',
   'Pushdown Cavo Corda': 'https://www.youtube.com/watch?v=vB5OHsJ3EME',
-  'Pushdown Cavo Barra': 'https://www.youtube.com/watch?v=vB5OHsJ3EME',
   'Tricipiti Panca Piana Presa Stretta': 'https://www.youtube.com/watch?v=nEF0bv2FW94',
-  'Kickback Tricipiti': 'https://www.youtube.com/watch?v=vB5OHsJ3EME',
-  'Tricipiti Overhead Cavo': 'https://www.youtube.com/watch?v=d_KZxkY_0cM',
-  'Dips Tricipiti': 'https://www.youtube.com/watch?v=2z8JmcrW-As',
-  'Skull Crusher': 'https://www.youtube.com/watch?v=d_KZxkY_0cM',
-  'Tricep Pushdown': 'https://www.youtube.com/watch?v=vB5OHsJ3EME',
-  'Barbell Skull Crusher': 'https://www.youtube.com/watch?v=d_KZxkY_0cM',
-  'Close Grip Bench': 'https://www.youtube.com/watch?v=nEF0bv2FW94',
-  'Tricep Dip Machine': 'https://www.youtube.com/watch?v=2z8JmcrW-As',
-  'Dumbbell Overhead Tricep Extension': 'https://www.youtube.com/watch?v=d_KZxkY_0cM',
-  'Dumbbell Kickback': 'https://www.youtube.com/watch?v=vB5OHsJ3EME',
-  'Cable Overhead Extension': 'https://www.youtube.com/watch?v=d_KZxkY_0cM',
-  'Cable Kickback Tricep': 'https://www.youtube.com/watch?v=vB5OHsJ3EME',
-  'JM Press': 'https://www.youtube.com/watch?v=d_KZxkY_0cM',
-  'Tate Press': 'https://www.youtube.com/watch?v=d_KZxkY_0cM',
-  'Floor Press': 'https://www.youtube.com/watch?v=rT7DgCr-3pg',
-  'Slingshot Bench': 'https://www.youtube.com/watch?v=rT7DgCr-3pg',
-  'Larsen Press': 'https://www.youtube.com/watch?v=rT7DgCr-3pg',
-  'Tempo Bench Press': 'https://www.youtube.com/watch?v=rT7DgCr-3pg',
-  'Banded Deadlift': 'https://www.youtube.com/watch?v=op9kVnSso6Q',
   'Crunch': 'https://www.youtube.com/watch?v=Xyd_fa5zoEU',
-  'Crunch Inverso': 'https://www.youtube.com/watch?v=Xyd_fa5zoEU',
   'Leg Raise Appeso': 'https://www.youtube.com/watch?v=hdng3Nm1x_E',
-  'Knee Raise Appeso': 'https://www.youtube.com/watch?v=hdng3Nm1x_E',
   'Russian Twist': 'https://www.youtube.com/watch?v=wkD8rjkodUI',
   'Plank': 'https://www.youtube.com/watch?v=pSHjTRCQxIw',
-  'Plank Laterale': 'https://www.youtube.com/watch?v=pSHjTRCQxIw',
   'Ab Wheel Rollout': 'https://www.youtube.com/watch?v=0e0FD1AFYAM',
   'Dead Bug': 'https://www.youtube.com/watch?v=g_BYB0R-4Ws',
   'Pallof Press': 'https://www.youtube.com/watch?v=AH_QZLm_0-s',
-  'Dragon Flag': 'https://www.youtube.com/watch?v=0e0FD1AFYAM',
-  'L-Sit': 'https://www.youtube.com/watch?v=hdng3Nm1x_E',
-  'Hollow Body Hold': 'https://www.youtube.com/watch?v=pSHjTRCQxIw',
-  'V-Up': 'https://www.youtube.com/watch?v=hdng3Nm1x_E',
   'Mountain Climber': 'https://www.youtube.com/watch?v=nmwgirgXLYM',
-  'Bicycle Crunch': 'https://www.youtube.com/watch?v=Xyd_fa5zoEU',
-  'Copenhagen Plank': 'https://www.youtube.com/watch?v=pSHjTRCQxIw',
-  'Ab Wheel Kneeling': 'https://www.youtube.com/watch?v=0e0FD1AFYAM',
-  'Side Bend with DB': 'https://www.youtube.com/watch?v=wkD8rjkodUI',
-  'Woodchop High to Low': 'https://www.youtube.com/watch?v=wkD8rjkodUI',
-  'Woodchop Low to High': 'https://www.youtube.com/watch?v=wkD8rjkodUI',
-  'Cable Crunch': 'https://www.youtube.com/watch?v=Xyd_fa5zoEU',
-  'Abdominal Crunch Machine': 'https://www.youtube.com/watch?v=Xyd_fa5zoEU',
-  'Rotary Torso Machine': 'https://www.youtube.com/watch?v=wkD8rjkodUI',
-  'Hanging Leg Raise': 'https://www.youtube.com/watch?v=hdng3Nm1x_E',
-  'Ab Rollout': 'https://www.youtube.com/watch?v=0e0FD1AFYAM',
   'Toes to Bar': 'https://www.youtube.com/watch?v=_03pCKOv4l4',
   'Kettlebell Swing': 'https://www.youtube.com/watch?v=YSxHifyI6s8',
   'Turkish Get Up': 'https://www.youtube.com/watch?v=0bWRPC49-KI',
-  'Kettlebell Goblet Squat': 'https://www.youtube.com/watch?v=MxsFDhcyFyE',
-  'Kettlebell Clean': 'https://www.youtube.com/watch?v=YSxHifyI6s8',
-  'Kettlebell Press': 'https://www.youtube.com/watch?v=2yjwXTZQDDI',
-  'Kettlebell Windmill': 'https://www.youtube.com/watch?v=0bWRPC49-KI',
-  'Kettlebell Snatch': 'https://www.youtube.com/watch?v=YSxHifyI6s8',
-  'Kettlebell Figure 8': 'https://www.youtube.com/watch?v=YSxHifyI6s8',
-  'Single Leg Deadlift KB': 'https://www.youtube.com/watch?v=7j-2w7J4now',
-  'Single Arm KB Swing': 'https://www.youtube.com/watch?v=YSxHifyI6s8',
-  'Farmer\'s Walk': 'https://www.youtube.com/watch?v=Fkzk_RqlYig',
   'Farmers Walk': 'https://www.youtube.com/watch?v=Fkzk_RqlYig',
   'Dumbbell Clean': 'https://www.youtube.com/watch?v=EkgPPFtNt_M',
   'Dumbbell Snatch': 'https://www.youtube.com/watch?v=9xQp2sldyts',
-  'Renegade Row': 'https://www.youtube.com/watch?v=FWJR5Ve8bnQ',
   'Battle Ropes Wave': 'https://www.youtube.com/watch?v=L219ltL15zk',
-  'Sled Push': 'https://www.youtube.com/watch?v=NBY9-kTuHEk',
-  'Sled Pull': 'https://www.youtube.com/watch?v=NBY9-kTuHEk',
-  'Medicine Ball Slam': 'https://www.youtube.com/watch?v=L219ltL15zk',
-  'Sandbag Carry': 'https://www.youtube.com/watch?v=Fkzk_RqlYig',
-  'Tire Flip': 'https://www.youtube.com/watch?v=NBY9-kTuHEk',
-  'Bear Crawl': 'https://www.youtube.com/watch?v=pSHjTRCQxIw',
-  'Crab Walk': 'https://www.youtube.com/watch?v=pSHjTRCQxIw',
   'Jump Rope Basic': 'https://www.youtube.com/watch?v=82ZoRIuRNvo',
-  'Zercher Carry': 'https://www.youtube.com/watch?v=Fkzk_RqlYig',
-  'Broad Jump to Plank': 'https://www.youtube.com/watch?v=NBY9-kTuHEk',
-  'Clean': 'https://www.youtube.com/watch?v=EkgPPFtNt_M',
-  'Clean & Jerk': 'https://www.youtube.com/watch?v=EkgPPFtNt_M',
-  'Snatch': 'https://www.youtube.com/watch?v=9xQp2sldyts',
-  'Power Clean': 'https://www.youtube.com/watch?v=EkgPPFtNt_M',
-  'Hang Clean': 'https://www.youtube.com/watch?v=EkgPPFtNt_M',
-  'Power Snatch': 'https://www.youtube.com/watch?v=9xQp2sldyts',
-  'Hang Power Snatch': 'https://www.youtube.com/watch?v=9xQp2sldyts',
-  'Thruster': 'https://www.youtube.com/watch?v=L219ltL15zk',
   'Wall Ball': 'https://www.youtube.com/watch?v=fpUD0mcFp_0',
   'Muscle Up': 'https://www.youtube.com/watch?v=F-FGiAaS-k8',
-  'Ring Muscle Up': 'https://www.youtube.com/watch?v=F-FGiAaS-k8',
-  'Ring Dip': 'https://www.youtube.com/watch?v=2z8JmcrW-As',
-  'Kipping Pull Up': 'https://www.youtube.com/watch?v=eGo4IYlbE5g',
-  'Double Under': 'https://www.youtube.com/watch?v=82ZoRIuRNvo',
-  'Burpee Box Jump Over': 'https://www.youtube.com/watch?v=NBY9-kTuHEk',
-  'GHD Sit Up': 'https://www.youtube.com/watch?v=Xyd_fa5zoEU',
-  'Assault Bike': 'https://www.youtube.com/watch?v=YSxHifyI6s8',
-  'Rope Climb': 'https://www.youtube.com/watch?v=F-FGiAaS-k8',
-  'Paused Squat': 'https://www.youtube.com/watch?v=bEv6CCg2BC8',
-  'Tempo Squat': 'https://www.youtube.com/watch?v=bEv6CCg2BC8',
-  'Sumo Deadlift': 'https://www.youtube.com/watch?v=D6GEGqCcIfs',
-  'Close Grip Bench Press': 'https://www.youtube.com/watch?v=nEF0bv2FW94',
-  'Good Morning Bilanciere': 'https://www.youtube.com/watch?v=YA-h3n9L4YU',
-  'Belt Squat': 'https://www.youtube.com/watch?v=bEv6CCg2BC8',
-  'Jefferson Curl': 'https://www.youtube.com/watch?v=YA-h3n9L4YU',
   'Hip Flexor Stretch': 'https://www.youtube.com/watch?v=YQmpR9niKuY',
   'Pigeon Pose': 'https://www.youtube.com/watch?v=1crr_A1TXZE',
   'Cat Cow': 'https://www.youtube.com/watch?v=kqnua4rHVVA',
   'Thoracic Rotation': 'https://www.youtube.com/watch?v=n2UNj21XAPU',
   'Shoulder Dislocate': 'https://www.youtube.com/watch?v=6oFdmABSBRo',
   'Worlds Greatest Stretch': 'https://www.youtube.com/watch?v=7eMDPiwmm88',
-  'World\'s Greatest Stretch': 'https://www.youtube.com/watch?v=7eMDPiwmm88',
-  'Loaded Progressive Stretch Hamstring': 'https://www.youtube.com/watch?v=7j-2w7J4now',
-  'Ankle Dorsiflexion Drill': 'https://www.youtube.com/watch?v=7eMDPiwmm88',
-  'Thoracic Extension on Foam Roller': 'https://www.youtube.com/watch?v=n2UNj21XAPU',
-  'Lat Stretch': 'https://www.youtube.com/watch?v=AH_QZLm_0-s',
-  'Pancake Stretch': 'https://www.youtube.com/watch?v=1crr_A1TXZE',
-  'Shoulder External Rotation Drill': 'https://www.youtube.com/watch?v=6oFdmABSBRo',
-  'Couch Stretch': 'https://www.youtube.com/watch?v=YQmpR9niKuY',
-  '90/90 Hip Stretch': 'https://www.youtube.com/watch?v=YQmpR9niKuY',
-  'Frog Stretch': 'https://www.youtube.com/watch?v=YQmpR9niKuY',
-  'Ankle Dorsiflexion': 'https://www.youtube.com/watch?v=7eMDPiwmm88',
-  'Hip Circle': 'https://www.youtube.com/watch?v=YQmpR9niKuY',
-  'Arm Circle': 'https://www.youtube.com/watch?v=6oFdmABSBRo',
-  'Leg Swing Front Back': 'https://www.youtube.com/watch?v=L8fvypPrzzs',
-  'Leg Swing Lateral': 'https://www.youtube.com/watch?v=L8fvypPrzzs',
-  'Spiderman Stretch': 'https://www.youtube.com/watch?v=7eMDPiwmm88',
-  'Bretzel Stretch': 'https://www.youtube.com/watch?v=n2UNj21XAPU',
-  'Doorway Chest Stretch': 'https://www.youtube.com/watch?v=6oFdmABSBRo',
-  'Child\'s Pose': 'https://www.youtube.com/watch?v=kqnua4rHVVA',
-  'Downward Dog': 'https://www.youtube.com/watch?v=kqnua4rHVVA',
-  'Seated Thoracic Rotation': 'https://www.youtube.com/watch?v=n2UNj21XAPU',
-  'Neck Mobility Drill': 'https://www.youtube.com/watch?v=n2UNj21XAPU',
-  'Wrist Circles': 'https://www.youtube.com/watch?v=6oFdmABSBRo',
-  'Prone Press Up': 'https://www.youtube.com/watch?v=kqnua4rHVVA',
-  'Pec Wall Stretch': 'https://www.youtube.com/watch?v=6oFdmABSBRo',
-  'Calf Stretch Wall': 'https://www.youtube.com/watch?v=7eMDPiwmm88',
-  'Quadruped Hip Circle': 'https://www.youtube.com/watch?v=YQmpR9niKuY',
-  'Standing Quad Stretch': 'https://www.youtube.com/watch?v=L8fvypPrzzs',
-  'Cross Body Shoulder Stretch': 'https://www.youtube.com/watch?v=6oFdmABSBRo',
-  'Hip Stretch': 'https://www.youtube.com/watch?v=YQmpR9niKuY',
-  'Trazioni': 'https://www.youtube.com/watch?v=eGo4IYlbE5g',
-  'Flessioni': 'https://www.youtube.com/watch?v=IODxDxX7oi4',
-  'Dips Anelli': 'https://www.youtube.com/watch?v=2z8JmcrW-As',
-  'Front Lever': 'https://www.youtube.com/watch?v=F-FGiAaS-k8',
-  'Planche': 'https://www.youtube.com/watch?v=F-FGiAaS-k8',
-  'Human Flag': 'https://www.youtube.com/watch?v=F-FGiAaS-k8',
-  'One Arm Push Up': 'https://www.youtube.com/watch?v=IODxDxX7oi4',
-  'Burpee': 'https://www.youtube.com/watch?v=NBY9-kTuHEk',
-  'Smith Machine Squat': 'https://www.youtube.com/watch?v=bEv6CCg2BC8',
-  'Cable Curl': 'https://www.youtube.com/watch?v=LY1V6UbRHFM',
-  'Cable Face Pull with External Rotation': 'https://www.youtube.com/watch?v=rep-qVOkqgk'
 };
 
 function getYTLink(ex){
@@ -5608,11 +5453,7 @@ function getYTVideoId(url){
 }
 
 // Build the best embed URL
-function ytEmbedUrl(url){
-  var id = getYTVideoId(url);
-  if(!id) return null;
-  return 'https://www.youtube.com/embed/'+id+'?autoplay=1&rel=0&playsinline=1';
-}
+
 
 // Build YouTube search URL for the exercise
 const YT_QUERY_OVERRIDES = {
@@ -5680,91 +5521,11 @@ function ytSearchUrlEn(exName){
   return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(query);
 }
 
-function openYT(ex){
-  if(!ex||!ex.name) return;
 
-  // Crea il modal se non esiste nel DOM
-  if(!document.getElementById('yt-modal')){
-    var nm=document.createElement('div');
-    nm.id='yt-modal';
-    nm.className='modal-bg';
-    nm.innerHTML=
-      '<div class="modal" style="max-width:740px;padding:0;overflow:hidden;border-radius:16px">'+
-      '<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--card2)">'+
-      '<h3 id="yt-modal-title" style="font-family:var(--font2);font-size:15px;font-weight:700;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Video</h3>'+
-      '<button style="background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;flex-shrink:0" onclick="closeModal(\'yt-modal\')">\u00d7</button>'+
-      '</div>'+
-      '<div id="yt-player-area" style="background:#000;position:relative">'+
-      '<div id="yt-player-content" style="min-height:200px;background:#000"></div>'+
-      '</div>'+
-      '<div style="padding:14px 18px;background:var(--card2)">'+
-      '<p id="yt-modal-desc" style="color:var(--sub);font-size:13px;line-height:1.5;margin:0 0 10px"></p>'+
-      '<div id="yt-modal-actions" style="display:flex;gap:8px;flex-wrap:wrap"></div>'+
-      '</div></div>';
-    nm.onclick=function(e){if(e.target===nm)closeModal('yt-modal');};
-    document.body.appendChild(nm);
-  }
 
-  var url      = typeof getYTLink==='function'     ? getYTLink(ex)      : null;
-  var videoId  = url && typeof getYTVideoId==='function' ? getYTVideoId(url) : null;
-  var embedUrl = videoId && typeof ytEmbedUrl==='function'  ? ytEmbedUrl(url)  : null;
-  var searchIT = typeof ytSearchUrl==='function'   ? ytSearchUrl(ex.name)   : 'https://www.youtube.com/results?search_query='+encodeURIComponent(ex.name+' esercizio tutorial');
-  var searchEN = typeof ytSearchUrlEn==='function' ? ytSearchUrlEn(ex.name) : 'https://www.youtube.com/results?search_query='+encodeURIComponent(ex.name+' exercise tutorial');
 
-  // Titolo
-  var titleEl=document.getElementById('yt-modal-title');
-  if(titleEl) titleEl.textContent='\u25b6 '+ex.name;
 
-  // Descrizione
-  var descEl=document.getElementById('yt-modal-desc');
-  if(descEl) descEl.textContent=ex.desc||'';
 
-  // Player — iframe diretto, ZERO overlay
-  var playerEl=document.getElementById('yt-player-content');
-  if(playerEl){
-    if(embedUrl){
-      playerEl.innerHTML=
-        '<div style="position:relative;width:100%;padding-bottom:56.25%;background:#000;overflow:hidden">'+
-        '<iframe src="'+embedUrl+'" frameborder="0" allowfullscreen '+
-        'style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;display:block" '+
-        'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share">'+
-        '</iframe></div>';
-    } else {
-      playerEl.innerHTML=
-        '<div style="padding:32px;text-align:center;background:#000;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center">'+
-        '<div style="font-size:2rem;margin-bottom:10px">\ud83d\udd0d</div>'+
-        '<p style="color:#94a3b8;margin:0 0 16px;font-size:.9rem">Cerca <strong style="color:#f1f5f9">'+ex.name+'</strong> su YouTube</p>'+
-        '<a href="'+searchIT+'" target="_blank" style="padding:10px 20px;background:#ff0000;color:#fff;border-radius:10px;text-decoration:none;font-weight:600;font-size:.9rem">Cerca su YouTube</a>'+
-        '</div>';
-    }
-  }
-
-  // Bottoni azione
-  var actEl=document.getElementById('yt-modal-actions');
-  if(actEl){
-    actEl.innerHTML=
-      '<a href="'+searchIT+'" target="_blank" rel="noopener" class="btn btn-primary" style="text-decoration:none;font-size:13px;display:inline-flex;align-items:center;gap:6px">'+
-      '<svg width="14" height="14" viewBox="0 0 24 24"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.55 3.5 12 3.5 12 3.5s-7.55 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.03 0 12 0 12s0 3.97.5 5.81a3.02 3.02 0 002.12 2.14C4.45 20.5 12 20.5 12 20.5s7.55 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.97 24 12 24 12s0-3.97-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>'+
-      'Cerca su YouTube (IT)</a>'+
-      '<a href="'+searchEN+'" target="_blank" rel="noopener" class="btn btn-ghost" style="text-decoration:none;font-size:13px">EN</a>'+
-      (videoId?'<a href="https://www.youtube.com/watch?v='+videoId+'" target="_blank" rel="noopener" class="btn btn-ghost" style="text-decoration:none;font-size:13px">Apri su YouTube \u2192</a>':'');
-  }
-
-  // Apri modal
-  var m=document.getElementById('yt-modal');
-  if(m){
-    m.classList.add('open');
-    m.style.zIndex='99995';
-    document.body.style.overflow='hidden';
-  }
-}
-
-function ytEmbedLoaded(iframe){ }
-
-function ytEmbedFailed(exName){
-  const player = document.getElementById('yt-player-content');
-  if(player) player.innerHTML = buildYTSearchPanel(exName);
-}
 
 function buildYTSearchPanel(exName){
   const searchIT = ytSearchUrl(exName);
@@ -5799,24 +5560,7 @@ function limitPerCat(list, perCat){
   });
 }
 
-function filterLibrary(){
-  const search=(document.getElementById('lib-search')?.value||'').toLowerCase();
-  const cat=(document.getElementById('lib-cat')?.value||'').toLowerCase();
-  const equip=(document.getElementById('lib-equip')?.value||'').toLowerCase();
-  const level=(document.getElementById('lib-level')?.value||'').toLowerCase();
-  let filtered = ALL_EXERCISES.filter(ex=>{
-    if(search && !ex.name.toLowerCase().includes(search) && !(ex.muscles||ex.muscle||'').toLowerCase().includes(search) && !(ex.cat||'').toLowerCase().includes(search) && !(ex.equip||'').toLowerCase().includes(search)) return false;
-    if(cat && (ex.cat||'').toLowerCase()!==cat) return false;
-    if(equip && (ex.equip||'').toLowerCase()!==equip) return false;
-    if(level && (ex.level||'').toLowerCase()!==level) return false;
-    return true;
-  });
-  // No active filters → cap at 5 per category (≈60 total)
-  const hasFilter = search || cat || equip || level;
-  LIB_FILTERED = hasFilter ? filtered : limitPerCat(filtered, 5);
-  LIB_PAGE = 0;
-  renderLibGrid();
-}
+
 
 
 function openExPlayer(ex, dayKey, ei){
@@ -5832,18 +5576,7 @@ function openYTDirect(name){
   openYT(ex);
 }
 // ── Libreria esercizi: apri per indice (evita problemi con JSON in onclick) ──
-function openLibEx(idx){
-  var ex = window._libExs && window._libExs[idx];
-  if(!ex && idx >= 0){
-    // Fallback: cerca in ALL_EXERCISES
-    ex = ALL_EXERCISES && ALL_EXERCISES[idx];
-  }
-  if(!ex){
-    console.warn('openLibEx: esercizio non trovato per idx', idx);
-    return;
-  }
-  openYT(ex);
-}
+
 
 
 function openYTById(idx){
@@ -5852,73 +5585,9 @@ function openYTById(idx){
   if(ex) openYT(ex);
 }
 
-function renderLibGrid(){
-  window._libExs = LIB_FILTERED;
-  const grid = document.getElementById('lib-grid');
-  if(!grid) return;
 
-  const _ico = (path,sw=2) => `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
-  const CAT_CONFIG = {
-    'Petto':       {emoji:_ico('<path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>'), color:'#5b5ef4', bg:'rgba(91,94,244,.14)'},
-    'Schiena':     {emoji:_ico('<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>'), color:'#0fd6c2', bg:'rgba(15,214,194,.13)'},
-    'Gambe':       {emoji:_ico('<line x1="6" y1="3" x2="6" y2="15"/><path d="M6 15c0 3 3 5 6 6"/><path d="M6 9c5 0 10-2 10-5"/><line x1="10" y1="11" x2="18" y2="19"/>'), color:'#f5c842', bg:'rgba(245,200,66,.13)'},
-    'Spalle':      {emoji:_ico('<path d="M12 2a10 10 0 0 1 10 10"/><path d="M12 2a10 10 0 0 0-10 10"/><path d="M12 12v8"/><path d="M8 16l4 4 4-4"/>'), color:'#f45b8a', bg:'rgba(244,91,138,.13)'},
-    'Bicipiti':    {emoji:_ico('<path d="M6 4v6a6 6 0 0 0 12 0V4"/><line x1="6" y1="10" x2="4" y2="13"/><line x1="18" y1="10" x2="20" y2="13"/>'), color:'#a78bfa', bg:'rgba(167,139,250,.13)'},
-    'Tricipiti':   {emoji:_ico('<polyline points="15 17 20 12 15 7"/><path d="M4 18v-2a4 4 0 0 1 4-4h12"/>'), color:'#34d399', bg:'rgba(52,211,153,.13)'},
-    'Core':        {emoji:_ico('<polyline points="22 12 18 12 15 20 9 4 6 12 2 12"/>'), color:'#38bdf8', bg:'rgba(56,189,248,.13)'},
-    'Cardio':      {emoji:_ico('<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>'), color:'#f87171', bg:'rgba(248,113,113,.15)'},
-    'Funzionale':  {emoji:_ico('<path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>'), color:'#4ade80', bg:'rgba(74,222,128,.13)'},
-    'Mobilità':    {emoji:_ico('<circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>'), color:'#e879f9', bg:'rgba(232,121,249,.13)'},
-    'Powerlifting':{emoji:_ico('<line x1="6" y1="3" x2="6" y2="21"/><line x1="18" y1="3" x2="18" y2="21"/><line x1="3" y1="7" x2="9" y2="7"/><line x1="15" y1="7" x2="21" y2="7"/><line x1="3" y1="17" x2="9" y2="17"/><line x1="15" y1="17" x2="21" y2="17"/>'), color:'#f59e0b', bg:'rgba(245,158,11,.15)'},
-    'Olimpico':    {emoji:_ico('<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/>'), color:'#fbbf24', bg:'rgba(251,191,36,.13)'},
-    'CrossFit':    {emoji:_ico('<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>'), color:'#fb923c', bg:'rgba(251,146,60,.13)'},
-  };
-  const LEVEL_COLOR = {'principiante':'#2dd4a0','intermedio':'#f5c842','avanzato':'#f87171'};
-  const YT_SVG = '<svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.6 3.5 12 3.5 12 3.5s-7.6 0-9.4.6A3 3 0 00.5 6.2C0 8 0 12 0 12s0 4 .5 5.8a3 3 0 002.1 2.1c1.8.6 9.4.6 9.4.6s7.6 0 9.4-.6a3 3 0 002.1-2.1C24 16 24 12 24 12s0-4-.5-5.8zM9.8 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>';
 
-  const page = LIB_FILTERED.slice(0, (LIB_PAGE+1)*LIB_PAGE_SIZE);
-  // If no active filter, cap display at 5 per category
-  const hasActiveFilter = (document.getElementById('lib-search')?.value||'').trim()
-    || (document.getElementById('lib-cat')?.value||'')
-    || (document.getElementById('lib-equip')?.value||'')
-    || (document.getElementById('lib-level')?.value||'');
-  const display = hasActiveFilter ? page : limitPerCat(page, 5);
-  if(!display.length){
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--muted)"><div style="margin-bottom:12px;opacity:.3"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><p>Nessun esercizio trovato. Prova con un altro termine di ricerca.</p></div>';
-    return;
-  }
 
-  grid.innerHTML = display.map(ex => {
-    const cfg = CAT_CONFIG[ex.cat] || {emoji:_ico('<path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>'), color:'#5b5ef4', bg:'rgba(91,94,244,.12)'};
-    const ytUrl = getYTLink(ex);
-    const lvlColor = LEVEL_COLOR[(ex.level||'').toLowerCase()] || '#9999bb';
-    const muscles = (ex.muscles||ex.muscle||'').split(',').slice(0,2).map(m=>m.trim()).filter(Boolean).join(' · ');
-    const equip = ex.equip || '';
-    const exIdx = window._libExs ? window._libExs.indexOf(ex) : -1;
-    return `<div class="lib-card lc2" onclick="openLibEx(${exIdx})" style="cursor:pointer;position:relative;overflow:hidden;border-radius:14px;background:var(--card);border:1px solid var(--border2);transition:.22s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column">
-      <div style="height:88px;display:flex;align-items:center;justify-content:center;background:#000;position:relative;flex-shrink:0">
-        <svg width="44" height="44" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#FF0000"/><polygon points="10,8 18,12 10,16" fill="#fff"/></svg>
-      </div>
-      <div style="padding:11px 13px 13px;flex:1;display:flex;flex-direction:column;gap:3px">
-        <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:${cfg.color};opacity:.9">${ex.cat||''}</div>
-        <div style="font-size:.88rem;font-weight:700;color:var(--text);line-height:1.3">${ex.name}</div>
-        ${muscles?`<div style="font-size:.74rem;color:var(--sub);line-height:1.3">${muscles}</div>`:''}
-        <div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:5px">
-          ${ex.level?`<span style="font-size:.66rem;padding:1px 6px;border-radius:50px;background:${lvlColor}22;color:${lvlColor};border:1px solid ${lvlColor}44;font-weight:600">${ex.level}</span>`:''}
-          ${equip?`<span style="font-size:.66rem;padding:1px 6px;border-radius:50px;background:var(--bg2);color:var(--muted);border:1px solid var(--border)">${equip}</span>`:''}
-          ${ytUrl?`<span style="font-size:.66rem;padding:1px 6px;border-radius:50px;background:rgba(248,113,113,.1);color:var(--red);border:1px solid rgba(248,113,113,.25);display:flex;align-items:center;gap:3px">${YT_SVG} Tutorial</span>`:''}
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-
-  const lm = document.getElementById('lib-load-more');
-  const cnt = document.getElementById('lib-count');
-  if(lm) lm.style.display = (LIB_PAGE+1)*LIB_PAGE_SIZE >= LIB_FILTERED.length ? 'none' : '';
-  if(cnt) cnt.textContent = `${Math.min((LIB_PAGE+1)*LIB_PAGE_SIZE, LIB_FILTERED.length)} / ${LIB_FILTERED.length} esercizi`;
-}
-
-function loadMoreLib(){ LIB_PAGE++; renderLibGrid(); }
 
 // ── QUESTIONARIO RAPIDO ─────────────────────────────────────
 const QUICK_STEPS = [
@@ -18155,5 +17824,354 @@ document.addEventListener('click', function(e){
     if(p) p.innerHTML = '';
   }
 });
+
+/* ═══════════════════════════════════════════════════════
+   LIBRERIA ESERCIZI v2 — sistema completo
+   Search IT+EN, filtri, modal video, load more
+═══════════════════════════════════════════════════════ */
+var LIB = (function(){
+
+  // ── Sinonimi IT↔EN per la ricerca bilingue ──
+  var SYNONYMS = {
+    'bench press':'panca piana','chest press':'panca piana',
+    'incline bench':'panca inclinata','decline bench':'panca declinata',
+    'squat':'squat','back squat':'squat bilanciere',
+    'deadlift':'stacco','romanian deadlift':'stacco rumeno','rdl':'stacco rumeno',
+    'pull up':'trazioni','chin up':'trazioni presa supina',
+    'lat pulldown':'lat machine','pull down':'lat machine',
+    'overhead press':'lento avanti','ohp':'lento avanti','shoulder press':'lento avanti',
+    'curl':'curl bicipiti','barbell curl':'curl bilanciere','hammer curl':'curl martello',
+    'tricep':'tricipiti','skull crusher':'french press','pushdown':'pushdown tricipiti',
+    'row':'rematore','bent over row':'rematore bilanciere','cable row':'rematore cavi',
+    'leg press':'leg press','leg extension':'leg extension','leg curl':'leg curl',
+    'lunge':'affondi','lunges':'affondi',
+    'calf raise':'calf machine','calves':'polpacci',
+    'plank':'plank','crunch':'crunch','sit up':'sit-up',
+    'hip thrust':'hip thrust','glute bridge':'ponte glutei',
+    'face pull':'face pull','lateral raise':'alzate laterali',
+    'front raise':'alzate frontali','rear delt fly':'alzate posteriori',
+    'dip':'dips','push up':'push-up','pushup':'push-up',
+    'chest fly':'croci','cable fly':'croci cavi',
+    'shrug':'scrollate','farmer walk':'farmer walk',
+    'box jump':'box jump','burpee':'burpee','mountain climber':'mountain climber',
+    'kettlebell swing':'swing kettlebell','clean':'clean','snatch':'strappo',
+    'press':'press','row machine':'rematore macchina',
+    'hyperextension':'iperestensioni','back extension':'iperestensioni',
+    'ab wheel':'ruota addome','hanging leg raise':'leg raise appeso',
+    'wrist curl':'curl polsi','forearm':'avambracci',
+    'cardio':'cardio','running':'corsa','cycling':'bici','rowing machine':'vogatore'
+  };
+
+  var _all = [];     // tutti gli esercizi
+  var _filt = [];    // filtrati
+  var _page = 0;
+  var _PPP  = 60;    // per page
+
+  // ── Init ──
+  function init(){
+    if(typeof buildExerciseLibrary === 'function'){
+      _all = buildExerciseLibrary();
+    } else if(typeof ALL_EXERCISES !== 'undefined' && ALL_EXERCISES && ALL_EXERCISES.length){
+      _all = ALL_EXERCISES;
+    }
+    if(typeof ALL_EXERCISES !== 'undefined') ALL_EXERCISES = _all;
+    window._libExs = _all;
+    filter();
+  }
+
+  // ── Filter ──
+  function filter(){
+    var s   = ((document.getElementById('lib-search') ||{}).value||'').toLowerCase().trim();
+    var mus = ((document.getElementById('lib-muscle') ||{}).value||'').toLowerCase();
+    var eq  = ((document.getElementById('lib-equip')  ||{}).value||'').toLowerCase();
+    var lv  = ((document.getElementById('lib-level')  ||{}).value||'').toLowerCase();
+
+    // Expand search with synonyms (IT→EN and EN→IT)
+    var terms = [s];
+    if(s){
+      // Check if search term matches any synonym key or value
+      Object.keys(SYNONYMS).forEach(function(en){
+        var it = SYNONYMS[en];
+        if(en.includes(s) || it.toLowerCase().includes(s)){
+          terms.push(en); terms.push(it.toLowerCase());
+        }
+        if(s.includes(en) || s.includes(it.toLowerCase())){
+          terms.push(en); terms.push(it.toLowerCase());
+        }
+      });
+    }
+
+    _filt = _all.filter(function(ex){
+      if(s){
+        var name = (ex.name||'').toLowerCase();
+        var muscle = (ex.muscle||'').toLowerCase();
+        var desc = (ex.desc||'').toLowerCase();
+        var enName = (ex.en||'').toLowerCase();
+        var matched = terms.some(function(t){
+          return !t || name.includes(t)||muscle.includes(t)||desc.includes(t)||enName.includes(t);
+        });
+        if(!matched) return false;
+      }
+      if(mus && (ex.muscle||'').toLowerCase() !== mus &&
+                (ex.group||'').toLowerCase() !== mus) return false;
+      if(eq){
+        var exEq = (ex.equip||ex.equipment||'').toLowerCase();
+        if(!exEq.includes(eq)) return false;
+      }
+      if(lv && (ex.level||'').toLowerCase() !== lv) return false;
+      return true;
+    });
+
+    _page = 0;
+    window._libExs = _filt;
+    var cnt = document.getElementById('lib-count');
+    if(cnt) cnt.textContent = _filt.length + ' / ' + _all.length + ' esercizi';
+    render();
+  }
+
+  // ── Render grid ──
+  function render(){
+    var grid = document.getElementById('lib-grid');
+    var btn  = document.getElementById('lib-load-more');
+    if(!grid) return;
+
+    var end   = (_page+1) * _PPP;
+    var chunk = _filt.slice(0, end);
+
+    if(!chunk.length){
+      grid.innerHTML = '<div style="padding:60px;text-align:center;color:var(--muted)">'+
+        '<div style="font-size:2rem;margin-bottom:12px">&#128269;</div>'+
+        '<p>Nessun esercizio trovato.<br>Prova con un termine diverso.</p></div>';
+      if(btn) btn.style.display='none';
+      return;
+    }
+
+    var MUSCLE_COLORS = {
+      petto:'#6366f1',schiena:'#0891b2',spalle:'#7c3aed',bicipiti:'#2563eb',
+      tricipiti:'#9333ea',gambe:'#059669',glutei:'#d97706',addome:'#dc2626',
+      polpacci:'#0d9488',cardio:'#e11d48',funzionale:'#ea580c',
+      olimpico:'#ca8a04',powerlifting:'#4f46e5'
+    };
+
+    if(_page === 0){
+      grid.innerHTML = chunk.map(function(ex,i){ return card(ex,i,MUSCLE_COLORS); }).join('');
+    } else {
+      var start = _page * _PPP;
+      grid.innerHTML += _filt.slice(start, end).map(function(ex,i){
+        return card(ex, start+i, MUSCLE_COLORS);
+      }).join('');
+    }
+
+    if(btn) btn.style.display = end < _filt.length ? 'block' : 'none';
+  }
+
+  // ── Build card ──
+  function card(ex, idx, colors){
+    var url    = ytLink(ex);
+    var vid_id = url ? ytId(url) : null;
+    var thumb  = vid_id ? 'https://img.youtube.com/vi/'+vid_id+'/mqdefault.jpg' : '';
+    var col    = colors[(ex.muscle||'').toLowerCase()] || '#64748b';
+    var lvlBg  = {principiante:'rgba(5,150,105,.12)',intermedio:'rgba(99,102,241,.12)',avanzato:'rgba(239,68,68,.12)'}[(ex.level||'').toLowerCase()] || 'var(--bg3)';
+    var lvlCol = {principiante:'#10b981',intermedio:'#818cf8',avanzato:'#f87171'}[(ex.level||'').toLowerCase()] || 'var(--sub)';
+
+    var imgHtml = thumb
+      ? '<img src="'+thumb+'" loading="lazy" decoding="async" '+
+        'style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;border:none" '+
+        'onerror="this.parentNode.style.background=\'#0d0d1a\'">'
+      : '';
+
+    return '<div class="lib-card lc2" onclick="LIB.open('+idx+')" '+
+      'style="cursor:pointer;border-radius:14px;background:var(--card);border:1px solid var(--border);'+
+      'overflow:hidden;transition:.2s;-webkit-tap-highlight-color:transparent">'+
+      '<div style="position:relative;padding-bottom:56.25%;background:#111;overflow:hidden">'+
+        imgHtml+
+        '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">'+
+          '<svg width="52" height="52" viewBox="0 0 52 52" style="filter:drop-shadow(0 2px 8px rgba(0,0,0,.5))">'+
+            '<circle cx="26" cy="26" r="26" fill="rgba(220,30,30,.92)"/>'+
+            '<polygon points="21,15 41,26 21,37" fill="#fff"/>'+
+          '</svg>'+
+        '</div>'+
+      '</div>'+
+      '<div style="padding:12px 14px">'+
+        '<div style="font-size:.65rem;font-weight:700;color:'+col+';text-transform:uppercase;letter-spacing:.7px;margin-bottom:3px">'+
+          (ex.muscle||'')+(ex.muscle2?(' &middot; '+ex.muscle2):'')+'</div>'+
+        '<div style="font-size:.93rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:5px">'+
+          (ex.name||'')+'</div>'+
+        (ex.en ? '<div style="font-size:.72rem;color:var(--muted);margin-bottom:6px;font-style:italic">'+ex.en+'</div>' : '')+
+        '<div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">'+
+          (ex.level ? '<span style="font-size:.68rem;padding:2px 8px;border-radius:50px;background:'+lvlBg+';color:'+lvlCol+';font-weight:600">'+ex.level+'</span>' : '')+
+          (ex.equip||ex.equipment ? '<span style="font-size:.68rem;padding:2px 8px;border-radius:50px;background:var(--bg3);color:var(--sub)">'+
+            (ex.equip||ex.equipment)+'</span>' : '')+
+          (vid_id ? '<span style="font-size:.68rem;padding:2px 8px;border-radius:50px;background:rgba(220,30,30,.1);color:#f44;display:inline-flex;align-items:center;gap:4px;font-weight:600">'+
+            '<svg width="9" height="9" viewBox="0 0 24 24"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.55 3.5 12 3.5 12 3.5s-7.55 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.03 0 12 0 12s0 3.97.5 5.81a3.02 3.02 0 002.12 2.14C4.45 20.5 12 20.5 12 20.5s7.55 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.97 24 12 24 12s0-3.97-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>'+
+            'Tutorial</span>' : '')+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }
+
+  // ── Get YouTube link ──
+  function ytLink(ex){
+    if(ex.yt && ex.yt.length > 4){
+      if(ex.yt.startsWith('http')) return ex.yt;
+      return 'https://www.youtube.com/watch?v='+ex.yt;
+    }
+    if(typeof YT_MAP !== 'undefined' && YT_MAP[ex.name]) return YT_MAP[ex.name];
+    return null;
+  }
+
+  // ── Extract YouTube ID ──
+  function ytId(url){
+    if(!url) return null;
+    var m = url.match(/(?:v=|youtu\.be\/|shorts\/|embed\/)([A-Za-z0-9_-]{11})/);
+    return m ? m[1] : null;
+  }
+
+  // ── Open modal ──
+  function open(idx){
+    var ex = (window._libExs && window._libExs[idx]) || _filt[idx];
+    if(!ex) return;
+
+    var modal  = document.getElementById('lib-modal');
+    var player = document.getElementById('lib-player');
+    var title  = document.getElementById('lib-modal-title');
+    var muscle = document.getElementById('lib-modal-muscle');
+    var desc   = document.getElementById('lib-modal-desc');
+    var acts   = document.getElementById('lib-modal-actions');
+    if(!modal) return;
+
+    var url    = ytLink(ex);
+    var vid_id = url ? ytId(url) : null;
+    var embedUrl = vid_id ? ('https://www.youtube.com/embed/'+vid_id+'?autoplay=1&rel=0&playsinline=1') : null;
+    var searchIT = 'https://www.youtube.com/results?search_query='+encodeURIComponent((ex.name||'')+ ' tutorial tecnica');
+    var searchEN = 'https://www.youtube.com/results?search_query='+encodeURIComponent((ex.en||ex.name||'')+' exercise tutorial');
+
+    // Title + muscle
+    if(title) title.textContent = ex.name || '';
+    if(muscle){
+      muscle.textContent = (ex.muscle||'') + (ex.muscle2 ? ' \u00b7 '+ex.muscle2 : '') +
+        (ex.level ? ' \u00b7 '+ex.level : '');
+    }
+
+    // Description
+    if(desc) desc.textContent = ex.desc || '';
+
+    // Player
+    if(player){
+      if(embedUrl){
+        player.innerHTML =
+          '<div style="position:relative;width:100%;padding-bottom:56.25%;overflow:hidden;background:#000">'+
+          '<iframe src="'+embedUrl+'"'+
+          ' frameborder="0" allowfullscreen'+
+          ' allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"'+
+          ' style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;display:block">'+
+          '</iframe>'+
+          '</div>';
+      } else {
+        player.innerHTML =
+          '<div style="padding:36px;text-align:center;background:#000">'+
+          '<div style="font-size:2rem;margin-bottom:10px">&#128270;</div>'+
+          '<p style="color:#94a3b8;margin:0 0 16px">Nessun video specifico trovato.<br>Cerca su YouTube:</p>'+
+          '<a href="'+searchIT+'" target="_blank" style="padding:10px 20px;background:#ff0000;color:#fff;border-radius:10px;text-decoration:none;font-weight:600;margin-right:8px">&#9654; IT</a>'+
+          '<a href="'+searchEN+'" target="_blank" style="padding:10px 20px;background:#333;color:#fff;border-radius:10px;text-decoration:none;font-weight:600">EN</a>'+
+          '</div>';
+      }
+    }
+
+    // Action buttons
+    if(acts){
+      acts.innerHTML =
+        '<a href="'+searchIT+'" target="_blank" rel="noopener" '+
+        'style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--accent);color:#fff;border-radius:50px;text-decoration:none;font-size:13px;font-weight:600">'+
+        '<svg width="13" height="13" viewBox="0 0 24 24"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.55 3.5 12 3.5 12 3.5s-7.55 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.03 0 12 0 12s0 3.97.5 5.81a3.02 3.02 0 002.12 2.14C4.45 20.5 12 20.5 12 20.5s7.55 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.97 24 12 24 12s0-3.97-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>'+
+        'Cerca su YouTube (IT)</a>'+
+        '<a href="'+searchEN+'" target="_blank" rel="noopener" '+
+        'style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--bg3);color:var(--text);border-radius:50px;text-decoration:none;font-size:13px;font-weight:600;border:1px solid var(--border)">'+
+        'YouTube (EN)</a>'+
+        (vid_id ?
+          '<a href="https://www.youtube.com/watch?v='+vid_id+'" target="_blank" rel="noopener" '+
+          'style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--bg3);color:var(--text);border-radius:50px;text-decoration:none;font-size:13px;font-weight:600;border:1px solid var(--border)">'+
+          'Apri su YouTube &#8594;</a>' : '');
+    }
+
+    // Show modal
+    modal.style.display  = 'flex';
+    modal.style.position = 'fixed';
+    modal.style.zIndex   = '99999';
+    document.body.style.overflow = 'hidden';
+
+    // Close on backdrop click
+    modal.onclick = function(e){
+      if(e.target === modal) closeModal();
+    };
+  }
+
+  // ── Close modal ──
+  function closeModal(){
+    var modal  = document.getElementById('lib-modal');
+    var player = document.getElementById('lib-player');
+    if(modal){
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+    if(player) player.innerHTML = ''; // stop video
+  }
+
+  // ── Load more ──
+  function more(){
+    _page++;
+    render();
+    // Scroll to new items
+    var grid = document.getElementById('lib-grid');
+    if(grid) setTimeout(function(){
+      var cards = grid.querySelectorAll('.lib-card');
+      var target = cards[_page * _PPP];
+      if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
+    }, 100);
+  }
+
+  // ── Also update dashboard library if open ──
+  function syncDash(){
+    if(typeof libDF === 'function') libDF();
+  }
+
+  return { init:init, filter:filter, render:render, open:open, closeModal:closeModal, more:more };
+})();
+
+// Legacy aliases for compatibility
+function filterLibrary(){ LIB.filter(); }
+function renderLibGrid(){ LIB.render(); }
+function loadMoreLib(){ LIB.more(); }
+function openLibEx(i){ LIB.open(i); }
+function initExercises(){
+  if(typeof buildExerciseLibrary==='function') ALL_EXERCISES = buildExerciseLibrary();
+  LIB.init();
+}
+function openYT(ex){ LIB.open(window._libExs ? window._libExs.indexOf(ex) : 0); }
+function closeModal(id){
+  if(!id || id==='lib-modal'){ LIB.closeModal(); return; }
+  var el=document.getElementById(id);
+  if(!el) return;
+  el.classList.remove('open');
+  el.style.zIndex='';
+  document.body.style.overflow='';
+  var p=document.getElementById('yt-player-content');
+  if(p) p.innerHTML='';
+}
+function openModal(id){
+  var el=document.getElementById(id);
+  if(el){ el.classList.add('open'); el.style.zIndex='99995'; }
+}
+
+// ESC key closes modal
+document.addEventListener('keydown', function(e){
+  if(e.key==='Escape') LIB.closeModal();
+});
+
+// Init on DOM ready
+document.addEventListener('DOMContentLoaded', function(){
+  try{ LIB.init(); }catch(err){ console.warn('LIB init:',err); }
+});
+
 </script>
-<div class="dash-section" id="ds-esercizi" style="display:none"><div style="margin-bottom:20px"><h2 style="font-family:var(--font2);font-size:1.4rem;font-weight:800;margin:0 0 4px">Libreria Esercizi</h2><p style="color:var(--sub);font-size:.88rem;margin:0">700+ esercizi con video tutorial — clicca per guardare</p></div><div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;align-items:center"><input id="lib-s-d" class="inp" placeholder="Cerca esercizio..." style="flex:1;min-width:150px;max-width:240px;font-size:14px;padding:9px 14px" oninput="libDF()"><select id="lib-m-d" class="inp" style="padding:9px 12px;font-size:14px" onchange="libDF()"><option value="">Tutti i muscoli</option><option>Petto</option><option>Schiena</option><option>Spalle</option><option>Bicipiti</option><option>Tricipiti</option><option>Gambe</option><option>Glutei</option><option>Addome</option><option>Polpacci</option><option>Cardio</option></select><select id="lib-l-d" class="inp" style="padding:9px 12px;font-size:14px" onchange="libDF()"><option value="">Tutti i livelli</option><option>Principiante</option><option>Intermedio</option><option>Avanzato</option></select><span id="lib-c-d" style="font-size:.82rem;color:var(--sub)"></span></div><div class="lib-grid" id="lib-g-d"></div><div style="text-align:center;margin-top:16px"><button class="btn btn-ghost" id="lib-more-d" onclick="libDM()" style="display:none">Carica altri</button></div></div>
+<div class="dash-section" id="ds-esercizi" style="display:none"><div style="margin-bottom:20px"><h2 style="font-family:var(--font2);font-size:1.4rem;font-weight:800;margin:0 0 4px">Libreria Esercizi</h2><p style="color:var(--sub);font-size:.88rem;margin:0">700+ esercizi con video tutorial — clicca per guardare</p></div><div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;align-items:center"><input id="lib-s-d" class="inp" placeholder="Cerca esercizio..." style="flex:1;min-width:150px;max-width:240px;font-size:14px;padding:9px 14px" oninput="LIB.filter();libDF()"><select id="lib-m-d" class="inp" style="padding:9px 12px;font-size:14px" onchange="LIB.filter();libDF()"><option value="">Tutti i muscoli</option><option>Petto</option><option>Schiena</option><option>Spalle</option><option>Bicipiti</option><option>Tricipiti</option><option>Gambe</option><option>Glutei</option><option>Addome</option><option>Polpacci</option><option>Cardio</option></select><select id="lib-l-d" class="inp" style="padding:9px 12px;font-size:14px" onchange="LIB.filter();libDF()"><option value="">Tutti i livelli</option><option>Principiante</option><option>Intermedio</option><option>Avanzato</option></select><span id="lib-c-d" style="font-size:.82rem;color:var(--sub)"></span></div><div class="lib-grid" id="lib-g-d"></div><div style="text-align:center;margin-top:16px"><button class="btn btn-ghost" id="lib-more-d" onclick="libDM()" style="display:none">Carica altri</button></div></div>
