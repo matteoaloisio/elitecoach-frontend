@@ -19115,6 +19115,671 @@ window.trLogin           = tLogin;
 window.trReg             = tReg;
 window.trLogout          = tLogout;
 window.mvBecomeTrainer   = function(){ tOpenReg(); };
+/* ── Helpers ── */
+function _tKpi(val, lbl, col, sub){
+  return '<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:16px;padding:18px 16px">'
+    +'<div style="font-size:1.8rem;font-weight:800;color:'+col+';font-family:sans-serif;line-height:1">'+val+'</div>'
+    +'<div style="font-size:.75rem;color:#64748b;margin-top:4px;font-weight:500">'+lbl+'</div>'
+    +(sub?'<div style="font-size:.72rem;color:#475569;margin-top:2px">'+sub+'</div>':'')
+    +'</div>';
+}
+
+function _tCard(content, style){
+  return '<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:16px;padding:20px;'+(style||'')+'">'+content+'</div>';
+}
+
+function _tBadge(text, type){
+  var cfg = {attivo:'rgba(15,214,194,.12);color:#0fd6c2',
+    'in pausa':'rgba(245,196,66,.1);color:#f5c842',
+    sospeso:'rgba(248,113,113,.1);color:#f87171',
+    principiante:'rgba(15,214,194,.1);color:#0fd6c2',
+    intermedio:'rgba(99,102,241,.1);color:#818cf8',
+    avanzato:'rgba(248,113,113,.1);color:#f87171'};
+  var s = cfg[(text||'').toLowerCase()] || 'rgba(100,116,139,.1);color:#64748b';
+  return '<span style="font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:50px;background:'+s+'">'+(text||'')+'</span>';
+}
+
+function _tClients(tr){
+  return (tr.clients && tr.clients.length) ? tr.clients : _TR_DEMO_CLIENTS;
+}
+
+function _tMiniBar(pct, col){
+  col = col || '#6366f1';
+  return '<div style="background:#1e1e2e;border-radius:4px;height:6px;overflow:hidden">'
+    +'<div style="width:'+Math.min(100,pct)+'%;height:100%;background:'+col+';border-radius:4px;transition:.4s"></div>'
+    +'</div>';
+}
+
+function _tSparkline(data, col){
+  if(!data || !data.length) return '';
+  var max = Math.max.apply(null, data.map(function(d){return d.vol;}));
+  var min = Math.min.apply(null, data.map(function(d){return d.vol;}));
+  var range = max - min || 1;
+  var w = 80, h = 30;
+  var pts = data.map(function(d,i){
+    var x = (i/(data.length-1||1))*w;
+    var y = h - ((d.vol-min)/range)*h;
+    return x+','+y;
+  }).join(' ');
+  return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'">'
+    +'<polyline points="'+pts+'" fill="none" stroke="'+(col||'#6366f1')+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+    +'</svg>';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SEZIONE 1 — OVERVIEW
+═══════════════════════════════════════════════════════════ */
+function _tSecOverview(tr){
+  var clients = _tClients(tr);
+  var active = clients.filter(function(c){return c.status==='attivo';}).length;
+  var p = tr.price||89;
+  var mrr = active * p;
+  var avgAdh = clients.length ? Math.round(clients.reduce(function(a,c){return a+(c.adherence||0);},0)/clients.length) : 0;
+
+  var today = new Date();
+  var todayClients = clients.slice(0,2); // simulate today's sessions
+
+  return '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">'
+    +'<div>'
+    +'<h2 style="font-family:sans-serif;font-size:1.5rem;font-weight:800;margin:0 0 4px;color:#f1f5f9">Bentornato, '+tr.name+'! \uD83D\uDCAA</h2>'
+    +'<p style="color:#64748b;margin:0;font-size:.88rem">'+today.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'})+'</p>'
+    +'</div>'
+    +'<div style="display:flex;gap:8px">'
+    +'<button onclick="tDGo(\'schede\')" style="padding:10px 18px;background:linear-gradient(135deg,#6366f1,#818cf8);border:none;border-radius:12px;color:#fff;font-weight:700;cursor:pointer;font-size:.85rem">\u26A1 Scheda AI</button>'
+    +'<button onclick="tDGo(\'clienti\')" style="padding:10px 18px;background:#1e1e2e;border:1px solid #2a2a3e;border-radius:12px;color:#94a3b8;cursor:pointer;font-size:.85rem">Gestisci clienti</button>'
+    +'</div>'
+    +'</div>'
+
+    // KPI Row
+    +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:24px">'
+    +_tKpi(active,'Clienti attivi','#818cf8','di '+clients.length+' totali')
+    +_tKpi('\u20AC'+mrr.toLocaleString('it-IT'),'Revenue mensile','#0fd6c2','\u20AC'+(mrr*12).toLocaleString('it-IT')+' ARR')
+    +_tKpi(avgAdh+'%','Aderenza media','#f5c842',avgAdh>75?'Ottima':'Migliorabile')
+    +_tKpi((tr.rating||5).toFixed(1)+' \u2605','Rating','#f97316',(tr.reviews||0)+' recensioni')
+    +'</div>'
+
+    // 2-col grid
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">'
+
+    // Sessioni oggi
+    +_tCard('<h4 style="margin:0 0 14px;color:#f1f5f9;font-size:.9rem;display:flex;align-items:center;gap:8px">\uD83D\uDCC5 Sessioni oggi</h4>'
+      +'<div style="display:flex;flex-direction:column;gap:10px">'
+      +todayClients.map(function(cl){
+        return '<div style="display:flex;align-items:center;gap:10px">'
+          +'<div style="width:36px;height:36px;border-radius:10px;background:'+cl.color+';display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:.8rem;flex-shrink:0">'+cl.avatar+'</div>'
+          +'<div style="flex:1"><div style="font-size:.85rem;font-weight:600;color:#f1f5f9">'+cl.name+' '+cl.surname+'</div>'
+          +'<div style="font-size:.75rem;color:#64748b">'+cl.goal+'</div></div>'
+          +_tBadge(cl.status)
+          +'</div>';
+      }).join('')
+      +'<button onclick="tDGo(\'calendario\')" style="width:100%;margin-top:8px;padding:9px;background:transparent;border:1px solid #2a2a3e;border-radius:10px;color:#64748b;cursor:pointer;font-size:.82rem">Vedi calendario completo \u2192</button>'
+      +'</div>')
+
+    // Aderenza clienti
+    +_tCard('<h4 style="margin:0 0 14px;color:#f1f5f9;font-size:.9rem">\uD83D\uDCC8 Aderenza clienti</h4>'
+      +'<div style="display:flex;flex-direction:column;gap:12px">'
+      +clients.slice(0,3).map(function(cl){
+        var col = cl.adherence>=80?'#0fd6c2':cl.adherence>=60?'#f5c842':'#f87171';
+        return '<div>'
+          +'<div style="display:flex;justify-content:space-between;margin-bottom:5px">'
+          +'<span style="font-size:.82rem;color:#94a3b8">'+cl.name+'</span>'
+          +'<span style="font-size:.82rem;font-weight:700;color:'+col+'">'+cl.adherence+'%</span>'
+          +'</div>'
+          +_tMiniBar(cl.adherence, col)
+          +'</div>';
+      }).join('')
+      +'</div>')
+    +'</div>'
+
+    // Bottom row
+    +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">'
+
+    // Azioni rapide
+    +_tCard('<h4 style="margin:0 0 12px;color:#f1f5f9;font-size:.9rem">\u26A1 Azioni rapide</h4>'
+      +'<div style="display:flex;flex-direction:column;gap:8px">'
+      +'<button onclick="tDGo(\'schede\')" style="padding:10px;background:linear-gradient(135deg,#6366f1,#818cf8);border:none;border-radius:10px;color:#fff;font-weight:600;cursor:pointer;font-size:.83rem;text-align:left;padding-left:14px">\uD83E\uDD16 Genera scheda AI per cliente</button>'
+      +'<button onclick="tDGo(\'dieta\')" style="padding:10px;background:linear-gradient(135deg,#059669,#0fd6c2);border:none;border-radius:10px;color:#fff;font-weight:600;cursor:pointer;font-size:.83rem;text-align:left;padding-left:14px">\uD83E\uDD66 Piano alimentare AI</button>'
+      +'<button onclick="tDGo(\'chat\')" style="padding:10px;background:#1e1e2e;border:1px solid #2a2a3e;border-radius:10px;color:#94a3b8;cursor:pointer;font-size:.83rem;text-align:left;padding-left:14px">\uD83D\uDCAC Messaggi clienti ('+clients.length+')</button>'
+      +'<button onclick="tDGo(\'analisi\')" style="padding:10px;background:#1e1e2e;border:1px solid #2a2a3e;border-radius:10px;color:#94a3b8;cursor:pointer;font-size:.83rem;text-align:left;padding-left:14px">\uD83D\uDCC9 Analisi progressi</button>'
+      +'</div>')
+
+    // Revenue mini
+    +_tCard('<h4 style="margin:0 0 12px;color:#f1f5f9;font-size:.9rem">\uD83D\uDCB0 Revenue rapida</h4>'
+      +'<div style="text-align:center;padding:12px 0">'
+      +'<div style="font-size:2.2rem;font-weight:800;color:#0fd6c2;font-family:sans-serif">\u20AC'+mrr+'</div>'
+      +'<div style="font-size:.78rem;color:#475569;margin-top:4px">Questo mese</div>'
+      +'<div style="margin-top:14px;font-size:.82rem;color:#64748b">'
+      +clients.map(function(cl){return '<div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>'+cl.name+'</span><span style="color:#0fd6c2;font-weight:600">\u20AC'+(cl.status==='attivo'?p:0)+'</span></div>';}).join('')
+      +'</div>'
+      +'</div>')
+
+    // Profilo card
+    +_tCard('<h4 style="margin:0 0 12px;color:#f1f5f9;font-size:.9rem">\uD83C\uDFC5 Il tuo profilo</h4>'
+      +'<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">'
+      +'<div style="width:48px;height:48px;border-radius:14px;background:'+(tr.col||'#6366f1')+';display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;color:#fff;flex-shrink:0">'+((tr.ph||'T').substring(0,2))+'</div>'
+      +'<div><div style="font-weight:700;color:#f1f5f9">'+tr.name+' '+(tr.surname||'')+'</div>'
+      +'<div style="font-size:.78rem;color:#0fd6c2">\u20AC'+(tr.price||89)+'/mese · '+(tr.specs||['Fitness']).slice(0,2).join(', ')+'</div></div>'
+      +'</div>'
+      +'<div style="font-size:.82rem;color:#64748b;margin-bottom:12px">'+(tr.bio||'').substring(0,80)+'...</div>'
+      +'<button onclick="tDGo(\'profilo\')" style="width:100%;padding:8px;background:transparent;border:1px solid #2a2a3e;border-radius:8px;color:#64748b;cursor:pointer;font-size:.8rem">Modifica profilo</button>')
+
+    +'</div>';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SEZIONE 2 — CLIENTI
+═══════════════════════════════════════════════════════════ */
+function _tSecClienti(tr){
+  var clients = _tClients(tr);
+  var active = clients.filter(function(c){return c.status==='attivo';});
+
+  return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px">'
+    +'<h2 style="font-family:sans-serif;font-size:1.4rem;font-weight:800;margin:0;color:#f1f5f9">I tuoi clienti <span style="color:#475569;font-size:1rem;font-weight:400">('+clients.length+')</span></h2>'
+    +'<div style="display:flex;gap:8px">'
+    +'<button onclick="_tInviteClient()" style="padding:9px 18px;background:linear-gradient(135deg,#6366f1,#818cf8);border:none;border-radius:10px;color:#fff;font-weight:700;cursor:pointer;font-size:.85rem">\uFF0B Invita cliente</button>'
+    +'</div></div>'
+
+    // Stats row
+    +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px">'
+    +_tKpi(clients.length,'Totali','#818cf8')
+    +_tKpi(active.length,'Attivi','#0fd6c2')
+    +_tKpi(clients.length?Math.round(clients.reduce(function(a,c){return a+(c.adherence||0);},0)/clients.length):0+'%','Aderenza media','#f5c842')
+    +_tKpi(clients.reduce(function(a,c){return a+(c.sessions||0);},0),'Sessioni totali','#f97316')
+    +'</div>'
+
+    // Client cards
+    +'<div style="display:flex;flex-direction:column;gap:12px">'
+    +clients.map(function(cl){
+      return '<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:16px;padding:18px;cursor:pointer;transition:.2s" onclick="_tOpenClient(\''+cl.id+'\')">'
+        +'<div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">'
+        +'<div style="width:48px;height:48px;border-radius:14px;background:'+cl.color+';display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:.9rem;flex-shrink:0">'+cl.avatar+'</div>'
+        +'<div style="flex:1">'
+        +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">'
+        +'<span style="font-weight:700;color:#f1f5f9;font-size:.95rem">'+cl.name+' '+cl.surname+'</span>'
+        +_tBadge(cl.status)
+        +'</div>'
+        +'<div style="font-size:.78rem;color:#64748b">'+cl.goal+' · '+cl.level+' · Da: '+cl.since+'</div>'
+        +'</div>'
+        +'<div style="text-align:right;flex-shrink:0">'
+        +_tSparkline(cl.log, cl.color)
+        +'<div style="font-size:.7rem;color:#475569;margin-top:2px">Volume settimane</div>'
+        +'</div>'
+        +'</div>'
+        // Stats bar
+        +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">'
+        +'<div style="text-align:center;padding:8px;background:#0d0d1a;border-radius:8px">'
+        +'<div style="font-size:.88rem;font-weight:700;color:#f1f5f9">'+cl.sessions+'</div>'
+        +'<div style="font-size:.68rem;color:#475569">Sessioni</div>'
+        +'</div>'
+        +'<div style="text-align:center;padding:8px;background:#0d0d1a;border-radius:8px">'
+        +'<div style="font-size:.88rem;font-weight:700;color:'+(cl.adherence>=80?'#0fd6c2':cl.adherence>=60?'#f5c842':'#f87171')+'">'+cl.adherence+'%</div>'
+        +'<div style="font-size:.68rem;color:#475569">Aderenza</div>'
+        +'</div>'
+        +'<div style="text-align:center;padding:8px;background:#0d0d1a;border-radius:8px">'
+        +'<div style="font-size:.88rem;font-weight:700;color:#f97316">'+cl.pr_bench+'kg</div>'
+        +'<div style="font-size:.68rem;color:#475569">PR Panca</div>'
+        +'</div>'
+        +'<div style="text-align:center;padding:8px;background:#0d0d1a;border-radius:8px">'
+        +'<div style="font-size:.88rem;font-weight:700;color:#818cf8">'+cl.pr_squat+'kg</div>'
+        +'<div style="font-size:.68rem;color:#475569">PR Squat</div>'
+        +'</div>'
+        +'</div>'
+        // Quick actions
+        +'<div style="display:flex;gap:8px;margin-top:12px" onclick="event.stopPropagation()">'
+        +'<button onclick="_tSchedaForClient(\''+cl.id+'\')" style="flex:1;padding:8px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);border-radius:8px;color:#818cf8;cursor:pointer;font-size:.8rem;font-weight:600">\uD83E\uDD16 Scheda AI</button>'
+        +'<button onclick="_tDietaForClient(\''+cl.id+'\')" style="flex:1;padding:8px;background:rgba(5,150,105,.1);border:1px solid rgba(5,150,105,.2);border-radius:8px;color:#0fd6c2;cursor:pointer;font-size:.8rem;font-weight:600">\uD83E\uDD66 Dieta AI</button>'
+        +'<button onclick="_tChatWithClient(\''+cl.id+'\')" style="flex:1;padding:8px;background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.2);border-radius:8px;color:#f97316;cursor:pointer;font-size:.8rem;font-weight:600">\uD83D\uDCAC Chat</button>'
+        +'<button onclick="_tProgressiClient(\''+cl.id+'\')" style="flex:1;padding:8px;background:rgba(245,196,66,.1);border:1px solid rgba(245,196,66,.2);border-radius:8px;color:#f5c842;cursor:pointer;font-size:.8rem;font-weight:600">\uD83D\uDCC8 Progressi</button>'
+        +'</div>'
+        +'</div>';
+    }).join('')
+    +'</div>';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SEZIONE 4 — CHAT
+═══════════════════════════════════════════════════════════ */
+function _tSecChat(tr){
+  var clients = _tClients(tr);
+  var msgs = [
+    {from:'Alessandro', text:'Coach ho fatto 100kg di panca! Finalmente \uD83D\uDD25', time:'14:32', unread:true, color:'#6366f1', avatar:'AR'},
+    {from:'Giulia', text:'Quando posso aumentare il peso nello squat?', time:'11:15', unread:false, color:'#ec4899', avatar:'GF'},
+    {from:'Marco', text:'Domani non riesco a venire, posso spostare?', time:'Ieri', unread:true, color:'#f97316', avatar:'MC'},
+  ];
+
+  return '<div style="display:grid;grid-template-columns:280px 1fr;gap:0;height:calc(100vh - 160px);border-radius:16px;overflow:hidden;border:1px solid #1e1e2e">'
+
+    // Sidebar contatti
+    +'<div style="background:#0d0d1a;border-right:1px solid #1e1e2e;display:flex;flex-direction:column">'
+    +'<div style="padding:14px 16px;border-bottom:1px solid #1e1e2e">'
+    +'<div style="font-weight:700;color:#f1f5f9;margin-bottom:10px">Messaggi</div>'
+    +'<input placeholder="Cerca cliente..." style="width:100%;padding:8px 12px;background:#12121e;border:1px solid #2a2a3e;border-radius:8px;color:#f1f5f9;font-size:13px;outline:none;box-sizing:border-box">'
+    +'</div>'
+    +'<div style="flex:1;overflow-y:auto">'
+    +msgs.map(function(m,i){
+      return '<div onclick="_tChatOpen('+i+')" style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;display:flex;align-items:center;gap:10px;transition:.15s" '
+        +'onmouseenter="this.style.background=\'rgba(255,255,255,.03)\'" onmouseleave="this.style.background=\'none\'">'
+        +'<div style="position:relative;flex-shrink:0">'
+        +'<div style="width:38px;height:38px;border-radius:11px;background:'+m.color+';display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:.8rem">'+m.avatar+'</div>'
+        +(m.unread?'<div style="position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:#6366f1;border:2px solid #0d0d1a"></div>':'')
+        +'</div>'
+        +'<div style="flex:1;min-width:0">'
+        +'<div style="display:flex;justify-content:space-between;margin-bottom:3px">'
+        +'<span style="font-size:.85rem;font-weight:'+(m.unread?'700':'600')+';color:'+(m.unread?'#f1f5f9':'#94a3b8')+'">'+m.from+'</span>'
+        +'<span style="font-size:.7rem;color:#475569">'+m.time+'</span>'
+        +'</div>'
+        +'<div style="font-size:.78rem;color:#475569;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+m.text+'</div>'
+        +'</div>'
+        +'</div>';
+    }).join('')
+    +'</div>'
+    +'</div>'
+
+    // Chat panel
+    +'<div id="_tchat_panel" style="background:#12121e;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#475569">'
+    +'<div style="text-align:center"><div style="font-size:3rem;margin-bottom:12px">\uD83D\uDCAC</div>'
+    +'<div style="font-size:.9rem">Seleziona un cliente per chattare</div></div>'
+    +'</div>'
+
+    +'</div>';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SEZIONE 6 — REVENUE
+═══════════════════════════════════════════════════════════ */
+function _tSecRevenue(tr){
+  var clients = _tClients(tr);
+  var active = clients.filter(function(c){return c.status==='attivo';});
+  var p = tr.price||89;
+  var mrr = active.length * p;
+  var months = ['Oct','Nov','Dec','Gen','Feb','Mar','Apr'];
+  var vals = [mrr*0.6, mrr*0.65, mrr*0.75, mrr*0.8, mrr*0.9, mrr*0.95, mrr].map(Math.round);
+  var maxV = Math.max.apply(null,vals);
+
+  return '<h2 style="font-family:sans-serif;font-size:1.4rem;font-weight:800;margin:0 0 20px;color:#f1f5f9">\uD83D\uDCB0 Revenue & Pagamenti</h2>'
+
+    +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px">'
+    +_tKpi('\u20AC'+mrr,'MRR','#0fd6c2','Mensile ricorrente')
+    +_tKpi('\u20AC'+(mrr*12).toLocaleString('it-IT'),'ARR','#818cf8','Annuale proiezione')
+    +_tKpi(active.length,'Abbonati attivi','#f5c842','di '+clients.length+' totali')
+    +_tKpi('\u20AC'+(mrr>0?(mrr*12/active.length).toFixed(0):0),'LTV medio','#f97316','12 mesi')
+    +'</div>'
+
+    +'<div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px">'
+
+    // Revenue chart
+    +_tCard('<h4 style="margin:0 0 16px;color:#f1f5f9">Andamento 7 mesi</h4>'
+      +'<div style="display:flex;align-items:flex-end;gap:8px;height:120px">'
+      +vals.map(function(v,i){
+        var pct = v/maxV;
+        var isLast = i===vals.length-1;
+        return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">'
+          +'<div style="font-size:.68rem;color:#475569">\u20AC'+v+'</div>'
+          +'<div style="width:100%;border-radius:6px 6px 0 0;background:'+(isLast?'linear-gradient(180deg,#818cf8,#6366f1)':'rgba(99,102,241,.3)')+';height:'+(20+pct*80)+'px;transition:.4s"></div>'
+          +'<div style="font-size:.68rem;color:#475569">'+months[i]+'</div>'
+          +'</div>';
+      }).join('')
+      +'</div>')
+
+    // Pagamenti clienti
+    +_tCard('<h4 style="margin:0 0 14px;color:#f1f5f9">Clienti &amp; Pagamenti</h4>'
+      +'<div style="display:flex;flex-direction:column;gap:10px">'
+      +clients.map(function(cl){
+        var paid = cl.status==='attivo';
+        return '<div style="display:flex;align-items:center;gap-10px;justify-content:space-between">'
+          +'<div style="display:flex;align-items:center;gap:8px">'
+          +'<div style="width:30px;height:30px;border-radius:8px;background:'+cl.color+';display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:.7rem">'+cl.avatar+'</div>'
+          +'<div style="font-size:.82rem;color:#94a3b8">'+cl.name+'</div>'
+          +'</div>'
+          +'<div style="text-align:right">'
+          +'<div style="font-size:.88rem;font-weight:700;color:'+(paid?'#0fd6c2':'#f87171')+'">'+(paid?'+\u20AC'+p:'Pausa')+'</div>'
+          +'<div style="font-size:.68rem;color:#475569">'+( paid?'Apr 2025':'Sospeso')+'</div>'
+          +'</div></div>';
+      }).join('')
+      +'</div>')
+    +'</div>'
+
+    // Proiezioni
+    +_tCard('<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">'
+      +'<div><div style="font-size:.78rem;color:#64748b;margin-bottom:6px">Se aggiungi 2 clienti</div><div style="font-size:1.4rem;font-weight:800;color:#f5c842">\u20AC'+(mrr+p*2)+'/mese</div></div>'
+      +'<div><div style="font-size:.78rem;color:#64748b;margin-bottom:6px">Se aggiungi 5 clienti</div><div style="font-size:1.4rem;font-weight:800;color:#0fd6c2">\u20AC'+(mrr+p*5)+'/mese</div></div>'
+      +'<div><div style="font-size:.78rem;color:#64748b;margin-bottom:6px">Obiettivo 10k/mese</div><div style="font-size:1.4rem;font-weight:800;color:#818cf8">'+Math.ceil((10000-mrr)/p)+' clienti</div></div>'
+      +'</div>');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SEZIONE 8 — ANALISI
+═══════════════════════════════════════════════════════════ */
+function _tSecAnalisi(tr){
+  var clients = _tClients(tr);
+
+  return '<h2 style="font-family:sans-serif;font-size:1.4rem;font-weight:800;margin:0 0 20px;color:#f1f5f9">\uD83D\uDCC9 Analisi Clienti</h2>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">'
+
+    // Aderenza chart
+    +_tCard('<h4 style="margin:0 0 14px;color:#f1f5f9">Aderenza per cliente</h4>'
+      +'<div style="display:flex;flex-direction:column;gap:14px">'
+      +clients.map(function(cl){
+        var col = cl.adherence>=80?'#0fd6c2':cl.adherence>=60?'#f5c842':'#f87171';
+        return '<div>'
+          +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
+          +'<div style="display:flex;align-items:center;gap:8px">'
+          +'<div style="width:28px;height:28px;border-radius:8px;background:'+cl.color+';display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:.68rem">'+cl.avatar+'</div>'
+          +'<span style="font-size:.85rem;color:#94a3b8">'+cl.name+'</span>'
+          +'</div>'
+          +'<div style="display:flex;align-items:center;gap:10px">'
+          +'<span style="font-size:.85rem;font-weight:700;color:'+col+'">'+cl.adherence+'%</span>'
+          +_tBadge(cl.status)
+          +'</div></div>'
+          +_tMiniBar(cl.adherence, col)
+          +'</div>';
+      }).join('')
+      +'</div>')
+
+    // PR Records
+    +_tCard('<h4 style="margin:0 0 14px;color:#f1f5f9">Record personali clienti</h4>'
+      +'<table style="width:100%;border-collapse:collapse;font-size:.82rem">'
+      +'<thead><tr>'
+      +'<th style="text-align:left;color:#475569;font-weight:600;padding:6px 8px;border-bottom:1px solid #1e1e2e">Cliente</th>'
+      +'<th style="text-align:center;color:#475569;font-weight:600;padding:6px 8px;border-bottom:1px solid #1e1e2e">Panca</th>'
+      +'<th style="text-align:center;color:#475569;font-weight:600;padding:6px 8px;border-bottom:1px solid #1e1e2e">Squat</th>'
+      +'<th style="text-align:center;color:#475569;font-weight:600;padding:6px 8px;border-bottom:1px solid #1e1e2e">Stacco</th>'
+      +'</tr></thead>'
+      +'<tbody>'
+      +clients.map(function(cl){
+        return '<tr>'
+          +'<td style="padding:10px 8px;color:#94a3b8;border-bottom:1px solid rgba(255,255,255,.04)">'
+          +'<div style="display:flex;align-items:center;gap:6px">'
+          +'<div style="width:22px;height:22px;border-radius:6px;background:'+cl.color+';display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;color:#fff">'+cl.avatar+'</div>'
+          +cl.name+'</div></td>'
+          +'<td style="text-align:center;padding:10px 8px;color:#f1f5f9;font-weight:700;border-bottom:1px solid rgba(255,255,255,.04)">'+cl.pr_bench+'kg</td>'
+          +'<td style="text-align:center;padding:10px 8px;color:#f1f5f9;font-weight:700;border-bottom:1px solid rgba(255,255,255,.04)">'+cl.pr_squat+'kg</td>'
+          +'<td style="text-align:center;padding:10px 8px;color:#f1f5f9;font-weight:700;border-bottom:1px solid rgba(255,255,255,.04)">'+cl.pr_dead+'kg</td>'
+          +'</tr>';
+      }).join('')
+      +'</tbody></table>')
+    +'</div>'
+
+    // Volume trend
+    +_tCard('<h4 style="margin:0 0 14px;color:#f1f5f9">Volume settimanale per cliente (kg totali)</h4>'
+      +'<div style="display:flex;gap:24px;align-items:flex-end;flex-wrap:wrap">'
+      +clients.map(function(cl){
+        return '<div style="flex:1;min-width:120px">'
+          +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">'
+          +'<div style="width:10px;height:10px;border-radius:50%;background:'+cl.color+'"></div>'
+          +'<span style="font-size:.78rem;color:#94a3b8">'+cl.name+'</span>'
+          +'</div>'
+          +'<div style="display:flex;align-items:flex-end;gap:4px;height:60px">'
+          +cl.log.map(function(l){
+            var max = Math.max.apply(null,cl.log.map(function(x){return x.vol;}));
+            return '<div style="flex:1;background:'+cl.color+';opacity:.7;border-radius:3px 3px 0 0;height:'+(l.vol/max*50+10)+'px"></div>';
+          }).join('')
+          +'</div>'
+          +'<div style="font-size:.7rem;color:#475569;margin-top:4px">Ultime '+cl.log.length+' sett.</div>'
+          +'</div>';
+      }).join('')
+      +'</div>');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SEZIONE 9 — PROGRESSI
+═══════════════════════════════════════════════════════════ */
+function _tSecProgressi(tr){
+  var clients = _tClients(tr);
+  var sel = clients[0];
+
+  return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">'
+    +'<h2 style="font-family:sans-serif;font-size:1.4rem;font-weight:800;margin:0;color:#f1f5f9">\uD83D\uDCC8 Progressi Clienti</h2>'
+    +'<div style="display:flex;gap:6px">'
+    +clients.map(function(cl,i){
+      return '<button onclick="_tProgClient(\''+cl.id+'\')" style="padding:7px 14px;border-radius:50px;border:'+(i===0?'none':'1.5px solid #2a2a3e')+';background:'+(i===0?cl.color:'transparent')+';color:'+(i===0?'#fff':'#64748b')+';cursor:pointer;font-size:.82rem;font-weight:600">'+cl.name+'</button>';
+    }).join('')
+    +'</div>'
+    +'</div>'
+
+    +'<div id="_tprog_content">'
+    +_tProgClientContent(sel)
+    +'</div>';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SEZIONE 10 — PROFILO
+═══════════════════════════════════════════════════════════ */
+function _tSecProfilo(tr){
+  var specs = tr.specs || ['Bodybuilding','Forza','Nutrizione'];
+
+  return '<h2 style="font-family:sans-serif;font-size:1.4rem;font-weight:800;margin:0 0 20px;color:#f1f5f9">\uD83D\uDC64 Il tuo profilo professionale</h2>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">'
+
+    // Profilo card
+    +_tCard('<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">'
+      +'<div style="width:72px;height:72px;border-radius:18px;background:'+(tr.col||'#6366f1')+';display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:800;color:#fff;flex-shrink:0">'+((tr.ph||'T').substring(0,2))+'</div>'
+      +'<div>'
+      +'<h3 style="margin:0 0 4px;color:#f1f5f9;font-size:1.1rem">'+tr.name+' '+(tr.surname||'')+'</h3>'
+      +'<div style="color:#64748b;font-size:.83rem;margin-bottom:6px">'+tr.email+'</div>'
+      +'<div style="display:flex;align-items:center;gap:4px">'
+      +'<span style="color:#f5c842;font-size:.9rem">\u2605\u2605\u2605\u2605\u2605</span>'
+      +'<span style="color:#94a3b8;font-size:.82rem;margin-left:4px">'+(tr.rating||5).toFixed(1)+' ('+(tr.reviews||0)+' recensioni)</span>'
+      +'</div></div></div>'
+
+      +'<div style="margin-bottom:14px"><label style="font-size:.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:6px">BIO PROFESSIONALE</label>'
+      +'<textarea id="_tp_bio" rows="3" style="width:100%;padding:11px 14px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:14px;outline:none;box-sizing:border-box;resize:vertical;line-height:1.6">'+(tr.bio||'Trainer certificato con passione per la forza e il benessere.')+'</textarea></div>'
+
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">'
+      +'<div><label style="font-size:.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:6px">TARIFFA €/MESE</label>'
+      +'<input id="_tp_price" type="number" value="'+(tr.price||89)+'" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:16px;outline:none;box-sizing:border-box"></div>'
+      +'<div><label style="font-size:.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:6px">ANNI ESPERIENZA</label>'
+      +'<input id="_tp_exp" type="number" placeholder="Es: 5" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:16px;outline:none;box-sizing:border-box"></div>'
+      +'</div>'
+
+      +'<button onclick="_tSaveProfile()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6366f1,#818cf8);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Salva profilo</button>')
+
+    // Specializzazioni + visibilità
+    +_tCard('<h4 style="margin:0 0 14px;color:#f1f5f9">Specializzazioni</h4>'
+      +'<div id="_tp_specs" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">'
+      +['Bodybuilding','Powerlifting','CrossFit','Dimagrimento','Atletismo','Riabilitazione','Calisthenics','Nutrizione','HIIT','Yoga & Mobilità','Olimpico'].map(function(s){
+        var active = specs.indexOf(s)>=0;
+        return '<button onclick="_tToggleSpec(this,\''+s+'\')" style="padding:7px 14px;border-radius:50px;border:1.5px solid '+(active?s==='Bodybuilding'?'#818cf8':'#6366f1':'#2a2a3e')+';background:'+(active?'rgba(99,102,241,.15)':'transparent')+';color:'+(active?'#818cf8':'#475569')+';cursor:pointer;font-size:.82rem;font-weight:600;transition:.2s">'+s+'</button>';
+      }).join('')
+      +'</div>'
+      +'<h4 style="margin:0 0 14px;color:#f1f5f9">Visibilità marketplace</h4>'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:#0d0d1a;border-radius:12px;margin-bottom:10px">'
+      +'<div><div style="font-weight:600;color:#f1f5f9;margin-bottom:2px">Profilo pubblico</div>'
+      +'<div style="font-size:.78rem;color:#64748b">I clienti possono trovarti e contattarti</div></div>'
+      +'<span style="background:rgba(15,214,194,.12);color:#0fd6c2;padding:4px 12px;border-radius:50px;font-size:.8rem;font-weight:700">\u25CF Attivo</span>'
+      +'</div>'
+      +'<div style="padding:12px 14px;background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.15);border-radius:10px;font-size:.8rem;color:#64748b;line-height:1.6">'
+      +'\uD83D\uDCA1 Il tuo profilo appare nel marketplace. Mantieni bio e specializzazioni aggiornate per attirare più clienti.'
+      +'</div>');
+}
+
+function _tProgClientContent(cl){
+  return '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">'
+    +_tKpi(cl.sessions,'Sessioni completate','#818cf8')
+    +_tKpi(cl.adherence+'%','Aderenza','#0fd6c2')
+    +_tKpi('+'+Math.round((cl.pr_bench-cl.pr_bench*0.85))+'kg','Panca (3 mesi)','#f97316')
+    +'</div>'
+
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">'
+
+    // Peso trend
+    +_tCard('<h4 style="margin:0 0 12px;color:#f1f5f9">Peso corporeo</h4>'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-end">'
+      +'<div>'
+      +'<div style="font-size:2rem;font-weight:800;color:#f1f5f9">'+cl.weight+'<span style="font-size:1rem;color:#475569">kg</span></div>'
+      +'<div style="font-size:.8rem;color:#0fd6c2">Obiettivo: '+cl.target_weight+'kg</div>'
+      +'</div>'
+      +_tSparkline([
+        {vol:cl.weight-3},{vol:cl.weight-2},{vol:cl.weight-1.5},{vol:cl.weight-0.5},{vol:cl.weight}
+      ],'#6366f1')
+      +'</div>'
+      +'<div style="margin-top:14px">'
+      +'<div style="display:flex;justify-content:space-between;font-size:.78rem;color:#475569;margin-bottom:5px">'
+      +'<span>Partenza</span><span>Obiettivo</span>'
+      +'</div>'
+      +_tMiniBar(
+        Math.abs((cl.weight-(cl.weight+5))/(cl.target_weight-(cl.weight+5)))*100,
+        cl.goal.includes('Dimagr')?'#0fd6c2':'#6366f1'
+      )
+      +'</div>')
+
+    // PR records
+    +_tCard('<h4 style="margin:0 0 12px;color:#f1f5f9">Record Personali</h4>'
+      +'<div style="display:flex;flex-direction:column;gap:10px">'
+      +[{n:'Panca',v:cl.pr_bench,col:'#f97316'},{n:'Squat',v:cl.pr_squat,col:'#818cf8'},{n:'Stacco',v:cl.pr_dead,col:'#0fd6c2'}].map(function(pr){
+        return '<div style="display:flex;align-items:center;justify-content:space-between">'
+          +'<div style="display:flex;align-items:center;gap:8px">'
+          +'<div style="width:8px;height:8px;border-radius:50%;background:'+pr.col+'"></div>'
+          +'<span style="font-size:.85rem;color:#94a3b8">'+pr.n+'</span>'
+          +'</div>'
+          +'<div style="font-size:1.1rem;font-weight:800;color:'+pr.col+'">'+pr.v+'<span style="font-size:.8rem;color:#475569">kg</span></div>'
+          +'</div>';
+      }).join('')
+      +'</div>'
+      +'<button onclick="if(typeof toast===\'function\')toast(\'Nuovo PR inserito!\',\'success\')" style="width:100%;margin-top:14px;padding:9px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);border-radius:10px;color:#818cf8;cursor:pointer;font-size:.82rem">\uFF0B Inserisci nuovo PR</button>')
+    +'</div>'
+
+    // Note del trainer
+    +_tCard('<h4 style="margin:0 0 12px;color:#f1f5f9">\uD83D\uDCDD Note del Trainer</h4>'
+      +'<textarea placeholder="Aggiungi note su '+cl.name+': progressi, comportamento, focus per la prossima settimana..." '
+      +'style="width:100%;padding:12px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:14px;outline:none;resize:vertical;box-sizing:border-box;line-height:1.6;min-height:80px">'+
+      (cl.status==='attivo'?'04/04: Ha completato tutte le sessioni questa settimana. Aumentare il peso nello squat da 120 a 125kg dalla prossima sessione.':'')+
+      '</textarea>'
+      +'<button onclick="if(typeof toast===\'function\')toast(\'Note salvate!\',\'success\')" style="margin-top:10px;padding:9px 20px;background:linear-gradient(135deg,#6366f1,#818cf8);border:none;border-radius:10px;color:#fff;font-weight:700;cursor:pointer;font-size:.85rem">Salva note</button>');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ACTION HANDLERS
+═══════════════════════════════════════════════════════════ */
+window._tInviteClient = function(){
+  var link = window.location.origin+'?ref='+(window.TR_SESSION||{email:'trainer'}).email;
+  if(navigator.clipboard) navigator.clipboard.writeText(link).then(function(){
+    if(typeof toast==='function') toast('Link copiato! Condividilo con il cliente \uD83D\uDCCB','success');
+  });
+}
+
+window._tOpenClient = function(id){
+  var clients = _TR_DEMO_CLIENTS;
+  var cl = clients.find(function(c){return c.id===id;});
+  if(!cl) return;
+  if(typeof toast==='function') toast('Aperto profilo: '+cl.name+' '+cl.surname,'success');
+}
+
+window._tSchedaForClient = function(id){
+  var cl = _TR_DEMO_CLIENTS.find(function(c){return c.id===id;});
+  if(cl){
+    document.getElementById('_ts_name') && (document.getElementById('_ts_name').value=cl.name+' '+cl.surname);
+  }
+  window.tDGo('schede');
+}
+
+window._tDietaForClient = function(id){
+  var cl = _TR_DEMO_CLIENTS.find(function(c){return c.id===id;});
+  if(cl){
+    var inp = document.getElementById('_td_name');
+    if(inp) inp.value = cl.name+' '+cl.surname;
+  }
+  window.tDGo('dieta');
+}
+
+window._tChatWithClient = function(id){ window.tDGo('chat'); }
+
+window._tProgressiClient = function(id){ window.tDGo('progressi'); }
+
+window._tProgClient = function(id){
+  var cl=_TR_DEMO_CLIENTS.find(function(c){return c.id===id;});
+  var cont=document.getElementById('_tprog_content');
+  if(cl&&cont) cont.innerHTML=_tProgClientContent(cl);
+}
+
+window._tSaveProfile = function(){
+  var tr=window.TR_SESSION||(typeof tLoad==='function'?tLoad():null);
+  if(!tr) return;
+  var bio=(document.getElementById('_tp_bio')||{}).value||tr.bio;
+  var price=parseInt((document.getElementById('_tp_price')||{}).value||tr.price)||tr.price;
+  tr.bio=bio; tr.price=price;
+  if(typeof tSave==='function') tSave(tr);
+  if(typeof toast==='function') toast('Profilo aggiornato! \uD83D\uDC4D','success');
+}
+
+window._tToggleSpec = function(btn, spec){
+  var isActive = btn.style.color==='rgb(129, 140, 248)';
+  btn.style.background = isActive?'transparent':'rgba(99,102,241,.15)';
+  btn.style.borderColor = isActive?'#2a2a3e':'#6366f1';
+  btn.style.color = isActive?'#475569':'#818cf8';
+  if(typeof toast==='function') toast((isActive?'Rimossa: ':'Aggiunta: ')+spec,'success');
+}
+
+window._tChatOpen = function(i){
+  var names=['Alessandro Rossi','Giulia Ferrari','Marco Conti'];
+  var colors=['#6366f1','#ec4899','#f97316'];
+  var panel=document.getElementById('_tchat_panel');
+  if(!panel) return;
+  panel.style.display='flex';
+  panel.style.flexDirection='column';
+  panel.style.justifyContent='flex-start';
+  panel.style.alignItems='stretch';
+  panel.innerHTML='<div style="padding:14px 16px;border-bottom:1px solid #1e1e2e;display:flex;align-items:center;gap:10px">'
+    +'<div style="width:34px;height:34px;border-radius:10px;background:'+colors[i]+';display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:.78rem;flex-shrink:0">'+names[i].split(' ').map(function(n){return n[0];}).join('')+'</div>'
+    +'<div><div style="font-weight:700;color:#f1f5f9;font-size:.9rem">'+names[i]+'</div>'
+    +'<div style="font-size:.72rem;color:#0fd6c2">\u25CF Online</div></div>'
+    +'</div>'
+    +'<div id="_tc_msgs" style="flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:10px">'
+    +'<div style="align-self:flex-start;background:#1e1e2e;padding:9px 13px;border-radius:14px 14px 14px 0;font-size:.85rem;color:#94a3b8;max-width:75%">Ciao coach! Come va?</div>'
+    +'<div style="align-self:flex-end;background:linear-gradient(135deg,#6366f1,#818cf8);padding:9px 13px;border-radius:14px 14px 0 14px;font-size:.85rem;color:#fff;max-width:75%">Tutto bene! Ottimo allenamento questa settimana \uD83D\uDCAA</div>'
+    +'<div style="align-self:flex-start;background:#1e1e2e;padding:9px 13px;border-radius:14px 14px 14px 0;font-size:.85rem;color:#94a3b8;max-width:75%">'+(i===0?'Ho fatto 100kg di panca! \uD83D\uDD25':i===1?'Quando posso aumentare i pesi?':'Domani non riesco, posso rimandare?')+'</div>'
+    +'</div>'
+    +'<div style="padding:12px 14px;border-top:1px solid #1e1e2e;display:flex;gap:8px">'
+    +'<input id="_tc_inp" placeholder="Scrivi a '+names[i].split(' ')[0]+'..." '
+    +'style="flex:1;padding:10px 14px;background:#0d0d1a;border:1px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:14px;outline:none" '
+    +'onkeydown="if(event.key===\'Enter\')_tChatSend()">'
+    +'<button onclick="_tChatSend()" style="padding:10px 18px;background:linear-gradient(135deg,#6366f1,#818cf8);border:none;border-radius:10px;color:#fff;font-weight:700;cursor:pointer">Invia</button>'
+    +'</div>';
+}
+
+window._tChatSend = function(){
+  var inp=document.getElementById('_tc_inp');
+  var msgs=document.getElementById('_tc_msgs');
+  if(!inp||!msgs||!inp.value.trim()) return;
+  var d=document.createElement('div');
+  d.style.cssText='align-self:flex-end;background:linear-gradient(135deg,#6366f1,#818cf8);padding:9px 13px;border-radius:14px 14px 0 14px;font-size:.85rem;color:#fff;max-width:75%';
+  d.textContent=inp.value;
+  msgs.appendChild(d);
+  msgs.scrollTop=msgs.scrollHeight;
+  inp.value='';
+}
+
+window.tDGo = function(sec){
+  /* ── Highlight sidebar item ── */
+  document.querySelectorAll('[id^="_di_"]').forEach(function(el){
+    el.style.color='#64748b'; el.style.background='none';
+  });
+  var a=document.getElementById('_di_'+sec);
+  if(a){ a.style.color='#818cf8'; a.style.background='rgba(99,102,241,.12)'; }
+  var mn=document.getElementById('_d_mn');
+  if(!mn) return;
+  var tr=tLoad();
+  if(!tr) return;
+  /* ── Route to section ── */
+  if(typeof _tSecOverview==='function'){
+    switch(sec){
+      case 'overview':   mn.innerHTML=_tSecOverview(tr); break;
+      case 'clienti':    mn.innerHTML=_tSecClienti(tr); break;
+      case 'schede':     mn.innerHTML=_tSecSchede(tr); break;
+      case 'chat':       mn.innerHTML=_tSecChat(tr); break;
+      case 'calendario': mn.innerHTML=_tSecCalendario(tr); break;
+      case 'revenue':    mn.innerHTML=_tSecRevenue(tr); break;
+      case 'anamnesi':   mn.innerHTML=_tSecAnamnesi(tr); break;
+      case 'progressi':  mn.innerHTML=_tSecProgressi(tr); break;
+      case 'dieta':      mn.innerHTML=_tSecDieta(tr); break;
+      case 'analisi':    mn.innerHTML=_tSecAnalisi(tr); break;
+      case 'profilo':    mn.innerHTML=_tSecProfilo(tr); break;
+      default:           mn.innerHTML=_tSecOverview(tr);
+    }
+  } else {
+    mn.innerHTML='<div style="padding:40px;text-align:center;color:#64748b">Sezione in caricamento...</div>';
+  }
+};
 
 /* Override showPage per trainer pages */
 var _sp0 = window.showPage;
