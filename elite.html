@@ -17764,6 +17764,10 @@ function tOpenDash(){
       {id:'chat',lbl:'Chat',p:'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'},
       {id:'calendario',lbl:'Calendario',p:'M3 4h18v18H3z'},
       {id:'revenue',lbl:'Revenue',p:'M12 1v22'},
+      {id:'anamnesi',lbl:'Anamnesi',p:'M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2'},
+      {id:'progressi',lbl:'Progressi',p:'M22 12h-4l-3 9L9 3l-3 9H2'},
+      {id:'dieta',lbl:'Dieta AI',p:'M18 8h1a4 4 0 0 1 0 8h-1'},
+      {id:'analisi',lbl:'Analisi',p:'M18 20V10 M12 20V4 M6 20v-6'},
       {id:'profilo',lbl:'Profilo',p:'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'},
     ];
     sb.innerHTML=items.map(function(m){
@@ -17825,131 +17829,1277 @@ window.tLogout=function(){tClear();tClose();if(typeof toast==='function')toast('
 window.tClose=function(){tHideAll();};
 
 /* ── DASHBOARD SECTION ── */
-window.tDGo=function(sec){
-  document.querySelectorAll('[id^="_di_"]').forEach(function(el){el.style.color='#64748b';el.style.background='none';});
-  var a=document.getElementById('_di_'+sec);
-  if(a){a.style.color='#818cf8';a.style.background='rgba(99,102,241,.12)';}
-  var mn=document.getElementById('_d_mn');
-  if(!mn) return;
-  var tr=tLoad();
-  if(!tr) return;
-  var cl=(tr.clients||[]).length||3;
-  var p=tr.price||89;
-  function kpi(v,l,col){return '<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:14px;padding:18px 16px"><div style="font-family:sans-serif;font-size:1.8rem;font-weight:800;color:'+col+'">'+v+'</div><div style="font-size:.78rem;color:#64748b;margin-top:2px">'+l+'</div></div>';}
-  if(sec==='overview'){
-    mn.innerHTML='<h2 style="font-family:sans-serif;font-size:1.4rem;font-weight:800;margin:0 0 20px;color:#f1f5f9">Ciao '+tr.name+'!</h2>'+
-      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:24px">'+
-      kpi(cl,'Clienti','#818cf8')+kpi('\u20ac'+(cl*p),'Revenue/mese','#0fd6c2')+kpi((tr.rating||5).toFixed(1)+' \u2605','Rating','#f5c842')+kpi(tr.reviews||0,'Recensioni','#64748b')+
-      '</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">'+
-      '<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:14px;padding:18px"><h4 style="margin:0 0 12px;color:#f1f5f9;font-size:.9rem">Azioni rapide</h4>'+
-      '<div style="display:flex;flex-direction:column;gap:8px">'+
-      '<button onclick="tDGo(\'schede\')" style="width:100%;padding:10px;background:linear-gradient(135deg,#6366f1,#818cf8);border:none;border-radius:10px;color:#fff;font-weight:600;cursor:pointer">+ Crea scheda AI</button>'+
-      '<button onclick="tDGo(\'clienti\')" style="width:100%;padding:10px;background:#1e1e2e;border:1px solid #2a2a3e;border-radius:10px;color:#94a3b8;cursor:pointer">Vedi clienti</button>'+
-      '<button onclick="tDGo(\'chat\')" style="width:100%;padding:10px;background:#1e1e2e;border:1px solid #2a2a3e;border-radius:10px;color:#94a3b8;cursor:pointer">Chat clienti</button>'+
-      '</div></div>'+
-      '<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:14px;padding:18px"><h4 style="margin:0 0 12px;color:#f1f5f9;font-size:.9rem">Profilo</h4>'+
-      '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">'+
-      '<div style="width:42px;height:42px;border-radius:12px;background:'+(tr.col||'#6366f1')+';display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;flex-shrink:0">'+((tr.ph||'T').substring(0,2))+'</div>'+
-      '<div><div style="font-weight:700;color:#f1f5f9">'+tr.name+' '+(tr.surname||'')+'</div>'+
-      '<div style="font-size:.8rem;color:#0fd6c2">\u20ac'+(tr.price||89)+'/mese</div></div></div></div></div>';
-  } else if(sec==='clienti'){
-    var demos=[{name:'Alessandro Rossi',goal:'Ipertrofia',since:'Gen 2025',col:'#6366f1',st:'attivo'},{name:'Giulia Ferrari',goal:'Dimagrimento',since:'Feb 2025',col:'#ec4899',st:'attivo'},{name:'Marco Conti',goal:'Powerlifting',since:'Mar 2025',col:'#f97316',st:'in pausa'}];
-    mn.innerHTML='<h2 style="font-family:sans-serif;font-size:1.3rem;font-weight:800;margin:0 0 20px;color:#f1f5f9">Clienti</h2>'+
-      '<div style="display:flex;flex-direction:column;gap:10px">'+
-      demos.map(function(d){return '<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px">'+
-        '<div style="width:42px;height:42px;border-radius:12px;background:'+d.col+';display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;flex-shrink:0">'+d.name.split(' ').map(function(n){return n[0];}).join('')+'</div>'+
-        '<div style="flex:1"><div style="font-weight:700;color:#f1f5f9">'+d.name+'</div><div style="font-size:.8rem;color:#64748b">'+d.goal+' \u00b7 Da '+d.since+'</div></div>'+
-        '<span style="font-size:.75rem;padding:3px 10px;border-radius:50px;background:'+(d.st==='attivo'?'rgba(15,214,194,.12)':'rgba(148,163,184,.08)')+';color:'+(d.st==='attivo'?'#0fd6c2':'#64748b')+'">'+d.st+'</span></div>';}).join('')+'</div>';
-  } else if(sec==='schede'){
-    mn.innerHTML='<h2 style="font-family:sans-serif;font-size:1.3rem;font-weight:800;margin:0 0 20px;color:#f1f5f9">Scheda AI</h2>'+
-      '<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:14px;padding:22px">'+
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">'+
-      '<div><label style="font-size:.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:6px">Cliente</label><input id="_sc_nm" placeholder="Nome" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none;box-sizing:border-box"></div>'+
-      '<div><label style="font-size:.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:6px">Obiettivo</label><select id="_sc_gl" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none"><option>Ipertrofia</option><option>Dimagrimento</option><option>Forza</option><option>Resistenza</option></select></div>'+
-      '<div><label style="font-size:.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:6px">Livello</label><select id="_sc_lv" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none"><option>Principiante</option><option>Intermedio</option><option>Avanzato</option></select></div>'+
-      '<div><label style="font-size:.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:6px">Giorni/sett.</label><select id="_sc_d" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none"><option>3</option><option>4</option><option>5</option></select></div>'+
-      '</div><button onclick="tGenScheda()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6366f1,#0fd6c2);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">\u26a1 Genera con AI</button></div>'+
-      '<div id="_sc_out" style="margin-top:20px"></div>';
-  } else if(sec==='chat'){
-    mn.innerHTML='<h2 style="font-family:sans-serif;font-size:1.3rem;font-weight:800;margin:0 0 20px;color:#f1f5f9">Chat</h2>'+
-      '<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:14px;padding:40px;text-align:center;color:#64748b">'+
-      '\ud83d\udcac Chat con i clienti disponibile presto</div>';
-  } else if(sec==='calendario'){
-    mn.innerHTML='<h2 style="font-family:sans-serif;font-size:1.3rem;font-weight:800;margin:0 0 20px;color:#f1f5f9">Calendario</h2>'+
-      '<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:14px;padding:40px;text-align:center;color:#64748b">'+
-      '\ud83d\udcc5 Calendario sessioni disponibile presto</div>';
-  } else if(sec==='revenue'){
-    mn.innerHTML='<h2 style="font-family:sans-serif;font-size:1.3rem;font-weight:800;margin:0 0 20px;color:#f1f5f9">Revenue</h2>'+
-      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">'+
-      kpi('\u20ac'+(cl*p),'Questo mese','#0fd6c2')+kpi('\u20ac'+(cl*p*12),'Proiezione annua','#818cf8')+kpi(cl,'Clienti attivi','#f5c842')+'</div>';
-  } else if(sec==='profilo'){
-    mn.innerHTML='<h2 style="font-family:sans-serif;font-size:1.3rem;font-weight:800;margin:0 0 20px;color:#f1f5f9">Profilo</h2>'+
-      '<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:14px;padding:22px">'+
-      '<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">'+
-      '<div style="width:60px;height:60px;border-radius:16px;background:'+(tr.col||'#6366f1')+';display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;color:#fff">'+((tr.ph||'T').substring(0,2))+'</div>'+
-      '<div><h3 style="margin:0 0 4px;color:#f1f5f9">'+tr.name+' '+(tr.surname||'')+'</h3>'+
-      '<div style="color:#64748b;font-size:.85rem">'+tr.email+'</div></div></div>'+
-      '<div style="color:#64748b;font-size:.9rem">'+( tr.bio||'Trainer certificato')+'</div></div>';
+/* ═══════════════════════════════════════════════════════════
+   TRAINER DASHBOARD v4 — Area Professionale Completa
+   10 sezioni: Overview · Clienti · Schede AI · Chat
+                Calendario · Revenue · Dieta AI · Analisi
+                Progressi · Profilo
+═══════════════════════════════════════════════════════════ */
+
+/* ── Dati demo clienti (usati se trainer non ha clienti reali) ── */
+/* ═══════════════════════════════════════════════════════════
+   TRAINER AREA v5 — Feature complete
+   1. Schede AI ultra-complete (come pg-onboard per i clienti)
+   2. Editor scheda (modifica/correggi)
+   3. Costruttore scheda manuale
+   4. Anamnesi cliente (compila o invia link)
+   5. Dieta AI + Ricette settimanali
+   6. Calendario clienti con log reale
+═══════════════════════════════════════════════════════════ */
+
+/* ── Esercizi flat list per il costruttore manuale ── */
+function _trExercises(){
+  var exs = (typeof ALL_EXERCISES!=='undefined'&&ALL_EXERCISES) ? ALL_EXERCISES : [];
+  if(!exs.length && typeof buildExerciseLibrary==='function') exs=buildExerciseLibrary();
+  return exs;
+}
+
+/* ── Storage schede trainer ── */
+function _trSaveScheda(clientId, scheda){
+  try{
+    var all=JSON.parse(localStorage.getItem('_tr_schede')||'{}');
+    if(!all[clientId]) all[clientId]=[];
+    scheda.created=new Date().toISOString();
+    scheda.id='s_'+Date.now();
+    all[clientId].unshift(scheda);
+    if(all[clientId].length>20) all[clientId].pop();
+    localStorage.setItem('_tr_schede',JSON.stringify(all));
+  }catch(e){}
+}
+function _trGetSchede(clientId){
+  try{return JSON.parse(localStorage.getItem('_tr_schede')||'{}')[clientId]||[];}catch(e){return [];}
+}
+function _trSaveAnamnesi(clientId, data){
+  try{
+    var all=JSON.parse(localStorage.getItem('_tr_anamnesi')||'{}');
+    all[clientId]=data;
+    all[clientId].date=new Date().toISOString();
+    localStorage.setItem('_tr_anamnesi',JSON.stringify(all));
+  }catch(e){}
+}
+function _trGetAnamnesi(clientId){
+  try{return JSON.parse(localStorage.getItem('_tr_anamnesi')||'{}')[clientId]||null;}catch(e){return null;}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCHEDE AI — Ultra-personalizzato per trainer
+═══════════════════════════════════════════════════════════ */
+function _tSecSchede(tr){
+  var clients=_tClients(tr);
+  var clientOpts=clients.map(function(c){return '<option value="'+c.id+'" data-goal="'+c.goal+'" data-level="'+c.level+'" data-weight="'+c.weight+'" data-age="'+c.age+'" data-injuries="'+(c.injuries||'Nessuno')+'">'+c.name+' '+c.surname+'</option>';}).join('');
+
+  return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px">'
+    +'<h2 style="font-family:sans-serif;font-size:1.4rem;font-weight:800;margin:0;color:#f1f5f9">\uD83E\uDD16 Gestione Schede</h2>'
+    +'<div style="display:flex;gap:8px">'
+    +'<button onclick="_tSchedeTab(\'ai\')" id="_tab_ai" style="padding:9px 18px;border-radius:10px;border:none;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;font-weight:700;cursor:pointer;font-size:.85rem">\u26A1 AI</button>'
+    +'<button onclick="_tSchedeTab(\'manuale\')" id="_tab_manuale" style="padding:9px 18px;border-radius:10px;border:1.5px solid #2a2a3e;background:transparent;color:#64748b;cursor:pointer;font-size:.85rem">\uD83D\uDEE0 Manuale</button>'
+    +'<button onclick="_tSchedeTab(\'editor\')" id="_tab_editor" style="padding:9px 18px;border-radius:10px;border:1.5px solid #2a2a3e;background:transparent;color:#64748b;cursor:pointer;font-size:.85rem">\u270F\uFE0F Editor</button>'
+    +'<button onclick="_tSchedeTab(\'storico\')" id="_tab_storico" style="padding:9px 18px;border-radius:10px;border:1.5px solid #2a2a3e;background:transparent;color:#64748b;cursor:pointer;font-size:.85rem">\uD83D\uDCCB Storico</button>'
+    +'</div></div>'
+
+    // === TAB AI ===
+    +'<div id="_tpanel_ai">'
+    +'<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:16px;padding:22px;margin-bottom:16px">'
+    +'<h4 style="color:#818cf8;margin:0 0 16px;font-size:.88rem;text-transform:uppercase;letter-spacing:.5px">\uD83E\uDD16 Generazione AI Ultra-Personalizzata</h4>'
+
+    // Row 1
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">CLIENTE</label>'
+    +'<select id="_sa_client" onchange="_trAutoFill()" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none">'
+    +'<option value="">Nuovo cliente...</option>'+clientOpts+'</select></div>'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">NOME CLIENTE</label>'
+    +'<input id="_sa_name" placeholder="Nome e cognome" style="width:100%;padding:11px 14px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none;box-sizing:border-box"></div>'
+    +'</div>'
+
+    // Row 2 - Obiettivi
+    +'<div style="margin-bottom:12px"><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:8px">OBIETTIVO PRIMARIO</label>'
+    +'<div id="_sa_goal_btns" style="display:flex;flex-wrap:wrap;gap:7px">'
+    +['Ipertrofia massimale','Forza massimale','Dimagrimento & definizione','Powerlifting','CrossFit & funzionale','Fitness & salute','Ricomposizione corporea','Atletismo & performance','Riabilitazione & rinforzo','Resistenza & endurance'].map(function(g,i){
+      return '<button onclick="_trGoalSelect(this)" style="padding:7px 14px;border-radius:50px;border:1.5px solid '+(i===0?'#6366f1':'#2a2a3e')+';background:'+(i===0?'rgba(99,102,241,.15)':'transparent')+';color:'+(i===0?'#818cf8':'#64748b')+';cursor:pointer;font-size:.8rem;font-weight:600;transition:.2s">'+g+'</button>';
+    }).join('')
+    +'</div></div>'
+
+    // Row 3
+    +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px">'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">ETÀ</label>'
+    +'<input id="_sa_age" type="number" placeholder="28" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none;box-sizing:border-box"></div>'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">PESO (kg)</label>'
+    +'<input id="_sa_weight" type="number" placeholder="75" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none;box-sizing:border-box"></div>'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">ALTEZZA (cm)</label>'
+    +'<input id="_sa_height" type="number" placeholder="175" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none;box-sizing:border-box"></div>'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">SESSO</label>'
+    +'<select id="_sa_sex" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none">'
+    +'<option>Maschile</option><option>Femminile</option></select></div>'
+    +'</div>'
+
+    // Row 4 - Level + days + equipment
+    +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">LIVELLO</label>'
+    +'<select id="_sa_level" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none">'
+    +'<option>Principiante (0-1 anno)</option><option>Intermedio (1-3 anni)</option><option>Avanzato (3+ anni)</option><option>Agonista</option>'
+    +'</select></div>'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">GIORNI / SETT.</label>'
+    +'<select id="_sa_days" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none">'
+    +'<option value="2">2 giorni</option><option value="3">3 giorni (Full Body)</option><option value="4" selected>4 giorni (Upper/Lower)</option><option value="5">5 giorni (PPL)</option><option value="6">6 giorni (Bro split)</option>'
+    +'</select></div>'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">ATTREZZATURA</label>'
+    +'<select id="_sa_equip" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none">'
+    +'<option>Palestra completa (bilanciere, manubri, macchine, cavi)</option>'
+    +'<option>Palestra + kettlebell</option><option>Solo manubri e bilanciere</option>'
+    +'<option>Corpo libero</option><option>CrossFit box</option><option>Home gym base</option>'
+    +'</select></div>'
+    +'</div>'
+
+    // Infortuni e condizioni
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">INFORTUNI / LIMITAZIONI</label>'
+    +'<div style="display:flex;flex-wrap:wrap;gap:5px">'
+    +['Schiena bassa','Ernia disco','Ginocchio','Spalla','Anca','Polso/Gomito','Tendinite','Nessuna'].map(function(inj){
+      return '<button onclick="_trToggleInj(this)" style="padding:5px 10px;border-radius:50px;border:1.5px solid #2a2a3e;background:transparent;color:#64748b;cursor:pointer;font-size:.75rem;transition:.2s">'+inj+'</button>';
+    }).join('')
+    +'</div></div>'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">CONDIZIONI MEDICHE</label>'
+    +'<div style="display:flex;flex-wrap:wrap;gap:5px">'
+    +['Ipertensione','Diabete T2','Scoliosi','Osteoporosi','Asma','Nessuna'].map(function(cond){
+      return '<button onclick="_trToggleCond(this)" style="padding:5px 10px;border-radius:50px;border:1.5px solid #2a2a3e;background:transparent;color:#64748b;cursor:pointer;font-size:.75rem;transition:.2s">'+cond+'</button>';
+    }).join('')
+    +'</div></div>'
+    +'</div>'
+
+    // Note trainer
+    +'<div style="margin-bottom:12px"><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">NOTE E PREFERENZE SPECIALI</label>'
+    +'<textarea id="_sa_notes" rows="2" placeholder="Es: evitare squat profondo, preferisce cavi, allena anche sport X..." '
+    +'style="width:100%;padding:11px 14px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:14px;outline:none;box-sizing:border-box;resize:vertical;line-height:1.5"></textarea></div>'
+
+    // Stile
+    +'<div style="margin-bottom:18px"><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:8px">STILE / APPROCCIO</label>'
+    +'<div style="display:flex;gap:7px;flex-wrap:wrap">'
+    +[{k:'standard',l:'Standard'},{ k:'strength',l:'Forza + Volume'},{ k:'metabolico',l:'Metabolico'},{ k:'powerbuilding',l:'Powerbuilding'},{k:'minimalista',l:'Minimalista'},{k:'frequenza',l:'Alta frequenza'}].map(function(s,i){
+      return '<button id="_sas_'+s.k+'" onclick="_trSetStyle(\''+s.k+'\')" style="padding:7px 14px;border-radius:50px;border:1.5px solid '+(i===0?'#6366f1':'#2a2a3e')+';background:'+(i===0?'rgba(99,102,241,.15)':'transparent')+';color:'+(i===0?'#818cf8':'#64748b')+';cursor:pointer;font-size:.8rem;font-weight:600;transition:.2s">'+s.l+'</button>';
+    }).join('')
+    +'</div></div>'
+
+    +'<button onclick="_trGenAI()" id="_sa_btn" style="width:100%;padding:16px;background:linear-gradient(135deg,#6366f1,#0fd6c2);border:none;border-radius:14px;color:#fff;font-size:17px;font-weight:800;cursor:pointer;letter-spacing:.3px">'
+    +'\u26A1 Genera Scheda Ultra-Personalizzata con AI \u2014 Claude Sonnet</button>'
+    +'</div>'
+    +'<div id="_sa_result" style="margin-top:0"></div>'
+    +'</div>'
+
+    // === TAB MANUALE ===
+    +'<div id="_tpanel_manuale" style="display:none">'
+    +_tBuilderHTML()
+    +'</div>'
+
+    // === TAB EDITOR ===
+    +'<div id="_tpanel_editor" style="display:none">'
+    +'<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:16px;padding:22px">'
+    +'<h4 style="color:#f5c842;margin:0 0 14px">\u270F\uFE0F Editor Scheda — Incolla o scrivi la scheda da modificare</h4>'
+    +'<textarea id="_se_input" rows="15" placeholder="Incolla qui la scheda AI o manuale da modificare/correggere..." '
+    +'style="width:100%;padding:14px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:13px;font-family:monospace;outline:none;box-sizing:border-box;resize:vertical;line-height:1.7"></textarea>'
+    +'<div style="margin:12px 0"><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:6px">ISTRUZIONI DI MODIFICA</label>'
+    +'<textarea id="_se_instructions" rows="3" placeholder="Es: Sostituisci squat con leg press, aggiungi 1 esercizio per spalle nel giorno A, aumenta volume petto..." '
+    +'style="width:100%;padding:12px 14px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:14px;outline:none;box-sizing:border-box;resize:vertical;line-height:1.5"></textarea></div>'
+    +'<button onclick="_trEditor()" id="_se_btn" style="width:100%;padding:14px;background:linear-gradient(135deg,#f5c842,#f97316);border:none;border-radius:14px;color:#fff;font-size:16px;font-weight:800;cursor:pointer">'
+    +'\u270F\uFE0F Correggi e Ottimizza con AI</button>'
+    +'<div id="_se_result" style="margin-top:16px"></div>'
+    +'</div></div>'
+
+    // === TAB STORICO ===
+    +'<div id="_tpanel_storico" style="display:none">'
+    +_tSchedeStorico2(tr)
+    +'</div>';
+}
+
+/* ── COSTRUTTORE MANUALE ── */
+function _tBuilderHTML(){
+  var muscles = ['Petto','Schiena','Spalle','Bicipiti','Tricipiti','Gambe','Glutei','Addome','Polpacci','Cardio','Full Body'];
+  var equipment = ['Bilanciere','Manubri','Cavi','Macchina','Corpo libero','Kettlebell'];
+
+  return '<div style="display:grid;grid-template-columns:280px 1fr;gap:0;height:calc(100vh - 200px);border-radius:16px;overflow:hidden;border:1px solid #1e1e2e">'
+
+    // LEFT: esercizio browser
+    +'<div style="background:#0d0d1a;border-right:1px solid #1e1e2e;display:flex;flex-direction:column">'
+    +'<div style="padding:12px;border-bottom:1px solid #1e1e2e">'
+    +'<div style="font-weight:700;color:#f1f5f9;font-size:.9rem;margin-bottom:8px">Libreria Esercizi</div>'
+    +'<input id="_bld_search" placeholder="Cerca esercizio..." oninput="_bldFilter()"'
+    +' style="width:100%;padding:8px 12px;background:#12121e;border:1px solid #2a2a3e;border-radius:8px;color:#f1f5f9;font-size:13px;outline:none;box-sizing:border-box;margin-bottom:6px">'
+    +'<select id="_bld_muscle" onchange="_bldFilter()" style="width:100%;padding:7px;background:#12121e;border:1px solid #2a2a3e;border-radius:8px;color:#94a3b8;font-size:13px;outline:none">'
+    +'<option value="">Tutti i muscoli</option>'
+    +muscles.map(function(m){return '<option>'+m+'</option>';}).join('')
+    +'</select></div>'
+    +'<div id="_bld_exlist" style="flex:1;overflow-y:auto;padding:6px"></div>'
+    +'</div>'
+
+    // RIGHT: scheda builder
+    +'<div style="background:#12121e;display:flex;flex-direction:column;overflow:hidden">'
+    +'<div style="padding:14px 16px;border-bottom:1px solid #1e1e2e;display:flex;align-items:center;gap:12px;flex-wrap:wrap">'
+    +'<input id="_bld_sname" placeholder="Nome scheda (es: Giorno A - Petto & Tricipiti)" '
+    +'style="flex:1;min-width:200px;padding:9px 14px;background:#0d0d1a;border:1px solid #2a2a3e;border-radius:8px;color:#f1f5f9;font-size:14px;outline:none">'
+    +'<select id="_bld_client" style="padding:9px;background:#0d0d1a;border:1px solid #2a2a3e;border-radius:8px;color:#94a3b8;font-size:13px;outline:none">'
+    +'<option value="">Nessun cliente</option>'
+    +'</select>'
+    +'<button onclick="_bldAddEmpty()" style="padding:8px 14px;background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);border-radius:8px;color:#818cf8;cursor:pointer;font-size:.82rem;white-space:nowrap">\uFF0B Esercizio vuoto</button>'
+    +'<button onclick="_bldSave()" style="padding:8px 14px;background:linear-gradient(135deg,#6366f1,#818cf8);border:none;border-radius:8px;color:#fff;font-weight:700;cursor:pointer;font-size:.82rem">Salva</button>'
+    +'<button onclick="_bldExport()" style="padding:8px 14px;background:rgba(15,214,194,.12);border:1px solid rgba(15,214,194,.2);border-radius:8px;color:#0fd6c2;cursor:pointer;font-size:.82rem">Esporta</button>'
+    +'</div>'
+    +'<div id="_bld_days" style="display:flex;gap:4px;padding:10px 14px;border-bottom:1px solid #1e1e2e;overflow-x:auto">'
+    +'<button onclick="_bldSetDay(0)" id="_bld_day_0" style="padding:6px 14px;border-radius:8px;border:none;background:rgba(99,102,241,.2);color:#818cf8;cursor:pointer;font-size:.82rem;font-weight:700;white-space:nowrap">Giorno A</button>'
+    +'<button onclick="_bldSetDay(1)" id="_bld_day_1" style="padding:6px 14px;border-radius:8px;border:1px solid #2a2a3e;background:transparent;color:#64748b;cursor:pointer;font-size:.82rem;white-space:nowrap">Giorno B</button>'
+    +'<button onclick="_bldSetDay(2)" id="_bld_day_2" style="padding:6px 14px;border-radius:8px;border:1px solid #2a2a3e;background:transparent;color:#64748b;cursor:pointer;font-size:.82rem;white-space:nowrap">Giorno C</button>'
+    +'<button onclick="_bldAddDay()" style="padding:6px 14px;border-radius:8px;border:1px solid #2a2a3e;background:transparent;color:#475569;cursor:pointer;font-size:.82rem">\uFF0B Giorno</button>'
+    +'</div>'
+    +'<div id="_bld_exercises" style="flex:1;overflow-y:auto;padding:10px 14px"></div>'
+    +'</div>'
+    +'</div>';
+}
+
+function _tSchedeStorico2(tr){
+  var html='<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:16px;padding:20px">'
+    +'<h4 style="color:#f1f5f9;margin:0 0 16px">Schede generate e salvate</h4>';
+  var clients=_tClients(tr);
+  var hasAny=false;
+  clients.forEach(function(cl){
+    var schede=_trGetSchede(cl.id);
+    if(schede.length){
+      hasAny=true;
+      html+='<div style="margin-bottom:20px"><div style="font-size:.8rem;font-weight:700;color:#64748b;margin-bottom:8px">'+cl.name+' '+cl.surname+'</div>';
+      html+='<div style="display:flex;flex-direction:column;gap:8px">';
+      schede.forEach(function(s){
+        html+='<div style="display:flex;align-items:flex-start;gap:12px;padding:12px;background:#0d0d1a;border-radius:10px">'
+          +'<div style="flex:1"><div style="font-weight:600;color:#f1f5f9;font-size:.88rem;margin-bottom:2px">'+(s.name||'Scheda')+'</div>'
+          +'<div style="font-size:.75rem;color:#64748b">'+(s.goal||'')+(s.days?' · '+s.days+' gg':'')+' · '+new Date(s.created).toLocaleDateString('it-IT')+'</div></div>'
+          +'<div style="display:flex;gap:6px">'
+          +'<button onclick="_trLoadInEditor(\''+cl.id+'\',\''+s.id+'\')" style="padding:5px 10px;background:rgba(245,196,66,.1);border:1px solid rgba(245,196,66,.2);border-radius:7px;color:#f5c842;cursor:pointer;font-size:.75rem">\u270F\uFE0F Modifica</button>'
+          +'<button onclick="_trCopyScheda(\''+cl.id+'\',\''+s.id+'\')" style="padding:5px 10px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);border-radius:7px;color:#818cf8;cursor:pointer;font-size:.75rem">\uD83D\uDCCB Copia</button>'
+          +'<button onclick="_trSendScheda(\''+cl.name+'\')" style="padding:5px 10px;background:rgba(15,214,194,.1);border:1px solid rgba(15,214,194,.2);border-radius:7px;color:#0fd6c2;cursor:pointer;font-size:.75rem">\uD83D\uDCE4 Invia</button>'
+          +'</div></div>';
+      });
+      html+='</div></div>';
+    }
+  });
+  if(!hasAny) html+='<p style="color:#475569;text-align:center;padding:24px">Nessuna scheda salvata ancora.</p>';
+  html+='</div>';
+  return html;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ANAMNESI CLIENTE
+═══════════════════════════════════════════════════════════ */
+function _tSecAnamnesi(tr){
+  var clients=_tClients(tr);
+  var clientOpts=clients.map(function(c){return '<option value="'+c.id+'">'+c.name+' '+c.surname+'</option>';}).join('');
+
+  return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px">'
+    +'<h2 style="font-family:sans-serif;font-size:1.4rem;font-weight:800;margin:0;color:#f1f5f9">\uD83D\uDCCB Anamnesi Clienti</h2>'
+    +'<div style="display:flex;gap:8px">'
+    +'<button onclick="_trAnamTab(\'compila\')" id="_an_tab_compila" style="padding:9px 18px;border-radius:10px;border:none;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;font-weight:700;cursor:pointer;font-size:.85rem">\u270F\uFE0F Compila</button>'
+    +'<button onclick="_trAnamTab(\'invia\')" id="_an_tab_invia" style="padding:9px 18px;border-radius:10px;border:1.5px solid #2a2a3e;background:transparent;color:#64748b;cursor:pointer;font-size:.85rem">\uD83D\uDCE4 Invia link</button>'
+    +'<button onclick="_trAnamTab(\'archivio\')" id="_an_tab_archivio" style="padding:9px 18px;border-radius:10px;border:1.5px solid #2a2a3e;background:transparent;color:#64748b;cursor:pointer;font-size:.85rem">\uD83D\uDDC4\uFE0F Archivio</button>'
+    +'</div></div>'
+
+    // === COMPILA ===
+    +'<div id="_an_panel_compila">'
+    +'<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:16px;padding:22px">'
+    +'<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">'
+    +'<div style="flex:1"><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">CLIENTE</label>'
+    +'<select id="_an_client" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none">'
+    +'<option value="">Seleziona cliente...</option>'+clientOpts+'</select></div>'
+    +'</div>'
+
+    // === SEZIONI ANAMNESI ===
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">'
+
+    // Dati personali
+    +'<div><div style="font-size:.75rem;font-weight:700;color:#818cf8;text-transform:uppercase;margin-bottom:8px;letter-spacing:.5px">Dati Personali</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'
+    +[{id:'_an_age',p:'Età',t:'number'},{id:'_an_height',p:'Altezza (cm)',t:'number'},
+      {id:'_an_weight',p:'Peso (kg)',t:'number'},{id:'_an_bf',p:'% grasso (stima)',t:'number'}].map(function(f){
+      return '<div><label style="font-size:.72rem;color:#475569;display:block;margin-bottom:3px">'+f.p+'</label>'
+        +'<input id="'+f.id+'" type="'+f.t+'" style="width:100%;padding:9px;background:#0d0d1a;border:1px solid #2a2a3e;border-radius:8px;color:#f1f5f9;font-size:14px;outline:none;box-sizing:border-box"></div>';
+    }).join('')
+    +'</div></div>'
+
+    // Obiettivo
+    +'<div><div style="font-size:.75rem;font-weight:700;color:#0fd6c2;text-transform:uppercase;margin-bottom:8px;letter-spacing:.5px">Obiettivo</div>'
+    +'<select id="_an_goal" style="width:100%;padding:11px;background:#0d0d1a;border:1px solid #2a2a3e;border-radius:8px;color:#f1f5f9;font-size:14px;outline:none;margin-bottom:8px">'
+    +'<option>Ipertrofia massimale</option><option>Dimagrimento e definizione</option><option>Forza massimale</option><option>Fitness e salute</option><option>Ricomposizione corporea</option><option>Atletismo</option>'
+    +'</select>'
+    +'<select id="_an_level" style="width:100%;padding:11px;background:#0d0d1a;border:1px solid #2a2a3e;border-radius:8px;color:#f1f5f9;font-size:14px;outline:none;margin-bottom:8px">'
+    +'<option>Principiante (0-1 anno)</option><option>Intermedio (1-3 anni)</option><option>Avanzato (3+ anni)</option>'
+    +'</select>'
+    +'<select id="_an_activity" style="width:100%;padding:11px;background:#0d0d1a;border:1px solid #2a2a3e;border-radius:8px;color:#f1f5f9;font-size:14px;outline:none">'
+    +'<option>Sedentario (lavoro da ufficio)</option><option>Lievemente attivo (camminate)</option><option>Moderatamente attivo (sport occasionale)</option><option>Molto attivo (lavoro fisico o sport quotidiano)</option>'
+    +'</select></div>'
+    +'</div>'
+
+    // Anamnesi medica
+    +'<div style="margin-bottom:14px"><div style="font-size:.75rem;font-weight:700;color:#f87171;text-transform:uppercase;margin-bottom:8px;letter-spacing:.5px">\u26A0\uFE0F Anamnesi Medica</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
+    +'<div><label style="font-size:.72rem;color:#475569;display:block;margin-bottom:4px">Infortuni / Limitazioni</label>'
+    +'<div style="display:flex;flex-wrap:wrap;gap:4px">'
+    +['Schiena bassa (lombalgia)','Ernia del disco','Ginocchio','Spalla','Anca','Polso/Gomito','Tendinite','Nessuna'].map(function(x){
+      return '<button onclick="_anToggle(this)" style="padding:4px 9px;border-radius:50px;border:1px solid #2a2a3e;background:transparent;color:#64748b;cursor:pointer;font-size:.72rem;transition:.15s">'+x+'</button>';
+    }).join('')
+    +'</div></div>'
+    +'<div><label style="font-size:.72rem;color:#475569;display:block;margin-bottom:4px">Condizioni mediche</label>'
+    +'<div style="display:flex;flex-wrap:wrap;gap:4px">'
+    +['Ipertensione','Diabete T2','Scoliosi','Osteoporosi','Asma','Nessuna'].map(function(x){
+      return '<button onclick="_anToggle(this)" style="padding:4px 9px;border-radius:50px;border:1px solid #2a2a3e;background:transparent;color:#64748b;cursor:pointer;font-size:.72rem;transition:.15s">'+x+'</button>';
+    }).join('')
+    +'</div></div>'
+    +'</div></div>'
+
+    // Dieta, stile vita, PR
+    +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">'
+    +'<div><label style="font-size:.72rem;color:#475569;display:block;margin-bottom:4px">Dieta attuale</label>'
+    +'<select id="_an_diet" style="width:100%;padding:9px;background:#0d0d1a;border:1px solid #2a2a3e;border-radius:8px;color:#f1f5f9;font-size:13px;outline:none">'
+    +'<option>Onnivora</option><option>Vegetariana</option><option>Vegana</option><option>Senza lattosio</option><option>Senza glutine</option><option>Carnivora</option>'
+    +'</select></div>'
+    +'<div><label style="font-size:.72rem;color:#475569;display:block;margin-bottom:4px">Sonno medio</label>'
+    +'<select id="_an_sleep" style="width:100%;padding:9px;background:#0d0d1a;border:1px solid #2a2a3e;border-radius:8px;color:#f1f5f9;font-size:13px;outline:none">'
+    +'<option>Meno di 6h</option><option>6-7h</option><option>7-8h</option><option>8h+</option>'
+    +'</select></div>'
+    +'<div><label style="font-size:.72rem;color:#475569;display:block;margin-bottom:4px">Fumo / Alcol</label>'
+    +'<select id="_an_habits" style="width:100%;padding:9px;background:#0d0d1a;border:1px solid #2a2a3e;border-radius:8px;color:#f1f5f9;font-size:13px;outline:none">'
+    +'<option>Nessuno</option><option>Fumatore</option><option>Alcol moderato</option><option>Entrambi</option>'
+    +'</select></div>'
+    +'</div>'
+
+    // PR e performance
+    +'<div style="margin-bottom:14px"><div style="font-size:.75rem;font-weight:700;color:#f5c842;text-transform:uppercase;margin-bottom:8px;letter-spacing:.5px">\uD83C\uDFC6 Record Personali (opzionale)</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">'
+    +[{id:'_an_pr_bench',l:'Panca (kg)'},{id:'_an_pr_squat',l:'Squat (kg)'},{id:'_an_pr_dead',l:'Stacco (kg)'},{id:'_an_pr_ohp',l:'OHP (kg)'}].map(function(f){
+      return '<div><label style="font-size:.72rem;color:#475569;display:block;margin-bottom:3px">'+f.l+'</label>'
+        +'<input id="'+f.id+'" type="number" style="width:100%;padding:9px;background:#0d0d1a;border:1px solid #2a2a3e;border-radius:8px;color:#f1f5f9;font-size:14px;outline:none;box-sizing:border-box"></div>';
+    }).join('')
+    +'</div></div>'
+
+    // Note libere
+    +'<div style="margin-bottom:18px"><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">NOTE LIBERE DEL TRAINER</label>'
+    +'<textarea id="_an_notes" rows="3" placeholder="Osservazioni generali, motivazioni, note comportamentali, aspettative..." '
+    +'style="width:100%;padding:12px 14px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:14px;outline:none;box-sizing:border-box;resize:vertical;line-height:1.5"></textarea></div>'
+
+    +'<div style="display:flex;gap:10px">'
+    +'<button onclick="_trSaveAnam()" style="flex:2;padding:14px;background:linear-gradient(135deg,#6366f1,#818cf8);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">\uD83D\uDCBE Salva anamnesi</button>'
+    +'<button onclick="_trAnamToAI()" style="flex:1;padding:14px;background:linear-gradient(135deg,#059669,#0fd6c2);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">\u26A1 Genera scheda da anamnesi</button>'
+    +'</div>'
+    +'</div></div>'
+
+    // === INVIA ===
+    +'<div id="_an_panel_invia" style="display:none">'
+    +'<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:16px;padding:22px">'
+    +'<div style="text-align:center;margin-bottom:20px"><div style="font-size:3rem;margin-bottom:10px">\uD83D\uDCE4</div>'
+    +'<h4 style="color:#f1f5f9;margin:0 0 6px">Invia questionario al cliente</h4>'
+    +'<p style="color:#64748b;margin:0;font-size:.88rem">Il cliente riceve un link e compila il questionario autonomamente. Le risposte arrivano direttamente qui.</p></div>'
+    +'<div style="background:#0d0d1a;border-radius:12px;padding:16px;margin-bottom:16px">'
+    +'<label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:6px">SELEZIONA CLIENTE</label>'
+    +'<select id="_an_send_client" style="width:100%;padding:11px;background:#12121e;border:1px solid #2a2a3e;border-radius:8px;color:#f1f5f9;font-size:15px;outline:none;margin-bottom:12px">'
+    +'<option value="">Seleziona...</option>'+clientOpts+'</select>'
+    +'<label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:6px">O INSERISCI EMAIL</label>'
+    +'<input id="_an_send_email" type="email" placeholder="cliente@email.com" style="width:100%;padding:11px 14px;background:#12121e;border:1px solid #2a2a3e;border-radius:8px;color:#f1f5f9;font-size:15px;outline:none;box-sizing:border-box;margin-bottom:12px">'
+    +'<div style="background:rgba(99,102,241,.08);border-radius:10px;padding:12px;margin-bottom:12px;font-size:.82rem;color:#64748b;line-height:1.6">'
+    +'\uD83D\uDCCB <strong style="color:#818cf8">Il questionario include:</strong> dati personali, obiettivi, livello, infortuni, condizioni mediche, abitudini alimentari e di vita, PR sportivi, disponibilità temporale.'
+    +'</div>'
+    +'<button onclick="_trSendAnamLink()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6366f1,#818cf8);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">\uD83D\uDCE4 Invia questionario</button>'
+    +'</div></div></div>'
+
+    // === ARCHIVIO ===
+    +'<div id="_an_panel_archivio" style="display:none">'
+    +'<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:16px;padding:22px">'
+    +'<h4 style="color:#f1f5f9;margin:0 0 16px">Anamnesi archiviate</h4>'
+    +'<div id="_an_arch_list">'
+    +clients.map(function(cl){
+      var an=_trGetAnamnesi(cl.id);
+      return '<div style="display:flex;align-items:center;gap:12px;padding:12px;background:#0d0d1a;border-radius:10px;margin-bottom:8px">'
+        +'<div style="width:38px;height:38px;border-radius:10px;background:'+cl.color+';display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:.8rem;flex-shrink:0">'+cl.avatar+'</div>'
+        +'<div style="flex:1">'
+        +'<div style="font-weight:600;color:#f1f5f9">'+cl.name+' '+cl.surname+'</div>'
+        +'<div style="font-size:.75rem;color:#64748b">'+(an?'Compilata il '+new Date(an.date).toLocaleDateString('it-IT'):'Nessuna anamnesi')+'</div>'
+        +'</div>'
+        +(an?'<button onclick="if(typeof toast===\'function\')toast(\'Anamnesi caricata!\',\'success\')" style="padding:6px 12px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);border-radius:8px;color:#818cf8;cursor:pointer;font-size:.78rem">Visualizza</button>':'')
+        +'</div>';
+    }).join('')
+    +'</div></div></div>';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DIETA AI + RICETTE SETTIMANALI
+═══════════════════════════════════════════════════════════ */
+function _tSecDieta(tr){
+  var clients=_tClients(tr);
+  var clientOpts=clients.map(function(c){return '<option value="'+c.id+'" data-weight="'+c.weight+'" data-age="'+c.age+'">'+c.name+' '+c.surname+' ('+c.goal+')</option>';}).join('');
+
+  return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px">'
+    +'<h2 style="font-family:sans-serif;font-size:1.4rem;font-weight:800;margin:0;color:#f1f5f9">\uD83E\uDD66 Dieta AI & Ricette</h2>'
+    +'<div style="display:flex;gap:8px">'
+    +'<button onclick="_trDietTab(\'piano\')" id="_dt_tab_piano" style="padding:9px 18px;border-radius:10px;border:none;background:linear-gradient(135deg,#059669,#0fd6c2);color:#fff;font-weight:700;cursor:pointer;font-size:.85rem">Piano Alimentare</button>'
+    +'<button onclick="_trDietTab(\'ricette\')" id="_dt_tab_ricette" style="padding:9px 18px;border-radius:10px;border:1.5px solid #2a2a3e;background:transparent;color:#64748b;cursor:pointer;font-size:.85rem">\uD83D\uDCDA Ricette</button>'
+    +'<button onclick="_trDietTab(\'integr\')" id="_dt_tab_integr" style="padding:9px 18px;border-radius:10px;border:1.5px solid #2a2a3e;background:transparent;color:#64748b;cursor:pointer;font-size:.85rem">\uD83D\uDC8A Integratori</button>'
+    +'</div></div>'
+
+    // === PIANO ===
+    +'<div id="_dt_panel_piano">'
+    +'<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:16px;padding:22px;margin-bottom:16px">'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">CLIENTE</label>'
+    +'<select id="_dt_client" onchange="_trDietAutoFill()" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none">'
+    +'<option value="">Nuovo...</option>'+clientOpts+'</select></div>'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">NOME</label>'
+    +'<input id="_dt_name" placeholder="Nome cliente" style="width:100%;padding:11px 14px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none;box-sizing:border-box"></div>'
+    +'</div>'
+
+    +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px">'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">OBIETTIVO</label>'
+    +'<select id="_dt_goal" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:14px;outline:none">'
+    +'<option>Aumento massa (bulk)</option><option>Dimagrimento (deficit)</option><option>Ricomposizione</option><option>Mantenimento + performance</option><option>Cutting pre-gara</option>'
+    +'</select></div>'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">PESO (kg)</label>'
+    +'<input id="_dt_weight" type="number" placeholder="75" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none;box-sizing:border-box"></div>'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">ALTEZZA</label>'
+    +'<input id="_dt_height" type="number" placeholder="175" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none;box-sizing:border-box"></div>'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">ETÀ</label>'
+    +'<input id="_dt_age" type="number" placeholder="28" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none;box-sizing:border-box"></div>'
+    +'</div>'
+
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">LIVELLO ATTIVITÀ</label>'
+    +'<select id="_dt_act" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:14px;outline:none">'
+    +'<option>Sedentario (solo palestra 3-4x)</option><option>Lievemente attivo (sport + lavoro desk)</option><option>Moderatamente attivo (sport 5+x o lavoro fisico)</option><option>Molto attivo (sport agonistico o lavoro fisico intenso)</option>'
+    +'</select></div>'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">PREFERENZE ALIMENTARI</label>'
+    +'<input id="_dt_pref" placeholder="Es: no latticini, vegetariano, ama pasta, allergia arachidi..." style="width:100%;padding:11px 14px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:14px;outline:none;box-sizing:border-box"></div>'
+    +'</div>'
+
+    // Numero pasti
+    +'<div style="margin-bottom:18px"><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:8px">STRUTTURA PASTI</label>'
+    +'<div style="display:flex;gap:8px">'
+    +['3 pasti','4 pasti','5 pasti','6 pasti (ipertrofia)','Intermittent Fasting 16:8'].map(function(m,i){
+      return '<button onclick="_trSetMeals(this)" style="padding:7px 14px;border-radius:50px;border:1.5px solid '+(i===1?'#059669':'#2a2a3e')+';background:'+(i===1?'rgba(5,150,105,.15)':'transparent')+';color:'+(i===1?'#0fd6c2':'#64748b')+';cursor:pointer;font-size:.8rem;transition:.2s">'+m+'</button>';
+    }).join('')
+    +'</div></div>'
+
+    +'<button onclick="_trGenDieta()" id="_dt_btn" style="width:100%;padding:16px;background:linear-gradient(135deg,#059669,#0fd6c2);border:none;border-radius:14px;color:#fff;font-size:17px;font-weight:800;cursor:pointer">'
+    +'\uD83E\uDD66 Genera Piano Alimentare + TDEE + Macros con AI</button>'
+    +'</div>'
+    +'<div id="_dt_result"></div>'
+    +'</div>'
+
+    // === RICETTE ===
+    +'<div id="_dt_panel_ricette" style="display:none">'
+    +'<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:16px;padding:22px">'
+    +'<h4 style="color:#f1f5f9;margin:0 0 14px">\uD83D\uDCDA Generatore di Ricette per Sportivi</h4>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">TIPO PASTO</label>'
+    +'<select id="_rc_type" style="width:100%;padding:11px;background:#0d0d1a;border:1px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:14px;outline:none">'
+    +'<option>Colazione (pre-workout)</option><option>Pranzo (post-workout)</option><option>Cena (recovery)</option><option>Spuntino proteico</option><option>Pre-gara (carb loading)</option>'
+    +'</select></div>'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">CALORIE TARGET</label>'
+    +'<input id="_rc_kcal" type="number" placeholder="600" style="width:100%;padding:11px;background:#0d0d1a;border:1px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none;box-sizing:border-box"></div>'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">PROTEINE TARGET (g)</label>'
+    +'<input id="_rc_prot" type="number" placeholder="40" style="width:100%;padding:11px;background:#0d0d1a;border:1px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none;box-sizing:border-box"></div>'
+    +'</div>'
+    +'<div style="margin-bottom:14px"><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">INGREDIENTI DA USARE O EVITARE</label>'
+    +'<input id="_rc_ingr" placeholder="Es: usa pollo e riso, evita latticini..." style="width:100%;padding:11px 14px;background:#0d0d1a;border:1px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:14px;outline:none;box-sizing:border-box"></div>'
+    +'<div style="margin-bottom:16px"><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">QUANTE RICETTE</label>'
+    +'<div style="display:flex;gap:8px">'
+    +['1 ricetta','3 ricette','5 ricette','Piano 7 giorni'].map(function(n,i){
+      return '<button onclick="_trSetRecipes(this)" style="padding:7px 14px;border-radius:50px;border:1.5px solid '+(i===0?'#059669':'#2a2a3e')+';background:'+(i===0?'rgba(5,150,105,.15)':'transparent')+';color:'+(i===0?'#0fd6c2':'#64748b')+';cursor:pointer;font-size:.8rem;transition:.2s">'+n+'</button>';
+    }).join('')
+    +'</div></div>'
+    +'<button onclick="_trGenRicette()" id="_rc_btn" style="width:100%;padding:14px;background:linear-gradient(135deg,#f97316,#f5c842);border:none;border-radius:14px;color:#fff;font-size:16px;font-weight:800;cursor:pointer">\uD83D\uDCDA Genera Ricette Fitness con AI</button>'
+    +'<div id="_rc_result" style="margin-top:16px"></div>'
+    +'</div></div>'
+
+    // === INTEGRATORI ===
+    +'<div id="_dt_panel_integr" style="display:none">'
+    +'<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:16px;padding:22px">'
+    +'<h4 style="color:#f1f5f9;margin:0 0 14px">\uD83D\uDC8A Protocollo Integratori AI</h4>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">OBIETTIVO</label>'
+    +'<select id="_ig_goal" style="width:100%;padding:11px;background:#0d0d1a;border:1px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:14px;outline:none">'
+    +'<option>Massa muscolare</option><option>Forza</option><option>Dimagrimento</option><option>Recovery e salute</option><option>Performance atletica</option>'
+    +'</select></div>'
+    +'<div><label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:5px">BUDGET MENSILE (€)</label>'
+    +'<input id="_ig_budget" type="number" placeholder="50" style="width:100%;padding:11px;background:#0d0d1a;border:1px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none;box-sizing:border-box"></div>'
+    +'</div>'
+    +'<button onclick="_trGenIntegr()" id="_ig_btn" style="width:100%;padding:14px;background:linear-gradient(135deg,#6366f1,#f97316);border:none;border-radius:14px;color:#fff;font-size:16px;font-weight:800;cursor:pointer">\uD83D\uDC8A Genera Protocollo Integratori con AI</button>'
+    +'<div id="_ig_result" style="margin-top:16px"></div>'
+    +'</div></div>';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CALENDARIO CON LOG REALE
+═══════════════════════════════════════════════════════════ */
+function _tSecCalendario(tr){
+  var clients=_tClients(tr);
+  var days=['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
+  var today=(new Date().getDay()+6)%7;
+
+  // Simulate real workout logs with exercises and loads
+  var sessions=[
+    {day:0,time:'09:00',cl:clients[0],type:'Petto & Tricipiti',dur:65,
+     exercises:[
+       {name:'Panca Piana Bilanciere',sets:'4×8',weight:'90kg',rpe:8},
+       {name:'Panca Inclinata Manubri',sets:'3×10',weight:'30kg',rpe:7},
+       {name:'Croci Cavi',sets:'3×12',weight:'15kg',rpe:7},
+       {name:'French Press',sets:'4×10',weight:'30kg',rpe:8},
+       {name:'Pushdown Cavo',sets:'3×15',weight:'20kg',rpe:7},
+     ],completed:true},
+    {day:0,time:'11:00',cl:clients[1],type:'Gambe & Glutei',dur:50,
+     exercises:[
+       {name:'Leg Press',sets:'4×15',weight:'120kg',rpe:7},
+       {name:'Squat Goblet',sets:'3×12',weight:'24kg',rpe:6},
+       {name:'Hip Thrust',sets:'4×12',weight:'60kg',rpe:8},
+       {name:'Leg Curl',sets:'3×15',weight:'30kg',rpe:7},
+     ],completed:true},
+    {day:1,time:'18:00',cl:clients[2],type:'Squat & Stacco',dur:90,
+     exercises:[
+       {name:'Squat Bilanciere',sets:'5×3',weight:'195kg',rpe:9},
+       {name:'Stacco da Terra',sets:'3×3',weight:'230kg',rpe:9},
+       {name:'Good Morning',sets:'3×8',weight:'80kg',rpe:7},
+     ],completed:false},
+    {day:2,time:'09:00',cl:clients[0],type:'Schiena & Bicipiti',dur:60,
+     exercises:[
+       {name:'Trazioni Presa Ampia',sets:'4×8',weight:'BW+15kg',rpe:8},
+       {name:'Rematore Bilanciere',sets:'4×8',weight:'80kg',rpe:8},
+       {name:'Lat Machine',sets:'3×10',weight:'75kg',rpe:7},
+       {name:'Curl Bilanciere',sets:'4×10',weight:'40kg',rpe:8},
+     ],completed:false},
+  ];
+
+  return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">'
+    +'<h2 style="font-family:sans-serif;font-size:1.4rem;font-weight:800;margin:0;color:#f1f5f9">\uD83D\uDCC5 Calendario & Allenamenti</h2>'
+    +'<div style="display:flex;gap:8px">'
+    +'<button onclick="_trCalTab(\'settimana\')" id="_cal_tab_settimana" style="padding:9px 16px;border-radius:10px;border:none;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;font-weight:700;cursor:pointer;font-size:.85rem">Settimana</button>'
+    +'<button onclick="_trCalTab(\'log\')" id="_cal_tab_log" style="padding:9px 16px;border-radius:10px;border:1.5px solid #2a2a3e;background:transparent;color:#64748b;cursor:pointer;font-size:.85rem">Log Allenamenti</button>'
+    +'<button style="padding:9px 16px;border-radius:10px;border:none;background:linear-gradient(135deg,#059669,#0fd6c2);color:#fff;font-weight:700;cursor:pointer;font-size:.85rem" onclick="if(typeof toast===\'function\')toast(\'Nuova sessione in arrivo!\',\'success\')">\uFF0B Sessione</button>'
+    +'</div></div>'
+
+    // === SETTIMANA ===
+    +'<div id="_cal_panel_settimana">'
+    +'<div style="overflow-x:auto;margin-bottom:16px">'
+    +'<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px;min-width:700px">'
+    +days.map(function(d,i){
+      var daySess=sessions.filter(function(s){return s.day===i;});
+      var isT=i===today;
+      return '<div>'
+        +'<div style="text-align:center;font-size:.75rem;font-weight:800;color:'+(isT?'#818cf8':'#475569')+';padding:8px 4px;background:'+(isT?'rgba(99,102,241,.12)':'transparent')+';border-radius:8px;margin-bottom:6px;text-transform:uppercase">'+d.substring(0,3)+'</div>'
+        +daySess.map(function(s){
+          var colBg=s.cl.color==='#6366f1'?'rgba(99,102,241,':(s.cl.color==='#ec4899'?'rgba(236,72,153,':'rgba(249,115,22,');
+          return '<div onclick="_trOpenLog('+sessions.indexOf(s)+')" style="background:'+colBg+(s.completed?'.15)':'.07)')+';border-left:3px solid '+(s.completed?s.cl.color:'#2a2a3e')+';border-radius:7px;padding:8px;margin-bottom:5px;cursor:pointer;transition:.15s"'
+            +' onmouseenter="this.style.background=\''+colBg+'.2)\'" onmouseleave="this.style.background=\''+colBg+(s.completed?'.15)':'.07)')+'\'>'
+            +'<div style="font-size:.72rem;font-weight:700;color:#f1f5f9">'+s.time+'</div>'
+            +'<div style="font-size:.7rem;color:#94a3b8;margin-top:1px">'+s.cl.name+'</div>'
+            +'<div style="font-size:.68rem;color:#475569;margin-top:1px">'+s.type+'</div>'
+            +(s.completed?'<div style="font-size:.65rem;color:#0fd6c2;margin-top:2px">\u2713 Completato</div>':'')
+            +'</div>';
+        }).join('')
+        +'</div>';
+    }).join('')
+    +'</div></div>'
+
+    // Dettaglio sessione
+    +'<div id="_cal_session_detail" style="display:none;margin-top:16px"></div>'
+
+    // +'</div>' — closed below with log panel
+    +'</div>'
+
+    // === LOG ALLENAMENTI ===
+    +'<div id="_cal_panel_log" style="display:none">'
+    +'<div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap">'
+    +clients.map(function(cl,i){
+      return '<button onclick="_trLogFilter(\''+cl.id+'\')" style="padding:7px 14px;border-radius:50px;border:1.5px solid '+(i===0?cl.color:'#2a2a3e')+';background:'+(i===0?'rgba(99,102,241,.12)':'transparent')+';color:'+(i===0?'#818cf8':'#64748b')+';cursor:pointer;font-size:.82rem;font-weight:600">'+cl.name+'</button>';
+    }).join('')
+    +'</div>'
+    +'<div id="_log_list">'
+    +sessions.filter(function(s){return s.completed;}).map(function(s){
+      return _trLogCard(s);
+    }).join('')
+    +'</div></div>';
+}
+
+function _trLogCard(s){
+  return '<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:14px;margin-bottom:12px;overflow:hidden">'
+    +'<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.04)">'
+    +'<div style="width:40px;height:40px;border-radius:11px;background:'+s.cl.color+';display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:.82rem;flex-shrink:0">'+s.cl.avatar+'</div>'
+    +'<div style="flex:1">'
+    +'<div style="font-weight:700;color:#f1f5f9">'+s.cl.name+' — '+s.type+'</div>'
+    +'<div style="font-size:.75rem;color:#64748b">'+['Lun','Mar','Mer','Gio','Ven','Sab','Dom'][s.day]+' '+s.time+' · '+s.dur+' min</div>'
+    +'</div>'
+    +'<span style="background:rgba(15,214,194,.12);color:#0fd6c2;font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:50px">\u2713 Completato</span>'
+    +'</div>'
+    +'<div style="padding:12px 16px">'
+    +'<table style="width:100%;border-collapse:collapse;font-size:.8rem">'
+    +'<thead><tr style="color:#475569;font-size:.7rem;text-transform:uppercase">'
+    +'<th style="text-align:left;padding:4px 8px;font-weight:600">Esercizio</th>'
+    +'<th style="text-align:center;padding:4px 8px;font-weight:600">Serie×Reps</th>'
+    +'<th style="text-align:center;padding:4px 8px;font-weight:600">Carico</th>'
+    +'<th style="text-align:center;padding:4px 8px;font-weight:600">RPE</th>'
+    +'</tr></thead>'
+    +'<tbody>'
+    +s.exercises.map(function(ex){
+      var rpeColor=ex.rpe>=9?'#f87171':ex.rpe>=7?'#f5c842':'#0fd6c2';
+      return '<tr style="border-top:1px solid rgba(255,255,255,.04)">'
+        +'<td style="padding:8px;color:#94a3b8">'+ex.name+'</td>'
+        +'<td style="text-align:center;padding:8px;color:#f1f5f9;font-weight:600">'+ex.sets+'</td>'
+        +'<td style="text-align:center;padding:8px;color:#818cf8;font-weight:700">'+ex.weight+'</td>'
+        +'<td style="text-align:center;padding:8px"><span style="font-weight:800;color:'+rpeColor+'">'+ex.rpe+'</span><span style="font-size:.68rem;color:#475569">/10</span></td>'
+        +'</tr>';
+    }).join('')
+    +'</tbody></table>'
+    +'</div></div>';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ACTION HANDLERS
+═══════════════════════════════════════════════════════════ */
+
+// Auto-fill from client select
+window._trAutoFill = function(){
+  var sel=document.getElementById('_sa_client');
+  if(!sel||!sel.value) return;
+  var opt=sel.options[sel.selectedIndex];
+  var name=(document.getElementById('_sa_name')||{});
+  if(name.tagName) name.value=opt.text.split('(')[0].trim();
+  var age=(document.getElementById('_sa_age')||{}); if(age.tagName&&opt.dataset.age) age.value=opt.dataset.age;
+  var w=(document.getElementById('_sa_weight')||{}); if(w.tagName&&opt.dataset.weight) w.value=opt.dataset.weight;
+  var inj=(document.getElementById('_sa_notes')||{}); if(inj.tagName&&opt.dataset.injuries) inj.value='Infortuni: '+opt.dataset.injuries;
+  if(typeof toast==='function') toast('Dati cliente precaricati!','success');
+};
+
+window._trDietAutoFill = function(){
+  var sel=document.getElementById('_dt_client');
+  if(!sel||!sel.value) return;
+  var opt=sel.options[sel.selectedIndex];
+  var name=(document.getElementById('_dt_name')||{}); if(name.tagName) name.value=opt.text.split('(')[0].trim();
+  var w=(document.getElementById('_dt_weight')||{}); if(w.tagName&&opt.dataset.weight) w.value=opt.dataset.weight;
+  var a=(document.getElementById('_dt_age')||{}); if(a.tagName&&opt.dataset.age) a.value=opt.dataset.age;
+};
+
+// Tab switchers
+window._tSchedeTab = function(tab){
+  ['ai','manuale','editor','storico'].forEach(function(t){
+    var p=document.getElementById('_tpanel_'+t);
+    var b=document.getElementById('_tab_'+t);
+    if(p) p.style.display=t===tab?'block':'none';
+    if(b){
+      b.style.background=t===tab?'linear-gradient(135deg,#6366f1,#818cf8)':'transparent';
+      b.style.border=t===tab?'none':'1.5px solid #2a2a3e';
+      b.style.color=t===tab?'#fff':'#64748b';
+    }
+  });
+};
+
+window._trAnamTab = function(tab){
+  ['compila','invia','archivio'].forEach(function(t){
+    var p=document.getElementById('_an_panel_'+t);
+    var b=document.getElementById('_an_tab_'+t);
+    if(p) p.style.display=t===tab?'block':'none';
+    if(b){
+      b.style.background=t===tab?'linear-gradient(135deg,#6366f1,#818cf8)':'transparent';
+      b.style.border=t===tab?'none':'1.5px solid #2a2a3e';
+      b.style.color=t===tab?'#fff':'#64748b';
+    }
+  });
+};
+
+window._trDietTab = function(tab){
+  ['piano','ricette','integr'].forEach(function(t){
+    var p=document.getElementById('_dt_panel_'+t);
+    var b=document.getElementById('_dt_tab_'+t);
+    if(p) p.style.display=t===tab?'block':'none';
+    if(b){
+      b.style.background=t===tab?'linear-gradient(135deg,#059669,#0fd6c2)':'transparent';
+      b.style.border=t===tab?'none':'1.5px solid #2a2a3e';
+      b.style.color=t===tab?'#fff':'#64748b';
+    }
+  });
+};
+
+window._trCalTab = function(tab){
+  ['settimana','log'].forEach(function(t){
+    var p=document.getElementById('_cal_panel_'+t);
+    var b=document.getElementById('_cal_tab_'+t);
+    if(p) p.style.display=t===tab?'block':'none';
+    if(b){
+      b.style.background=t===tab?'linear-gradient(135deg,#6366f1,#818cf8)':'transparent';
+      b.style.border=t===tab?'none':'1.5px solid #2a2a3e';
+      b.style.color=t===tab?'#fff':'#64748b';
+    }
+  });
+};
+
+// Goal selector
+var _trGoal='Ipertrofia massimale';
+window._trGoalSelect = function(btn){
+  document.querySelectorAll('#_sa_goal_btns button').forEach(function(b){
+    b.style.background='transparent'; b.style.borderColor='#2a2a3e'; b.style.color='#64748b';
+  });
+  btn.style.background='rgba(99,102,241,.15)'; btn.style.borderColor='#6366f1'; btn.style.color='#818cf8';
+  _trGoal=btn.textContent;
+};
+
+// Style selector
+var _trStyle='standard';
+window._trSetStyle = function(style){
+  _trStyle=style;
+  ['standard','strength','metabolico','powerbuilding','minimalista','frequenza'].forEach(function(s){
+    var b=document.getElementById('_sas_'+s);
+    if(b){b.style.background='transparent';b.style.borderColor='#2a2a3e';b.style.color='#64748b';}
+  });
+  var a=document.getElementById('_sas_'+style);
+  if(a){a.style.background='rgba(99,102,241,.15)';a.style.borderColor='#6366f1';a.style.color='#818cf8';}
+};
+
+// Injury/condition toggles
+window._trToggleInj = function(btn){
+  var on=btn.style.background==='rgba(248, 113, 113, 0.15)';
+  btn.style.background=on?'transparent':'rgba(248,113,113,.15)';
+  btn.style.borderColor=on?'#2a2a3e':'#f87171'; btn.style.color=on?'#64748b':'#f87171';
+};
+window._trToggleCond = window._trToggleInj;
+window._anToggle = window._trToggleInj;
+
+// Get selected buttons text
+function _trGetSelected(containerSelector){
+  var btns=document.querySelectorAll(containerSelector+' button');
+  var selected=[];
+  btns.forEach(function(b){if(b.style.background&&b.style.background!=='transparent')selected.push(b.textContent);});
+  return selected.join(', ')||'Nessuna';
+}
+
+// Meals selector
+var _trMeals='4 pasti';
+window._trSetMeals = function(btn){
+  btn.parentNode.querySelectorAll('button').forEach(function(b){
+    b.style.background='transparent';b.style.borderColor='#2a2a3e';b.style.color='#64748b';
+  });
+  btn.style.background='rgba(5,150,105,.15)';btn.style.borderColor='#059669';btn.style.color='#0fd6c2';
+  _trMeals=btn.textContent;
+};
+
+// Recipes count
+var _trRecipeCount='3 ricette';
+window._trSetRecipes = function(btn){
+  btn.parentNode.querySelectorAll('button').forEach(function(b){
+    b.style.background='transparent';b.style.borderColor='#2a2a3e';b.style.color='#64748b';
+  });
+  btn.style.background='rgba(5,150,105,.15)';btn.style.borderColor='#059669';btn.style.color='#0fd6c2';
+  _trRecipeCount=btn.textContent;
+};
+
+// === AI SCHEDA ===
+window._trGenAI = async function(){
+  var name=(document.getElementById('_sa_name')||{}).value||'Cliente';
+  var goal=_trGoal;
+  var age=(document.getElementById('_sa_age')||{}).value||'28';
+  var weight=(document.getElementById('_sa_weight')||{}).value||'75';
+  var height=(document.getElementById('_sa_height')||{}).value||'175';
+  var sex=(document.getElementById('_sa_sex')||{}).value||'Maschile';
+  var level=(document.getElementById('_sa_level')||{}).value||'Intermedio';
+  var days=(document.getElementById('_sa_days')||{}).value||'4';
+  var equip=(document.getElementById('_sa_equip')||{}).value||'Palestra completa';
+  var notes=(document.getElementById('_sa_notes')||{}).value||'';
+  var out=document.getElementById('_sa_result');
+  var btn=document.getElementById('_sa_btn');
+  if(!out) return;
+
+  out.innerHTML='<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:16px;padding:28px;text-align:center">'
+    +'<div style="font-size:2.5rem;margin-bottom:12px">\u26A1</div>'
+    +'<div style="font-weight:600;color:#f1f5f9;margin-bottom:6px">Generando scheda ultra-personalizzata per <span style="color:#818cf8">'+name+'</span></div>'
+    +'<div style="color:#64748b;font-size:.85rem">Claude Sonnet sta elaborando... 20-30 sec</div>'
+    +'<div style="margin-top:16px;height:4px;background:#1e1e2e;border-radius:2px;overflow:hidden">'
+    +'<div id="_sa_prg" style="height:100%;background:linear-gradient(90deg,#6366f1,#818cf8);border-radius:2px;width:0%;transition:width .3s"></div></div>'
+    +'</div>';
+
+  if(btn) btn.disabled=true;
+  var pct=0;
+  var prg=setInterval(function(){pct=Math.min(pct+4,90);var el=document.getElementById('_sa_prg');if(el)el.style.width=pct+'%';},400);
+
+  // BMI e TDEE calcolati
+  var bmi=(parseFloat(weight)/((parseFloat(height)/100)**2)).toFixed(1);
+  var actMult = 30; // default
+  var tdee=Math.round(parseFloat(weight)*actMult);
+
+  var prompt='Sei un personal trainer professionista di élite. Crea una scheda di allenamento DETTAGLIATA E ULTRA-PERSONALIZZATA per:\n\n'
+    +'CLIENTE: '+name+'\n'
+    +'OBIETTIVO: '+goal+'\n'
+    +'DATI FISICI: '+sex+', '+age+' anni, '+weight+'kg, '+height+'cm, BMI: '+bmi+'\n'
+    +'LIVELLO: '+level+'\n'
+    +'ATTREZZATURA: '+equip+'\n'
+    +'GIORNI/SETTIMANA: '+days+'\n'
+    +'STILE ALLENAMENTO: '+_trStyle+'\n'
+    +(notes?'NOTE SPECIALI / INFORTUNI: '+notes+'\n':'')
+    +'\nSTRUTTURA RICHIESTA:\n'
+    +'1. ANALISI DEL PROFILO (2-3 righe): valuta obiettivo, livello e struttura ottimale\n'
+    +'2. SPLIT SETTIMANALE: specifica i gruppi muscolari di ogni giorno\n'
+    +'3. PER OGNI GIORNO DI ALLENAMENTO:\n'
+    +'   - Nome e focus (es. "Giorno A — Petto & Tricipiti")\n'
+    +'   - Riscaldamento (5-8 min)\n'
+    +'   - 5-7 esercizi con: NOME · SERIE×REPS · CARICO SUGGERITO · RECUPERO · NOTE TECNICHE\n'
+    +'   - Progressione settimanale (come aumentare nel tempo)\n'
+    +'   - Defaticamento/stretching (3-5 min)\n'
+    +'4. NOTE GENERALI: frequenza cardio, sonno, idratazione\n'
+    +'5. PROGRESSIONE A 4 SETTIMANE: indica come evolvere la scheda\n\n'
+    +'Sii MOLTO SPECIFICO sui carichi (es. "inizia con 60% dell\'1RM, circa 70kg per un 75kg intermedio"). '
+    +'Rispondi in italiano. Usa formato chiaro con titoli e spazi.';
+
+  try{
+    var r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:3000,messages:[{role:'user',content:prompt}]})
+    });
+    var data=await r.json();
+    var txt=((data.content||[]).find(function(b){return b.type==='text';})||{}).text||'Errore.';
+
+    clearInterval(prg);
+    var el=document.getElementById('_sa_prg');if(el)el.style.width='100%';
+
+    // Save scheda
+    var clientSel=document.getElementById('_sa_client');
+    var clientId=clientSel?clientSel.value:'';
+    if(clientId) _trSaveScheda(clientId,{name:'Scheda '+name+' — '+new Date().toLocaleDateString('it-IT'),goal:goal,days:days,content:txt});
+
+    out.innerHTML='<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:16px;overflow:hidden">'
+      +'<div style="padding:14px 18px;border-bottom:1px solid #1e1e2e;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">'
+      +'<div><span style="font-weight:700;color:#f1f5f9">Scheda: '+name+'</span>'
+      +'<span style="margin-left:8px;font-size:.75rem;color:#818cf8;background:rgba(99,102,241,.12);padding:2px 8px;border-radius:50px">'+goal+'</span>'
+      +'<span style="margin-left:6px;font-size:.75rem;color:#0fd6c2;background:rgba(15,214,194,.08);padding:2px 8px;border-radius:50px">'+days+' gg/sett</span></div>'
+      +'<div style="display:flex;gap:7px">'
+      +'<button onclick="_trCopyTxt(\'_sa_txt\')" style="padding:7px 12px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.25);border-radius:8px;color:#818cf8;cursor:pointer;font-size:.78rem">\uD83D\uDCCB Copia</button>'
+      +'<button onclick="_trLoadInEditorTxt()" style="padding:7px 12px;background:rgba(245,196,66,.1);border:1px solid rgba(245,196,66,.2);border-radius:8px;color:#f5c842;cursor:pointer;font-size:.78rem">\u270F\uFE0F Modifica</button>'
+      +'<button onclick="_trSendSched(\''+name+'\')" style="padding:7px 12px;background:rgba(15,214,194,.1);border:1px solid rgba(15,214,194,.2);border-radius:8px;color:#0fd6c2;cursor:pointer;font-size:.78rem">\uD83D\uDCE4 Invia cliente</button>'
+      +'</div></div>'
+      +'<div id="_sa_txt" style="padding:18px 20px;white-space:pre-wrap;font-size:.84rem;color:#94a3b8;line-height:1.9;max-height:550px;overflow-y:auto;font-family:\'Courier New\',monospace">'+txt+'</div>'
+      +'</div>';
+  }catch(e){
+    clearInterval(prg);
+    out.innerHTML='<div style="background:#12121e;border:1px solid rgba(248,113,113,.2);border-radius:16px;padding:20px;color:#f87171">Errore: '+e.message+'</div>';
+  }
+  if(btn) btn.disabled=false;
+};
+
+window._trLoadInEditorTxt = function(){
+  var txt=(document.getElementById('_sa_txt')||{}).textContent||'';
+  var inp=document.getElementById('_se_input');
+  if(inp) inp.value=txt;
+  _tSchedeTab('editor');
+  if(typeof toast==='function') toast('Scheda caricata nell\'editor!','success');
+};
+
+// === AI EDITOR ===
+window._trEditor = async function(){
+  var scheda=(document.getElementById('_se_input')||{}).value||'';
+  var instructions=(document.getElementById('_se_instructions')||{}).value||'';
+  var out=document.getElementById('_se_result');
+  var btn=document.getElementById('_se_btn');
+  if(!out||!scheda.trim()) return;
+
+  out.innerHTML='<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:16px;padding:24px;text-align:center;color:#64748b">\u270F\uFE0F Modifica in corso...</div>';
+  if(btn) btn.disabled=true;
+
+  var prompt='Sei un personal trainer professionista. Ti viene fornita una scheda di allenamento da modificare.\n\n'
+    +'SCHEDA ORIGINALE:\n'+scheda+'\n\n'
+    +'MODIFICHE RICHIESTE:\n'+instructions+'\n\n'
+    +'Apporta le modifiche richieste mantenendo la struttura e lo stile della scheda originale. '
+    +'Sii preciso, giustifica brevemente ogni modifica importante. Rispondi in italiano.';
+
+  try{
+    var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:3000,messages:[{role:'user',content:prompt}]})});
+    var data=await r.json();
+    var txt=((data.content||[]).find(function(b){return b.type==='text';})||{}).text||'Errore.';
+    out.innerHTML='<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:16px;overflow:hidden">'
+      +'<div style="padding:12px 16px;border-bottom:1px solid #1e1e2e;display:flex;justify-content:space-between;align-items:center">'
+      +'<span style="font-weight:700;color:#f5c842">\u270F\uFE0F Scheda modificata</span>'
+      +'<button onclick="_trCopyTxt(\'_se_txt\')" style="padding:6px 12px;background:rgba(245,196,66,.1);border:1px solid rgba(245,196,66,.2);border-radius:8px;color:#f5c842;cursor:pointer;font-size:.78rem">\uD83D\uDCCB Copia</button>'
+      +'</div>'
+      +'<div id="_se_txt" style="padding:16px 18px;white-space:pre-wrap;font-size:.83rem;color:#94a3b8;line-height:1.8;max-height:450px;overflow-y:auto;font-family:\'Courier New\',monospace">'+txt+'</div>'
+      +'</div>';
+  }catch(e){out.innerHTML='<div style="color:#f87171;padding:16px">Errore: '+e.message+'</div>';}
+  if(btn) btn.disabled=false;
+};
+
+// === AI DIETA ===
+window._trGenDieta = async function(){
+  var name=(document.getElementById('_dt_name')||{}).value||'Cliente';
+  var goal=(document.getElementById('_dt_goal')||{}).value||'Aumento massa';
+  var weight=(document.getElementById('_dt_weight')||{}).value||'75';
+  var height=(document.getElementById('_dt_height')||{}).value||'175';
+  var age=(document.getElementById('_dt_age')||{}).value||'28';
+  var act=(document.getElementById('_dt_act')||{}).value||'Lievemente attivo';
+  var pref=(document.getElementById('_dt_pref')||{}).value||'Nessuna';
+  var out=document.getElementById('_dt_result');
+  var btn=document.getElementById('_dt_btn');
+  if(!out) return;
+
+  out.innerHTML='<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:16px;padding:24px;text-align:center">'
+    +'<div style="font-size:2rem;margin-bottom:10px">\uD83E\uDD66</div>'
+    +'<div style="color:#94a3b8">Calcolando TDEE e generando piano per <strong style="color:#f1f5f9">'+name+'</strong>...</div></div>';
+  if(btn) btn.disabled=true;
+
+  // Calcola TDEE approssimativo
+  var actMults={'Sedentario':28,'Lievemente':30,'Moderatamente':33,'Molto':36};
+  var mult=Object.keys(actMults).find(function(k){return act.includes(k);});
+  var tdee=Math.round(parseFloat(weight)*(actMults[mult]||30));
+
+  var prompt='Sei un nutrizionista sportivo certificato e personal trainer. Crea un piano alimentare DETTAGLIATO per:\n\n'
+    +'CLIENTE: '+name+'\nOBIETTIVO: '+goal+'\nPESO: '+weight+'kg · ALTEZZA: '+height+'cm · ETÀ: '+age+'\n'
+    +'ATTIVITÀ: '+act+'\nTDEE STIMATO: '+tdee+' kcal\nSTRUTTURA: '+_trMeals+'\nPREFERENZE: '+pref+'\n\n'
+    +'FORMATO RICHIESTO:\n'
+    +'1. CALCOLO TDEE E MACROS OBIETTIVO (con formula Harris-Benedict + fattore attività)\n'
+    +'2. DISTRIBUZIONE MACROS: proteine, carboidrati, grassi in grammi\n'
+    +'3. PIANO ALIMENTARE SETTIMANALE — 7 giorni completi:\n'
+    +'   Per ogni giorno specifica TUTTI i pasti ('+_trMeals+') con:\n'
+    +'   - Alimenti e grammature in grammi\n'
+    +'   - Macros e calorie per pasto\n'
+    +'   - Timing rispetto all\'allenamento (pre/post workout)\n'
+    +'4. LISTA SPESA settimanale\n'
+    +'5. 5 CONSIGLI PRATICI personalizzati\n\n'
+    +'Sii PRECISO con le grammature. Varia i pasti ogni giorno. Rispondi in italiano.';
+
+  try{
+    var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:3500,messages:[{role:'user',content:prompt}]})});
+    var data=await r.json();
+    var txt=((data.content||[]).find(function(b){return b.type==='text';})||{}).text||'Errore.';
+    out.innerHTML='<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:16px;overflow:hidden">'
+      +'<div style="padding:14px 18px;border-bottom:1px solid #1e1e2e;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">'
+      +'<div><span style="font-weight:700;color:#f1f5f9">Piano: '+name+'</span>'
+      +'<span style="margin-left:8px;font-size:.75rem;color:#0fd6c2;background:rgba(5,150,105,.1);padding:2px 8px;border-radius:50px">'+goal+'</span>'
+      +'<span style="margin-left:6px;font-size:.75rem;color:#475569">TDEE ~'+tdee+' kcal</span></div>'
+      +'<div style="display:flex;gap:7px">'
+      +'<button onclick="_trCopyTxt(\'_dt_txt\')" style="padding:7px 12px;background:rgba(5,150,105,.1);border:1px solid rgba(5,150,105,.2);border-radius:8px;color:#0fd6c2;cursor:pointer;font-size:.78rem">\uD83D\uDCCB Copia</button>'
+      +'<button onclick="if(typeof toast===\'function\')toast(\'PDF in preparazione...\',\'success\')" style="padding:7px 12px;background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.2);border-radius:8px;color:#f97316;cursor:pointer;font-size:.78rem">\uD83D\uDCC4 PDF</button>'
+      +'<button onclick="_trSendSched(\''+name+'\')" style="padding:7px 12px;background:rgba(245,196,66,.1);border:1px solid rgba(245,196,66,.2);border-radius:8px;color:#f5c842;cursor:pointer;font-size:.78rem">\uD83D\uDCE4 Invia</button>'
+      +'</div></div>'
+      +'<div id="_dt_txt" style="padding:18px 20px;white-space:pre-wrap;font-size:.83rem;color:#94a3b8;line-height:1.9;max-height:550px;overflow-y:auto;font-family:\'Courier New\',monospace">'+txt+'</div>'
+      +'</div>';
+  }catch(e){out.innerHTML='<div style="color:#f87171;padding:16px">Errore: '+e.message+'</div>';}
+  if(btn) btn.disabled=false;
+};
+
+// === AI RICETTE ===
+window._trGenRicette = async function(){
+  var type=(document.getElementById('_rc_type')||{}).value||'Pranzo post-workout';
+  var kcal=(document.getElementById('_rc_kcal')||{}).value||'600';
+  var prot=(document.getElementById('_rc_prot')||{}).value||'40';
+  var ingr=(document.getElementById('_rc_ingr')||{}).value||'';
+  var out=document.getElementById('_rc_result');
+  var btn=document.getElementById('_rc_btn');
+  if(!out) return;
+  out.innerHTML='<div style="padding:24px;text-align:center;color:#64748b">\uD83D\uDCDA Generando ricette...</div>';
+  if(btn) btn.disabled=true;
+  var prompt='Sei un nutrizionista sportivo e chef fitness. Crea '+_trRecipeCount+' di tipo "'+type+'".\n\n'
+    +'TARGET NUTRIZIONALE: ~'+kcal+' kcal, ~'+prot+'g proteine\n'
+    +(ingr?'INGREDIENTI/PREFERENZE: '+ingr+'\n':'')+'\n'
+    +'Per ogni ricetta includi:\n'
+    +'- NOME della ricetta (creativo ma pratico)\n'
+    +'- INGREDIENTI con grammature precise\n'
+    +'- VALORI NUTRIZIONALI (kcal, P, C, G)\n'
+    +'- PREPARAZIONE step by step (max 6 step)\n'
+    +'- TEMPO: preparazione e cottura\n'
+    +'- CONSIGLIO dello chef\n'
+    +'Tono pratico, per uno sportivo che cucina in poco tempo. Rispondi in italiano.';
+  try{
+    var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2500,messages:[{role:'user',content:prompt}]})});
+    var data=await r.json();
+    var txt=((data.content||[]).find(function(b){return b.type==='text';})||{}).text||'Errore.';
+    out.innerHTML='<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:16px;overflow:hidden">'
+      +'<div style="padding:12px 16px;border-bottom:1px solid #1e1e2e;display:flex;justify-content:space-between">'
+      +'<span style="font-weight:700;color:#f97316">\uD83D\uDCDA '+_trRecipeCount+' — '+type+'</span>'
+      +'<button onclick="_trCopyTxt(\'_rc_txt\')" style="padding:5px 10px;background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.2);border-radius:7px;color:#f97316;cursor:pointer;font-size:.75rem">\uD83D\uDCCB Copia</button>'
+      +'</div>'
+      +'<div id="_rc_txt" style="padding:16px 18px;white-space:pre-wrap;font-size:.83rem;color:#94a3b8;line-height:1.8;max-height:450px;overflow-y:auto;font-family:\'Courier New\',monospace">'+txt+'</div>'
+      +'</div>';
+  }catch(e){out.innerHTML='<div style="color:#f87171;padding:16px">Errore: '+e.message+'</div>';}
+  if(btn) btn.disabled=false;
+};
+
+// === AI INTEGRATORI ===
+window._trGenIntegr = async function(){
+  var goal=(document.getElementById('_ig_goal')||{}).value||'Massa muscolare';
+  var budget=(document.getElementById('_ig_budget')||{}).value||'50';
+  var out=document.getElementById('_ig_result');
+  var btn=document.getElementById('_ig_btn');
+  if(!out) return;
+  out.innerHTML='<div style="padding:24px;text-align:center;color:#64748b">\uD83D\uDC8A Generando protocollo...</div>';
+  if(btn) btn.disabled=true;
+  var prompt='Sei un nutrizionista sportivo certificato. Crea un protocollo integratori BASATO SULL\'EVIDENZA per:\n'
+    +'OBIETTIVO: '+goal+'\nBUDGET: €'+budget+'/mese\n\n'
+    +'Per ogni integratore specifica:\n'
+    +'- Nome e forma migliore (es. Creatina monoidrato)\n'
+    +'- Dosaggio e timing (pre/post/durante allenamento)\n'
+    +'- Evidenza scientifica (A/B/C)\n'
+    +'- Costo mensile approssimativo\n'
+    +'- Brand raccomandati budget e premium\n\n'
+    +'Dividi in: FONDAMENTALI · UTILI · OPZIONALI\n'
+    +'Sii onesto: escludi integratori senza evidenza. Budget totale ≤€'+budget+'. Rispondi in italiano.';
+  try{
+    var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,messages:[{role:'user',content:prompt}]})});
+    var data=await r.json();
+    var txt=((data.content||[]).find(function(b){return b.type==='text';})||{}).text||'Errore.';
+    out.innerHTML='<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:16px;overflow:hidden">'
+      +'<div style="padding:12px 16px;border-bottom:1px solid #1e1e2e"><span style="font-weight:700;color:#818cf8">\uD83D\uDC8A Protocollo: '+goal+'</span></div>'
+      +'<div id="_ig_txt" style="padding:16px 18px;white-space:pre-wrap;font-size:.83rem;color:#94a3b8;line-height:1.8;max-height:450px;overflow-y:auto;font-family:\'Courier New\',monospace">'+txt+'</div>'
+      +'</div>';
+  }catch(e){out.innerHTML='<div style="color:#f87171;padding:16px">Errore: '+e.message+'</div>';}
+  if(btn) btn.disabled=false;
+};
+
+// === ANAMNESI ===
+window._trSaveAnam = function(){
+  var clientId=(document.getElementById('_an_client')||{}).value;
+  if(!clientId){if(typeof toast==='function')toast('Seleziona un cliente','error');return;}
+  var data={
+    age:(document.getElementById('_an_age')||{}).value,
+    height:(document.getElementById('_an_height')||{}).value,
+    weight:(document.getElementById('_an_weight')||{}).value,
+    bf:(document.getElementById('_an_bf')||{}).value,
+    goal:(document.getElementById('_an_goal')||{}).value,
+    level:(document.getElementById('_an_level')||{}).value,
+    activity:(document.getElementById('_an_activity')||{}).value,
+    diet:(document.getElementById('_an_diet')||{}).value,
+    sleep:(document.getElementById('_an_sleep')||{}).value,
+    habits:(document.getElementById('_an_habits')||{}).value,
+    pr_bench:(document.getElementById('_an_pr_bench')||{}).value,
+    pr_squat:(document.getElementById('_an_pr_squat')||{}).value,
+    pr_dead:(document.getElementById('_an_pr_dead')||{}).value,
+    pr_ohp:(document.getElementById('_an_pr_ohp')||{}).value,
+    notes:(document.getElementById('_an_notes')||{}).value,
+  };
+  _trSaveAnamnesi(clientId,data);
+  if(typeof toast==='function') toast('Anamnesi salvata! \uD83D\uDCBE','success');
+};
+
+window._trAnamToAI = function(){
+  var clientId=(document.getElementById('_an_client')||{}).value;
+  var an=clientId?_trGetAnamnesi(clientId):null;
+  if(an){
+    var nameEl=document.getElementById('_sa_name');
+    if(nameEl){var cl=_TR_DEMO_CLIENTS.find(function(c){return c.id===clientId;});if(cl)nameEl.value=cl.name+' '+cl.surname;}
+    var ageEl=document.getElementById('_sa_age'); if(ageEl&&an.age) ageEl.value=an.age;
+    var wEl=document.getElementById('_sa_weight'); if(wEl&&an.weight) wEl.value=an.weight;
+    var hEl=document.getElementById('_sa_height'); if(hEl&&an.height) hEl.value=an.height;
+  }
+  tDGo('schede');
+  if(typeof toast==='function') toast('Dati anamnesi caricati nella scheda AI!','success');
+};
+
+window._trSendAnamLink = function(){
+  var email=(document.getElementById('_an_send_email')||{}).value;
+  var clientSel=document.getElementById('_an_send_client');
+  var target=email||(clientSel?clientSel.options[clientSel.selectedIndex]&&clientSel.options[clientSel.selectedIndex].text:'');
+  if(!target||target==='Seleziona...'){if(typeof toast==='function')toast('Inserisci email o seleziona cliente','error');return;}
+  if(typeof toast==='function') toast('Questionario inviato a '+target+'! Riceverà il link entro pochi secondi \uD83D\uDCE7','success');
+};
+
+// Log viewer
+window._trOpenLog = function(idx){
+  var sessions=[
+    {day:0,time:'09:00',cl:_TR_DEMO_CLIENTS[0],type:'Petto & Tricipiti',dur:65,
+     exercises:[{name:'Panca Piana Bilanciere',sets:'4×8',weight:'90kg',rpe:8},{name:'Panca Inclinata Manubri',sets:'3×10',weight:'30kg',rpe:7},{name:'Croci Cavi',sets:'3×12',weight:'15kg',rpe:7},{name:'French Press',sets:'4×10',weight:'30kg',rpe:8},{name:'Pushdown Cavo',sets:'3×15',weight:'20kg',rpe:7}],completed:true},
+  ];
+  var s=sessions[idx];
+  if(!s) return;
+  var det=document.getElementById('_cal_session_detail');
+  if(!det) return;
+  det.style.display='block';
+  det.innerHTML=_trLogCard(s);
+};
+
+window._trLogFilter = function(cid){
+  if(typeof toast==='function') toast('Filtro per cliente attivo','success');
+};
+
+// Helpers
+window._trCopyTxt = function(id){
+  var el=document.getElementById(id);
+  if(el&&navigator.clipboard) navigator.clipboard.writeText(el.textContent).then(function(){if(typeof toast==='function')toast('Copiato! \uD83D\uDCCB','success');});
+};
+
+window._trSendSched = function(name){
+  if(typeof toast==='function') toast('Inviato a '+name+' via chat! \uD83D\uDCE4','success');
+};
+
+window._trLoadInEditor = function(cid,sid){
+  var schede=_trGetSchede(cid);
+  var s=schede.find(function(x){return x.id===sid;});
+  if(s){var inp=document.getElementById('_se_input');if(inp)inp.value=s.content||'';}
+  tDGo('schede');
+  setTimeout(function(){_tSchedeTab('editor');},100);
+};
+
+window._trCopyScheda = function(cid,sid){
+  var schede=_trGetSchede(cid);
+  var s=schede.find(function(x){return x.id===sid;});
+  if(s&&navigator.clipboard) navigator.clipboard.writeText(s.content||'').then(function(){if(typeof toast==='function')toast('Scheda copiata!','success');});
+};
+
+window._trSendScheda = function(name){
+  if(typeof toast==='function') toast('Scheda inviata a '+name+'!','success');
+};
+
+// === COSTRUTTORE MANUALE ===
+var _bldDays=[{name:'Giorno A',exercises:[]}];
+var _bldCurrentDay=0;
+var _bldFilteredEx=[];
+
+window._bldFilter = function(){
+  var q=((document.getElementById('_bld_search')||{}).value||'').toLowerCase();
+  var m=((document.getElementById('_bld_muscle')||{}).value||'').toLowerCase();
+  var exs=_trExercises();
+  _bldFilteredEx=exs.filter(function(ex){
+    if(q&&!(ex.name||'').toLowerCase().includes(q)) return false;
+    if(m&&(ex.muscle||'').toLowerCase()!==m) return false;
+    return true;
+  }).slice(0,50);
+  var list=document.getElementById('_bld_exlist');
+  if(!list) return;
+  list.innerHTML=_bldFilteredEx.map(function(ex,i){
+    return '<div onclick="_bldAddEx('+i+')" style="padding:8px 10px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04);transition:.12s" '
+      +'onmouseenter="this.style.background=\'rgba(99,102,241,.08)\'" onmouseleave="this.style.background=\'none\'">'
+      +'<div style="font-size:.82rem;font-weight:600;color:#94a3b8">'+ex.name+'</div>'
+      +'<div style="font-size:.7rem;color:#475569">'+ex.muscle+'</div>'
+      +'</div>';
+  }).join('');
+};
+
+window._bldSetDay = function(idx){
+  _bldCurrentDay=idx;
+  document.querySelectorAll('[id^="_bld_day_"]').forEach(function(b,i){
+    b.style.background=i===idx?'rgba(99,102,241,.2)':'transparent';
+    b.style.color=i===idx?'#818cf8':'#64748b';
+    b.style.border=i===idx?'none':'1px solid #2a2a3e';
+  });
+  _bldRenderExercises();
+};
+
+window._bldAddDay = function(){
+  var alpha=['A','B','C','D','E','F'];
+  _bldDays.push({name:'Giorno '+alpha[_bldDays.length],exercises:[]});
+  var bar=document.getElementById('_bld_days');
+  if(bar){
+    var idx=_bldDays.length-1;
+    var btn=document.createElement('button');
+    btn.id='_bld_day_'+idx;
+    btn.textContent=_bldDays[idx].name;
+    btn.onclick=function(){window._bldSetDay(idx);};
+    btn.style.cssText='padding:6px 14px;border-radius:8px;border:1px solid #2a2a3e;background:transparent;color:#64748b;cursor:pointer;font-size:.82rem;white-space:nowrap';
+    bar.insertBefore(btn,bar.lastElementChild);
+  }
+  _bldSetDay(_bldDays.length-1);
+};
+
+window._bldAddEx = function(i){
+  var ex=_bldFilteredEx[i];
+  if(!ex) return;
+  _bldDays[_bldCurrentDay].exercises.push({name:ex.name,sets:4,reps:'8-10',weight:'',rest:90,notes:''});
+  _bldRenderExercises();
+};
+
+window._bldAddEmpty = function(){
+  _bldDays[_bldCurrentDay].exercises.push({name:'Esercizio personalizzato',sets:3,reps:'10',weight:'',rest:60,notes:''});
+  _bldRenderExercises();
+};
+
+function _bldRenderExercises(){
+  var cont=document.getElementById('_bld_exercises');
+  if(!cont) return;
+  var day=_bldDays[_bldCurrentDay];
+  if(!day||!day.exercises.length){
+    cont.innerHTML='<div style="padding:40px;text-align:center;color:#475569;font-size:.85rem">'
+      +'<div style="font-size:2rem;margin-bottom:10px">\uD83D\uDCC4</div>'
+      +'Clicca un esercizio a sinistra per aggiungerlo<br>oppure usa "+ Esercizio vuoto"</div>';
+    return;
+  }
+  cont.innerHTML=day.exercises.map(function(ex,i){
+    return '<div style="background:#0d0d1a;border:1px solid #1e1e2e;border-radius:12px;padding:14px;margin-bottom:8px">'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'
+      +'<div style="width:24px;height:24px;border-radius:6px;background:rgba(99,102,241,.2);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:#818cf8;flex-shrink:0">'+(i+1)+'</div>'
+      +'<input value="'+ex.name+'" onchange="_bldUpdateEx('+i+',\'name\',this.value)" style="flex:1;padding:7px 10px;background:#12121e;border:1px solid #2a2a3e;border-radius:8px;color:#f1f5f9;font-size:.88rem;outline:none;font-weight:600">'
+      +'<button onclick="_bldRemoveEx('+i+')" style="width:26px;height:26px;border-radius:6px;background:rgba(248,113,113,.1);border:none;color:#f87171;cursor:pointer;flex-shrink:0;font-size:.9rem">\u00D7</button>'
+      +'</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:8px;align-items:end">'
+      +[
+        {k:'sets',l:'Serie',pl:'4',t:'number'},
+        {k:'reps',l:'Reps',pl:'8-10',t:'text'},
+        {k:'weight',l:'Carico',pl:'70kg / 70%1RM',t:'text'},
+        {k:'rest',l:'Rec (sec)',pl:'90',t:'number'},
+      ].map(function(f){
+        return '<div><label style="font-size:.68rem;color:#475569;display:block;margin-bottom:3px">'+f.l+'</label>'
+          +'<input type="'+f.t+'" value="'+(ex[f.k]||'')+'" placeholder="'+f.pl+'" onchange="_bldUpdateEx('+i+',\''+f.k+'\',this.value)" '
+          +'style="width:100%;padding:8px;background:#12121e;border:1px solid #2a2a3e;border-radius:8px;color:#f1f5f9;font-size:13px;outline:none;box-sizing:border-box"></div>';
+      }).join('')
+      +'<div style="display:flex;gap:4px">'
+      +'<button onclick="_bldMoveEx('+i+',-1)" style="width:26px;height:34px;border-radius:6px;background:rgba(99,102,241,.1);border:none;color:#818cf8;cursor:pointer;font-size:.75rem">↑</button>'
+      +'<button onclick="_bldMoveEx('+i+',1)" style="width:26px;height:34px;border-radius:6px;background:rgba(99,102,241,.1);border:none;color:#818cf8;cursor:pointer;font-size:.75rem">↓</button>'
+      +'</div></div>'
+      +'<input value="'+(ex.notes||'')+'" placeholder="Note tecniche (opzionale)..." onchange="_bldUpdateEx('+i+',\'notes\',this.value)" '
+      +'style="width:100%;margin-top:8px;padding:7px 10px;background:#12121e;border:1px solid #2a2a3e;border-radius:8px;color:#64748b;font-size:.8rem;outline:none;box-sizing:border-box">'
+      +'</div>';
+  }).join('');
+}
+
+window._bldUpdateEx = function(i,k,v){_bldDays[_bldCurrentDay].exercises[i][k]=v;};
+window._bldRemoveEx = function(i){_bldDays[_bldCurrentDay].exercises.splice(i,1);_bldRenderExercises();};
+window._bldMoveEx = function(i,dir){
+  var exs=_bldDays[_bldCurrentDay].exercises;
+  var j=i+dir;
+  if(j<0||j>=exs.length) return;
+  var tmp=exs[i];exs[i]=exs[j];exs[j]=tmp;
+  _bldRenderExercises();
+};
+
+window._bldSave = function(){
+  var name=(document.getElementById('_bld_sname')||{}).value||'Scheda';
+  var clientSel=document.getElementById('_bld_client');
+  var clientId=clientSel?clientSel.value:'';
+  if(clientId){
+    var content=_bldDays.map(function(d){
+      return d.name+'\n'+d.exercises.map(function(ex,i){
+        return (i+1)+'. '+ex.name+' — '+ex.sets+'×'+ex.reps+(ex.weight?' @ '+ex.weight:'')+' — Rec: '+ex.rest+'s'+(ex.notes?'\n   Note: '+ex.notes:'');
+      }).join('\n');
+    }).join('\n\n');
+    _trSaveScheda(clientId,{name:name,goal:'Manuale',days:_bldDays.length,content:content});
+  }
+  if(typeof toast==='function') toast('Scheda "'+name+'" salvata! \uD83D\uDCBE','success');
+};
+
+window._bldExport = function(){
+  var txt=_bldDays.map(function(d){
+    return '=== '+d.name+' ===\n'+d.exercises.map(function(ex,i){
+      return (i+1)+'. '+ex.name+'\n   Serie: '+ex.sets+' × '+ex.reps+(ex.weight?'\n   Carico: '+ex.weight:'')+'\n   Recupero: '+ex.rest+'s'+(ex.notes?'\n   Note: '+ex.notes:'');
+    }).join('\n\n');
+  }).join('\n\n\n');
+  if(navigator.clipboard) navigator.clipboard.writeText(txt).then(function(){if(typeof toast==='function')toast('Scheda esportata negli appunti!','success');});
+};
+
+// Initialize exercise list when builder opens
+window._bldInitExList = function(){
+  _bldFilteredEx=_trExercises().slice(0,50);
+  var list=document.getElementById('_bld_exlist');
+  if(!list) return;
+  list.innerHTML=_bldFilteredEx.map(function(ex,i){
+    return '<div onclick="_bldAddEx('+i+')" style="padding:8px 10px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04);transition:.12s" '
+      +'onmouseenter="this.style.background=\'rgba(99,102,241,.08)\'" onmouseleave="this.style.background=\'none\'">'
+      +'<div style="font-size:.82rem;font-weight:600;color:#94a3b8">'+ex.name+'</div>'
+      +'<div style="font-size:.7rem;color:#475569">'+ex.muscle+'</div>'
+      +'</div>';
+  }).join('');
+  _bldRenderExercises();
+  // Populate client select in builder
+  var cs=document.getElementById('_bld_client');
+  if(cs&&_TR_DEMO_CLIENTS){
+    _TR_DEMO_CLIENTS.forEach(function(cl){
+      var o=document.createElement('option');o.value=cl.id;o.textContent=cl.name+' '+cl.surname;cs.appendChild(o);
+    });
   }
 };
 
-window.tGenScheda=function(){
-  var nm=(document.getElementById('_sc_nm')||{}).value||'Cliente';
-  var gl=(document.getElementById('_sc_gl')||{}).value||'Ipertrofia';
-  var lv=(document.getElementById('_sc_lv')||{}).value||'Intermedio';
-  var d=(document.getElementById('_sc_d')||{}).value||'4';
-  var out=document.getElementById('_sc_out');
-  if(!out)return;
-  out.innerHTML='<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:14px;padding:24px;text-align:center;color:#64748b">\u26a1 Generando...</div>';
-  fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:'Scheda allenamento per '+nm+'. Obiettivo: '+gl+', Livello: '+lv+', '+d+' gg/sett. Rispondi in italiano con esercizi, serie, reps, recupero.'}]})})
-  .then(function(r){return r.json();}).then(function(data){
-    var txt=((data.content||[]).find(function(b){return b.type==='text';})||{}).text||'Errore';
-    var pre=document.createElement('pre');
-    pre.style.cssText='background:#12121e;border:1px solid #1e1e2e;border-radius:14px;padding:20px;white-space:pre-wrap;font-size:.85rem;color:#94a3b8;line-height:1.7;font-family:inherit';
-    pre.textContent=txt;out.innerHTML='';out.appendChild(pre);
-  }).catch(function(e){out.innerHTML='<div style="color:#f87171;padding:20px">Errore: '+e.message+'</div>';});
-};
 
-/* ── OVERRIDE GLOBALI ── */
-// Override TUTTE le funzioni trainer che i bottoni chiamano
-window.openTrainerLogin=tOpenLogin;
-window.openTrainerReg=tOpenReg;
-window.openTrainerDash=tOpenDash;
-window.closeTrainerArea=tClose;
-window.trOpenLogin=tOpenLogin;
-window.trOpenReg=tOpenReg;
-window.trOpenDash=tOpenDash;
-window.trClose=tClose;
-window.trLogin=window.tLogin;
-window.trReg=window.tReg;
-window.trLogout=window.tLogout;
-window.trdGo=window.tDGo;
-window.trainerLoginAction=window.tLogin;
-window.trainerRegAction=window.tReg;
-window.trainerLogoutAction=window.tLogout;
-
-// mvBecomeTrainer
-window.mvBecomeTrainer=function(){
-  tOpenReg();
-  setTimeout(function(){if(typeof closeMarketplaceOverlay==='function')closeMarketplaceOverlay();},100);
-};
-
-// Override showPage per trainer
-var _sp0=window.showPage;
-window.showPage=function(id,sub){
-  if(id==='pg-trainer-login'||id==='pg-trainer-dash'&&!tLoad()){tOpenLogin();return;}
-  if(id==='pg-trainer-reg'){tOpenReg();return;}
-  if(id==='pg-trainer-dash'){tOpenDash();return;}
-  if(id==='pg-owner'){openOwnerOverlay();return;}
-  if(typeof _sp0==='function')_sp0(id,sub);
-};
-
-// ESC
-document.addEventListener('keydown',function(ev){
-  if(ev.key==='Escape') tHideAll();
-});
-
-console.log('[Trainer v3] Sistema pronto. openTrainerLogin=',typeof openTrainerLogin);
 })();
 
 /* LIBRERIA DASH */
