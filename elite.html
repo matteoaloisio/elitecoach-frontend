@@ -2451,23 +2451,7 @@ function openMarketplaceOverlay(){
 }
 
 // Override openTrainerLogin to use dynamic creation
-function openTrainerLogin(){
-  var ids = ['trainer-reg-overlay','trainer-dash-overlay','marketplace-overlay'];
-  ids.forEach(function(id){ var o=document.getElementById(id); if(o) o.style.display='none'; });
-  var el = document.getElementById('trainer-login-overlay');
-  if(!el){
-    console.log('[Trainer] Creo login overlay dinamicamente...');
-    el = ensureOverlay('trainer-login-overlay', buildTrainerLoginHTML(), {zIndex:'999999'});
-  }
-  el.style.display = 'block';
-  el.style.position = 'fixed';
-  el.style.top = '0'; el.style.left = '0'; el.style.right = '0'; el.style.bottom = '0';
-  el.style.width = '100%'; el.style.height = '100%';
-  el.style.zIndex = '999999';
-  el.style.background = '#0b0b14';
-  el.style.overflowY = 'auto';
-  setTimeout(function(){var e=document.getElementById('tlov-email'); if(e)e.focus();}, 300);
-}
+function openTrainerLogin(){ if(typeof trOpenLogin==="function"){trOpenLogin();}else{console.error("[Trainer] trOpenLogin non trovata");} }
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -15488,109 +15472,17 @@ function buildTrainerRegHTML(){
   '</div>';
 }
 
-function openTrainerReg(){
-  var el = document.getElementById('trainer-reg-overlay');
-  if(!el){
-    el = ensureOverlay('trainer-reg-overlay', buildTrainerRegHTML(), {zIndex:'999999'});
-  }
-  ['trainer-login-overlay','trainer-dash-overlay'].forEach(function(id){
-    var o=document.getElementById(id); if(o) o.style.display='none';
-  });
-  el.style.display = 'block';
-  el.style.position = 'fixed';
-  el.style.top = '0'; el.style.left = '0'; el.style.right = '0'; el.style.bottom = '0';
-  el.style.width = '100%'; el.style.height = '100%';
-  el.style.zIndex = '999999';
-  el.style.background = '#0b0b14';
-  el.style.overflowY = 'auto';
-}
+function openTrainerReg(){ if(typeof trOpenReg==="function"){trOpenReg();}else{console.error("[Trainer] trOpenReg non trovata");} }
 
-function openTrainerDash(){
-  var tr = window.TR_SESSION || getTrainerSession();
-  if(!tr){ openTrainerLogin(); return; }
-  var el = document.getElementById('trainer-dash-overlay');
-  if(!el){ console.error('trainer-dash-overlay NOT FOUND'); return; }
-  var other = ['trainer-login-overlay','trainer-reg-overlay'];
-  other.forEach(function(id){ var o=document.getElementById(id); if(o) o.style.display='none'; });
-  el.style.display = 'block';
-  el.style.position = 'fixed';
-  el.style.top = '0';
-  el.style.left = '0';
-  el.style.right = '0';
-  el.style.bottom = '0';
-  el.style.width = '100%';
-  el.style.height = '100%';
-  el.style.zIndex = '999998';
-  el.style.background = '#0b0b14';
-  el.style.overflow = 'hidden';
-  trdInit(tr);
-}
+function openTrainerDash(){ if(typeof trOpenDash==="function"){trOpenDash();}else{console.error("[Trainer] trOpenDash non trovata");} }
 
-function closeTrainerArea(){
-  ['trainer-login-overlay','trainer-reg-overlay','trainer-dash-overlay'].forEach(function(id){
-    var el = document.getElementById(id);
-    if(el) el.style.display = 'none';
-  });
-  document.body.style.overflow = '';
-  document.documentElement.style.overflow = '';
-}
+function closeTrainerArea(){ if(typeof trClose==="function"){trClose();}else{["trainer-login-overlay","trainer-reg-overlay","trainer-dash-overlay","tr-ov-login","tr-ov-reg","tr-ov-dash"].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display="none";});document.body.style.overflow="";} }
 
-async function trainerLoginAction(){
-  var emailEl=document.getElementById('tlov-email'),passEl=document.getElementById('tlov-pass');
-  var errEl=document.getElementById('tlov-err'),btn=document.getElementById('tlov-btn');
-  var email=(emailEl?emailEl.value:'').trim().toLowerCase();
-  var pass=passEl?passEl.value:'';
-  if(errEl)errEl.style.display='none';
-  if(!email||!pass){if(errEl){errEl.textContent='Inserisci email e password.';errEl.style.display='block';}return;}
-  if(btn){btn.disabled=true;btn.textContent='Accesso in corso...';}
-  
-  try{
-    var res=await fetch(SERVER_URL+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pass})});
-    var data=await res.json();
-    if(data.token&&data.user){
-      var td=data.user;td.pass=pass;if(!td.name)td.name=email.split('@')[0];
-      saveTrainerSession(td);window.TR_SESSION=td;
-      closeTrainerArea();openTrainerDash();
-      toast('Bentornato '+td.name+'!','success');
-      if(btn){btn.disabled=false;btn.textContent='Accedi';}return;
-    }
-  }catch(e){}
-  
-  var trainer=getTrainerByEmail(email);
-  if(!trainer){var demos=seedDemoTrainers();trainer=demos.find(function(d){return d.email===email;})||null;}
-  if(!trainer){if(errEl){errEl.textContent='Trainer non trovato. Registrati prima.';errEl.style.display='block';}if(btn){btn.disabled=false;btn.textContent='Accedi';}return;}
-  var ok=trainer.pass===pass||(email.endsWith('@demo.it')&&pass==='demo123');
-  if(!ok){if(errEl){errEl.textContent='Password non corretta.';errEl.style.display='block';}if(btn){btn.disabled=false;btn.textContent='Accedi';}return;}
-  saveTrainerSession(trainer);window.TR_SESSION=trainer;
-  closeTrainerArea();openTrainerDash();
-  toast('Bentornato '+trainer.name+'!','success');
-  if(btn){btn.disabled=false;btn.textContent='Accedi';}
-}
+async function trainerLoginAction(){ if(typeof trLogin==="function") trLogin(); }
 
-function trainerRegAction(){
-  var n=(document.getElementById('trov-name')||{}).value||'';
-  var sn=(document.getElementById('trov-surname')||{}).value||'';
-  var em=((document.getElementById('trov-email')||{}).value||'').trim().toLowerCase();
-  var pw=(document.getElementById('trov-pass')||{}).value||'';
-  var bio=(document.getElementById('trov-bio')||{}).value||'';
-  var price=parseInt((document.getElementById('trov-price')||{}).value||'89')||89;
-  var specs=Array.from(document.querySelectorAll('#trov-specs input:checked')).map(function(i){return i.value;});
-  var err=document.getElementById('trov-err');
-  if(err)err.style.display='none';
-  n=n.trim();sn=sn.trim();
-  if(!n||!em||!pw){if(err){err.textContent='Nome, email e password obbligatori.';err.style.display='block';}return;}
-  if(pw.length<8){if(err){err.textContent='Password minimo 8 caratteri.';err.style.display='block';}return;}
-  if(getTrainerByEmail(em)){if(err){err.textContent='Email gia registrata.';err.style.display='block';}return;}
-  var cols=['linear-gradient(135deg,#1a1aff,#0fd6c2)','linear-gradient(135deg,#6a11cb,#8b5cf6)','linear-gradient(135deg,#f97316,#ef4444)','linear-gradient(135deg,#ec4899,#8b5cf6)','linear-gradient(135deg,#059669,#0fd6c2)'];
-  var nt={name:n,surname:sn,email:em,pass:pw,bio:bio||'Trainer certificato',specializations:specs.length?specs:['Fitness'],price:price,rating:5.0,reviews:0,photo:(n[0]||'T')+(sn[0]||''),color:cols[Math.floor(Math.random()*cols.length)],status:'active',clients:[],joined:new Date().toISOString()};
-  addTrainer(nt);saveTrainerSession(nt);window.TR_SESSION=nt;
-  closeTrainerArea();openTrainerDash();
-  toast('Benvenuto '+n+'! Profilo creato!','success');
-}
+function trainerRegAction(){ if(typeof trReg==="function") trReg(); }
 
-function trainerLogoutAction(){
-  clearTrainerSession();window.TR_SESSION=null;closeTrainerArea();toast('Arrivederci!','success');
-}
+function trainerLogoutAction(){ if(typeof trLogout==="function") trLogout(); }
 
 function mvRender(){
   var grid = document.getElementById('mv-grid');
@@ -15655,12 +15547,7 @@ function mvContactByIdx(idx2){
   mvContact(tr.email||'');
 }
 
-function mvBecomeTrainer(){
-  // Prima apri la registrazione (la crea se non esiste), POI chiudi marketplace
-  openTrainerReg();
-  // Chiudi marketplace con piccolo ritardo per evitare flash
-  setTimeout(function(){ closeMarketplaceOverlay(); }, 50);
-}
+function mvBecomeTrainer(){ if(typeof trOpenReg==="function"){trOpenReg();}setTimeout(function(){if(typeof closeMarketplaceOverlay==="function")closeMarketplaceOverlay();},50); }
 
 function mvCloseProfile(){
   document.getElementById('mv-profile').style.display = 'none';
@@ -17845,73 +17732,332 @@ window.showTermsModal=window.openTermini;
 window.showPrivacyModal=window.openPrivacy;
 })();
 </script>
+<script>
+/* ═══ TRAINER SYSTEM v3 — tutto dinamico, zero HTML statico ═══ */
+(function(){
 
+/* ── Storage ── */
+var _TR=null;
+function tSave(d){try{localStorage.setItem('_ts',JSON.stringify(d));}catch(e){}  _TR=d;}
+function tLoad(){if(_TR)return _TR;try{var s=localStorage.getItem('_ts');return s?JSON.parse(s):null;}catch(e){return null;}}
+function tClear(){try{localStorage.removeItem('_ts');}catch(e){}  _TR=null;}
 
-<div id="trainer-login-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;z-index:999999;background:#0d0d12;overflow-y:auto;-webkit-overflow-scrolling:touch">
-  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px">
-    <div style="width:100%;max-width:420px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:32px">
-        <div><h1 style="font-family:sans-serif;font-size:1.7rem;font-weight:800;margin:0 0 4px;color:#f1f5f9">Area Trainer</h1><p style="color:#94a3b8;font-size:.88rem;margin:0">Accedi al pannello professionale</p></div>
-        <button onclick="closeTrainerArea()" style="background:#1e1e2e;border:1px solid #3d3d5c;border-radius:10px;padding:8px 18px;color:#94a3b8;cursor:pointer;font-size:14px;font-weight:600">✕ Chiudi</button>
-      </div>
-      <div class="card" style="padding:28px 24px;margin-bottom:14px">
-        <div style="margin-bottom:16px"><label style="font-size:.8rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">Email</label><input class="inp" id="tlov-email" type="email" placeholder="trainer@email.com" style="width:100%" onkeydown="if(event.key==='Enter')trainerLoginAction()"></div>
-        <div style="margin-bottom:20px"><label style="font-size:.8rem;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">Password</label><input class="inp" id="tlov-pass" type="password" placeholder="... " style="width:100%" onkeydown="if(event.key==='Enter')trainerLoginAction()"></div>
-        <div id="tlov-err" style="display:none;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:10px 14px;color:var(--red);font-size:.85rem;margin-bottom:16px"></div>
-        <button id="tlov-btn" onclick="trainerLoginAction()" style="width:100%;padding:15px;background:linear-gradient(135deg,#6366f1,#818cf8);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;cursor:pointer">Accedi</button>
-        <p style="text-align:center;margin-top:14px;font-size:.85rem;color:var(--sub)">Non registrato? <a onclick="openTrainerReg()" style="color:var(--accent);cursor:pointer;font-weight:600">Diventa Trainer</a></p>
-      </div>
-      <div onclick="document.getElementById('tlov-email').value='marco.vitale@demo.it';document.getElementById('tlov-pass').value='demo123'" style="background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:12px;padding:12px 16px;cursor:pointer;text-align:center">
-        <div style="font-size:.78rem;color:var(--sub);margin-bottom:3px">Demo - clicca per compilare</div>
-        <div style="font-size:.85rem;color:var(--accent-xl);font-weight:600"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="86ebe7f4e5e9a8f0eff2e7eae3c6e2e3ebe9a8eff2">[email&#160;protected]</a> / demo123</div>
-      </div>
-    </div>
-  </div>
-</div>
+function tDemos(){return[
+  {name:'Marco',surname:'Vitale',email:'marco.vitale@demo.it',pass:'demo123',bio:'Bodybuilding e powerlifting. 8 anni di esperienza.',specs:['Bodybuilding','Powerlifting'],rating:4.9,price:89,ph:'MV',col:'linear-gradient(135deg,#1a1aff,#0fd6c2)',reviews:50,clients:[]},
+  {name:'Sofia',surname:'Russo',email:'sofia.russo@demo.it',pass:'demo123',bio:'Personal trainer CONI. Dimagrimento e tonificazione.',specs:['Dimagrimento','HIIT','Yoga'],rating:4.8,price:79,ph:'SR',col:'linear-gradient(135deg,#ec4899,#8b5cf6)',reviews:38,clients:[]},
+  {name:'Luca',surname:'Ferrari',email:'luca.ferrari@demo.it',pass:'demo123',bio:'CrossFit L2 certified. Ex atleta professionista.',specs:['CrossFit','Funzionale'],rating:4.7,price:99,ph:'LF',col:'linear-gradient(135deg,#f97316,#ef4444)',reviews:22,clients:[]}
+];}
+function tAll(){var dm=tDemos();try{var s=JSON.parse(localStorage.getItem('_ta')||'[]');if(!Array.isArray(s))return dm;dm.forEach(function(d){if(!s.find(function(x){return x.email===d.email;}))s.unshift(d);});return s.length?s:dm;}catch(e){return dm;}}
+function tAddUser(tr){var a=tAll();if(!a.find(function(t){return t.email===tr.email;}))a.push(tr);try{localStorage.setItem('_ta',JSON.stringify(a));}catch(e){}}
+function tFind(em){return tAll().find(function(t){return t.email===em;})||null;}
 
-<div id="trainer-reg-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;z-index:999999;background:#0d0d12;overflow-y:auto;-webkit-overflow-scrolling:touch">
-  <div style="max-width:560px;margin:0 auto;padding:28px 20px 60px">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px">
-      <div><h1 style="font-family:var(--font2);font-size:1.7rem;font-weight:800;margin:0 0 4px">Diventa Trainer</h1><p style="color:var(--sub);font-size:.88rem;margin:0">Raggiungi migliaia di clienti</p></div>
-      <button onclick="closeTrainerArea()" style="background:#1e1e2e;border:1px solid #3d3d5c;border-radius:10px;padding:8px 18px;color:#94a3b8;cursor:pointer;font-size:14px;font-weight:600">✕ Chiudi</button>
-    </div>
-    <div class="card" style="padding:24px 20px">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-        <div><label style="font-size:.8rem;font-weight:700;color:var(--sub);display:block;margin-bottom:6px">Nome *</label><input class="inp" id="trov-name" placeholder="Marco" style="width:100%"></div>
-        <div><label style="font-size:.8rem;font-weight:700;color:var(--sub);display:block;margin-bottom:6px">Cognome *</label><input class="inp" id="trov-surname" placeholder="Bianchi" style="width:100%"></div>
-      </div>
-      <div style="margin-bottom:12px"><label style="font-size:.8rem;font-weight:700;color:var(--sub);display:block;margin-bottom:6px">Email *</label><input class="inp" id="trov-email" type="email" style="width:100%"></div>
-      <div style="margin-bottom:12px"><label style="font-size:.8rem;font-weight:700;color:var(--sub);display:block;margin-bottom:6px">Password *</label><input class="inp" id="trov-pass" type="password" placeholder="Min 8 caratteri" style="width:100%"></div>
-      <div style="margin-bottom:12px"><label style="font-size:.8rem;font-weight:700;color:var(--sub);display:block;margin-bottom:6px">Bio</label><textarea class="inp" id="trov-bio" rows="3" placeholder="Esperienza, certificazioni..." style="resize:vertical;width:100%"></textarea></div>
-      <div style="margin-bottom:12px">
-        <label style="font-size:.8rem;font-weight:700;color:var(--sub);display:block;margin-bottom:8px">Specializzazioni</label>
-        <div style="display:flex;flex-wrap:wrap;gap:6px" id="trov-specs">
-          <label class="spec-chip"><input type="checkbox" value="Bodybuilding"> Bodybuilding</label>
-          <label class="spec-chip"><input type="checkbox" value="Powerlifting"> Powerlifting</label>
-          <label class="spec-chip"><input type="checkbox" value="CrossFit"> CrossFit</label>
-          <label class="spec-chip"><input type="checkbox" value="HIIT"> HIIT</label>
-          <label class="spec-chip"><input type="checkbox" value="Dimagrimento"> Dimagrimento</label>
-          <label class="spec-chip"><input type="checkbox" value="Nutrizione"> Nutrizione</label>
-          <label class="spec-chip"><input type="checkbox" value="Funzionale"> Funzionale</label>
-          <label class="spec-chip"><input type="checkbox" value="Yoga"> Yoga</label>
-          <label class="spec-chip"><input type="checkbox" value="Riabilitazione"> Riabilitazione</label>
-        </div>
-      </div>
-      <div style="margin-bottom:20px"><label style="font-size:.8rem;font-weight:700;color:var(--sub);display:block;margin-bottom:6px">Tariffa mensile (euro)</label><input class="inp" id="trov-price" type="number" placeholder="89" style="max-width:140px"></div>
-      <div id="trov-err" style="display:none;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:10px 14px;color:var(--red);font-size:.85rem;margin-bottom:16px"></div>
-      <button onclick="trainerRegAction()" style="width:100%;padding:15px;background:linear-gradient(135deg,#059669,#0fd6c2);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;cursor:pointer">Crea profilo Trainer</button>
-      <p style="text-align:center;font-size:.82rem;color:var(--sub);margin-top:12px">Hai un account? <a onclick="openTrainerLogin()" style="color:var(--accent);cursor:pointer">Accedi</a></p>
-    </div>
-  </div>
-</div>
+/* ── Create overlay helper ── */
+function mkOv(id,zIdx){
+  var el=document.getElementById(id);
+  if(el) return el;
+  el=document.createElement('div');
+  el.id=id;
+  el.style.cssText='display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#0b0b14;z-index:'+zIdx+';overflow-y:auto;-webkit-overflow-scrolling:touch';
+  document.body.appendChild(el);
+  return el;
+}
 
-<div id="trainer-dash-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;z-index:999998;background:#0d0d12;overflow:hidden">
-  <div style="position:sticky;top:0;height:56px;background:rgba(10,10,20,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:10">
-    <div style="display:flex;align-items:center;gap:12px">
-      <div id="trd-avatar" onclick="trdShowSec('profilo')" style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#0fd6c2);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;cursor:pointer;flex-shrink:0">T</div>
-      <div><div id="trd-name" style="font-weight:700;font-size:.88rem">Trainer</div><div style="font-size:.68rem;color:#0fd6c2">Online</div></div>
-    </div>
-    <div style="display:flex;gap:8px">
-      <button onclick="trdShowSec('chat')" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--sub);cursor:pointer;font-size:.82rem">Chat</button>
-      <button onclick="trainerLogoutAction()" style="background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:8px;padding:6px 14px;color:var(--red);cursor:pointer;font-size:.82rem">Esci</button>
-    </
+/* ── Hide all trainer overlays ── */
+function tHideAll(){
+  ['_tov_login','_tov_reg','_tov_dash'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.style.display='none';
+  });
+  document.body.style.overflow='';
+}
+
+/* ── OPEN LOGIN ── */
+function tOpenLogin(){
+  tHideAll();
+  var el=mkOv('_tov_login','999990');
+  el.innerHTML=
+    '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px">'+
+    '<div style="width:100%;max-width:420px">'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:32px">'+
+        '<div><h1 style="font-family:sans-serif;font-size:1.7rem;font-weight:800;margin:0 0 6px;color:#f1f5f9">Area Trainer</h1>'+
+        '<p style="color:#64748b;font-size:.88rem;margin:0">Accedi al pannello professionale</p></div>'+
+        '<button onclick="tClose()" style="background:#1e1e2e;border:1px solid #2a2a3e;border-radius:10px;padding:8px 16px;color:#94a3b8;cursor:pointer;font-size:.85rem">\u2715</button>'+
+      '</div>'+
+      '<div style="background:#12121e;border:1px solid #2a2a3e;border-radius:16px;padding:28px 24px;margin-bottom:14px">'+
+        '<div style="margin-bottom:16px">'+
+          '<label style="font-size:.78rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">Email</label>'+
+          '<input id="_t_em" type="email" placeholder="trainer@email.com" autocomplete="email" style="width:100%;padding:13px 14px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:16px;outline:none;box-sizing:border-box">'+
+        '</div>'+
+        '<div style="margin-bottom:20px">'+
+          '<label style="font-size:.78rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">Password</label>'+
+          '<input id="_t_pw" type="password" placeholder="..." style="width:100%;padding:13px 14px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:16px;outline:none;box-sizing:border-box">'+
+        '</div>'+
+        '<div id="_t_err" style="display:none;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:10px 14px;color:#f87171;font-size:.85rem;margin-bottom:16px"></div>'+
+        '<button id="_t_btn" onclick="tLogin()" style="width:100%;padding:14px;background:linear-gradient(135deg,#6366f1,#818cf8);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;cursor:pointer">Accedi \u2192</button>'+
+        '<p style="text-align:center;margin:14px 0 0;font-size:.85rem;color:#64748b">Non registrato? <a onclick="tOpenReg()" style="color:#818cf8;cursor:pointer;font-weight:600">Diventa Trainer</a></p>'+
+      '</div>'+
+      '<div onclick="var e=document.getElementById(\'_t_em\'),p=document.getElementById(\'_t_pw\');if(e)e.value=\'marco.vitale@demo.it\';if(p)p.value=\'demo123\';" style="background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.15);border-radius:12px;padding:12px 16px;cursor:pointer;text-align:center">'+
+        '<div style="font-size:.78rem;color:#64748b;margin-bottom:3px">Demo \u2014 clicca per compilare</div>'+
+        '<div style="font-size:.85rem;color:#818cf8;font-weight:600">marco.vitale@demo.it / demo123</div>'+
+      '</div>'+
+    '</div></div>';
+  el.style.display='block';
+  document.body.style.overflow='hidden';
+  setTimeout(function(){var e=document.getElementById('_t_em');if(e)e.focus();},200);
+}
+
+/* ── OPEN REGISTER ── */
+function tOpenReg(){
+  tHideAll();
+  var el=mkOv('_tov_reg','999990');
+  el.innerHTML=
+    '<div style="max-width:560px;margin:0 auto;padding:28px 20px 60px">'+
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px">'+
+      '<div><h1 style="font-family:sans-serif;font-size:1.7rem;font-weight:800;margin:0 0 6px;color:#f1f5f9">Diventa Trainer</h1>'+
+      '<p style="color:#64748b;font-size:.88rem;margin:0">Raggiungi migliaia di clienti</p></div>'+
+      '<button onclick="tClose()" style="background:#1e1e2e;border:1px solid #2a2a3e;border-radius:10px;padding:8px 16px;color:#94a3b8;cursor:pointer;font-size:.85rem">\u2715</button>'+
+    '</div>'+
+    '<div style="background:#12121e;border:1px solid #2a2a3e;border-radius:16px;padding:24px 20px">'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">'+
+        '<div><label style="font-size:.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:6px">Nome *</label>'+
+        '<input id="_r_nm" placeholder="Marco" style="width:100%;padding:12px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:16px;outline:none;box-sizing:border-box"></div>'+
+        '<div><label style="font-size:.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:6px">Cognome *</label>'+
+        '<input id="_r_sn" placeholder="Bianchi" style="width:100%;padding:12px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:16px;outline:none;box-sizing:border-box"></div>'+
+      '</div>'+
+      '<div style="margin-bottom:12px"><label style="font-size:.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:6px">Email *</label>'+
+      '<input id="_r_em" type="email" style="width:100%;padding:12px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:16px;outline:none;box-sizing:border-box"></div>'+
+      '<div style="margin-bottom:12px"><label style="font-size:.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:6px">Password * (min 8)</label>'+
+      '<input id="_r_pw" type="password" placeholder="Min 8 caratteri" style="width:100%;padding:12px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:16px;outline:none;box-sizing:border-box"></div>'+
+      '<div style="margin-bottom:12px"><label style="font-size:.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:6px">Bio</label>'+
+      '<textarea id="_r_bio" rows="2" placeholder="Esperienza, certificazioni..." style="width:100%;padding:12px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none;box-sizing:border-box;resize:vertical"></textarea></div>'+
+      '<div style="margin-bottom:20px"><label style="font-size:.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:6px">Tariffa \u20ac/mese</label>'+
+      '<input id="_r_pr" type="number" placeholder="89" style="max-width:130px;padding:12px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:16px;outline:none;box-sizing:border-box"></div>'+
+      '<div id="_r_err" style="display:none;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:10px 14px;color:#f87171;font-size:.85rem;margin-bottom:16px"></div>'+
+      '<button onclick="tReg()" style="width:100%;padding:14px;background:linear-gradient(135deg,#059669,#0fd6c2);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;cursor:pointer">Crea profilo Trainer \u2192</button>'+
+      '<p style="text-align:center;font-size:.83rem;color:#64748b;margin-top:12px">Hai un account? <a onclick="tOpenLogin()" style="color:#818cf8;cursor:pointer">Accedi</a></p>'+
+    '</div></div>';
+  el.style.display='block';
+  document.body.style.overflow='hidden';
+}
+
+/* ── OPEN DASHBOARD ── */
+function tOpenDash(){
+  var tr=tLoad();
+  if(!tr){tOpenLogin();return;}
+  tHideAll();
+  var el=mkOv('_tov_dash','999989');
+  el.style.overflowY='hidden';
+  el.innerHTML=
+    '<div style="position:sticky;top:0;height:56px;background:rgba(11,11,20,.97);backdrop-filter:blur(20px);border-bottom:1px solid #1e1e2e;display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:10;flex-shrink:0">'+
+      '<div style="display:flex;align-items:center;gap:12px">'+
+        '<div id="_d_av" onclick="tDGo(\'profilo\')" style="width:36px;height:36px;border-radius:10px;background:'+(tr.col||'linear-gradient(135deg,#6366f1,#0fd6c2)')+';display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;cursor:pointer;flex-shrink:0">'+((tr.name||'T')[0]+(tr.surname||'')[0]).toUpperCase()+'</div>'+
+        '<div><div style="font-weight:700;font-size:.88rem;color:#f1f5f9">'+(tr.name||'')+' '+(tr.surname||'')+'</div><div style="font-size:.68rem;color:#0fd6c2">\u25cf Online</div></div>'+
+      '</div>'+
+      '<div style="display:flex;gap:8px">'+
+        '<button onclick="tDGo(\'chat\')" style="background:none;border:1px solid #1e1e2e;border-radius:8px;padding:6px 10px;color:#94a3b8;cursor:pointer;font-size:.82rem">Chat</button>'+
+        '<button onclick="tLogout()" style="background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:8px;padding:6px 14px;color:#f87171;cursor:pointer;font-size:.82rem">Esci</button>'+
+      '</div>'+
+    '</div>'+
+    '<div style="display:flex;height:calc(100vh - 56px);overflow:hidden">'+
+      '<div id="_d_sb" style="width:200px;flex-shrink:0;background:#0f0f1a;border-right:1px solid #1e1e2e;padding:14px 10px;overflow-y:auto"></div>'+
+      '<div id="_d_mn" style="flex:1;overflow-y:auto;padding:24px"></div>'+
+    '</div>';
+  el.style.display='block';
+  document.body.style.overflow='hidden';
+  // Build sidebar
+  var sb=document.getElementById('_d_sb');
+  if(sb){
+    var items=[
+      {id:'overview',lbl:'Dashboard',p:'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'},
+      {id:'clienti',lbl:'Clienti',p:'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2'},
+      {id:'schede',lbl:'Schede AI',p:'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'},
+      {id:'chat',lbl:'Chat',p:'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'},
+      {id:'calendario',lbl:'Calendario',p:'M3 4h18v18H3z'},
+      {id:'revenue',lbl:'Revenue',p:'M12 1v22'},
+      {id:'profilo',lbl:'Profilo',p:'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'},
+    ];
+    sb.innerHTML=items.map(function(m){
+      return '<div id="_di_'+m.id+'" onclick="tDGo(\''+m.id+'\')" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;cursor:pointer;font-size:.85rem;font-weight:500;color:#64748b;margin-bottom:2px">'+
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="'+m.p+'"/></svg>'+
+        m.lbl+'</div>';
+    }).join('');
+  }
+  tDGo('overview');
+}
+
+/* ── LOGIN ACTION ── */
+window.tLogin=function(){
+  var em=(document.getElementById('_t_em')||{}).value||'';
+  var pw=(document.getElementById('_t_pw')||{}).value||'';
+  var err=document.getElementById('_t_err');
+  var btn=document.getElementById('_t_btn');
+  em=em.trim().toLowerCase();
+  if(err) err.style.display='none';
+  if(!em||!pw){if(err){err.textContent='Inserisci email e password.';err.style.display='block';}return;}
+  if(btn){btn.disabled=true;btn.textContent='Accesso...';}
+  var tr=tFind(em);
+  var ok=tr&&(tr.pass===pw||(em.endsWith('@demo.it')&&pw==='demo123'));
+  if(!ok){
+    if(err){err.textContent='Credenziali non corrette. Usa il box demo qui sotto.';err.style.display='block';}
+    if(btn){btn.disabled=false;btn.textContent='Accedi \u2192';}
+    return;
+  }
+  tSave(tr);
+  tClose();
+  tOpenDash();
+  if(typeof toast==='function') toast('Bentornato '+tr.name+'!','success');
+  if(btn){btn.disabled=false;btn.textContent='Accedi \u2192';}
+};
+
+/* ── REGISTER ACTION ── */
+window.tReg=function(){
+  var nm=((document.getElementById('_r_nm')||{}).value||'').trim();
+  var sn=((document.getElementById('_r_sn')||{}).value||'').trim();
+  var em=((document.getElementById('_r_em')||{}).value||'').trim().toLowerCase();
+  var pw=(document.getElementById('_r_pw')||{}).value||'';
+  var bio=(document.getElementById('_r_bio')||{}).value||'';
+  var pr=parseInt((document.getElementById('_r_pr')||{}).value||'89')||89;
+  var err=document.getElementById('_r_err');
+  if(err) err.style.display='none';
+  if(!nm||!em||!pw){if(err){err.textContent='Nome, email e password obbligatori.';err.style.display='block';}return;}
+  if(pw.length<8){if(err){err.textContent='Password minimo 8 caratteri.';err.style.display='block';}return;}
+  if(tFind(em)){if(err){err.textContent='Email gia registrata. Accedi.';err.style.display='block';}return;}
+  var cols=['linear-gradient(135deg,#1a1aff,#0fd6c2)','linear-gradient(135deg,#6a11cb,#8b5cf6)','linear-gradient(135deg,#f97316,#ef4444)','linear-gradient(135deg,#ec4899,#8b5cf6)'];
+  var newTr={name:nm,surname:sn,email:em,pass:pw,bio:bio||'Trainer certificato',specs:['Fitness'],price:pr,rating:5.0,reviews:0,ph:(nm[0]||'T')+(sn[0]||''),col:cols[Math.floor(Math.random()*cols.length)],clients:[]};
+  tAddUser(newTr);tSave(newTr);tClose();tOpenDash();
+  if(typeof toast==='function') toast('Benvenuto '+nm+'! Profilo creato!','success');
+};
+
+/* ── LOGOUT ── */
+window.tLogout=function(){tClear();tClose();if(typeof toast==='function')toast('Arrivederci!','success');};
+
+/* ── CLOSE ── */
+window.tClose=function(){tHideAll();};
+
+/* ── DASHBOARD SECTION ── */
+window.tDGo=function(sec){
+  document.querySelectorAll('[id^="_di_"]').forEach(function(el){el.style.color='#64748b';el.style.background='none';});
+  var a=document.getElementById('_di_'+sec);
+  if(a){a.style.color='#818cf8';a.style.background='rgba(99,102,241,.12)';}
+  var mn=document.getElementById('_d_mn');
+  if(!mn) return;
+  var tr=tLoad();
+  if(!tr) return;
+  var cl=(tr.clients||[]).length||3;
+  var p=tr.price||89;
+  function kpi(v,l,col){return '<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:14px;padding:18px 16px"><div style="font-family:sans-serif;font-size:1.8rem;font-weight:800;color:'+col+'">'+v+'</div><div style="font-size:.78rem;color:#64748b;margin-top:2px">'+l+'</div></div>';}
+  if(sec==='overview'){
+    mn.innerHTML='<h2 style="font-family:sans-serif;font-size:1.4rem;font-weight:800;margin:0 0 20px;color:#f1f5f9">Ciao '+tr.name+'!</h2>'+
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:24px">'+
+      kpi(cl,'Clienti','#818cf8')+kpi('\u20ac'+(cl*p),'Revenue/mese','#0fd6c2')+kpi((tr.rating||5).toFixed(1)+' \u2605','Rating','#f5c842')+kpi(tr.reviews||0,'Recensioni','#64748b')+
+      '</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">'+
+      '<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:14px;padding:18px"><h4 style="margin:0 0 12px;color:#f1f5f9;font-size:.9rem">Azioni rapide</h4>'+
+      '<div style="display:flex;flex-direction:column;gap:8px">'+
+      '<button onclick="tDGo(\'schede\')" style="width:100%;padding:10px;background:linear-gradient(135deg,#6366f1,#818cf8);border:none;border-radius:10px;color:#fff;font-weight:600;cursor:pointer">+ Crea scheda AI</button>'+
+      '<button onclick="tDGo(\'clienti\')" style="width:100%;padding:10px;background:#1e1e2e;border:1px solid #2a2a3e;border-radius:10px;color:#94a3b8;cursor:pointer">Vedi clienti</button>'+
+      '<button onclick="tDGo(\'chat\')" style="width:100%;padding:10px;background:#1e1e2e;border:1px solid #2a2a3e;border-radius:10px;color:#94a3b8;cursor:pointer">Chat clienti</button>'+
+      '</div></div>'+
+      '<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:14px;padding:18px"><h4 style="margin:0 0 12px;color:#f1f5f9;font-size:.9rem">Profilo</h4>'+
+      '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">'+
+      '<div style="width:42px;height:42px;border-radius:12px;background:'+(tr.col||'#6366f1')+';display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;flex-shrink:0">'+((tr.ph||'T').substring(0,2))+'</div>'+
+      '<div><div style="font-weight:700;color:#f1f5f9">'+tr.name+' '+(tr.surname||'')+'</div>'+
+      '<div style="font-size:.8rem;color:#0fd6c2">\u20ac'+(tr.price||89)+'/mese</div></div></div></div></div>';
+  } else if(sec==='clienti'){
+    var demos=[{name:'Alessandro Rossi',goal:'Ipertrofia',since:'Gen 2025',col:'#6366f1',st:'attivo'},{name:'Giulia Ferrari',goal:'Dimagrimento',since:'Feb 2025',col:'#ec4899',st:'attivo'},{name:'Marco Conti',goal:'Powerlifting',since:'Mar 2025',col:'#f97316',st:'in pausa'}];
+    mn.innerHTML='<h2 style="font-family:sans-serif;font-size:1.3rem;font-weight:800;margin:0 0 20px;color:#f1f5f9">Clienti</h2>'+
+      '<div style="display:flex;flex-direction:column;gap:10px">'+
+      demos.map(function(d){return '<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px">'+
+        '<div style="width:42px;height:42px;border-radius:12px;background:'+d.col+';display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;flex-shrink:0">'+d.name.split(' ').map(function(n){return n[0];}).join('')+'</div>'+
+        '<div style="flex:1"><div style="font-weight:700;color:#f1f5f9">'+d.name+'</div><div style="font-size:.8rem;color:#64748b">'+d.goal+' \u00b7 Da '+d.since+'</div></div>'+
+        '<span style="font-size:.75rem;padding:3px 10px;border-radius:50px;background:'+(d.st==='attivo'?'rgba(15,214,194,.12)':'rgba(148,163,184,.08)')+';color:'+(d.st==='attivo'?'#0fd6c2':'#64748b')+'">'+d.st+'</span></div>';}).join('')+'</div>';
+  } else if(sec==='schede'){
+    mn.innerHTML='<h2 style="font-family:sans-serif;font-size:1.3rem;font-weight:800;margin:0 0 20px;color:#f1f5f9">Scheda AI</h2>'+
+      '<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:14px;padding:22px">'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">'+
+      '<div><label style="font-size:.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:6px">Cliente</label><input id="_sc_nm" placeholder="Nome" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none;box-sizing:border-box"></div>'+
+      '<div><label style="font-size:.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:6px">Obiettivo</label><select id="_sc_gl" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none"><option>Ipertrofia</option><option>Dimagrimento</option><option>Forza</option><option>Resistenza</option></select></div>'+
+      '<div><label style="font-size:.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:6px">Livello</label><select id="_sc_lv" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none"><option>Principiante</option><option>Intermedio</option><option>Avanzato</option></select></div>'+
+      '<div><label style="font-size:.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:6px">Giorni/sett.</label><select id="_sc_d" style="width:100%;padding:11px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:15px;outline:none"><option>3</option><option>4</option><option>5</option></select></div>'+
+      '</div><button onclick="tGenScheda()" style="width:100%;padding:13px;background:linear-gradient(135deg,#6366f1,#0fd6c2);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">\u26a1 Genera con AI</button></div>'+
+      '<div id="_sc_out" style="margin-top:20px"></div>';
+  } else if(sec==='chat'){
+    mn.innerHTML='<h2 style="font-family:sans-serif;font-size:1.3rem;font-weight:800;margin:0 0 20px;color:#f1f5f9">Chat</h2>'+
+      '<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:14px;padding:40px;text-align:center;color:#64748b">'+
+      '\ud83d\udcac Chat con i clienti disponibile presto</div>';
+  } else if(sec==='calendario'){
+    mn.innerHTML='<h2 style="font-family:sans-serif;font-size:1.3rem;font-weight:800;margin:0 0 20px;color:#f1f5f9">Calendario</h2>'+
+      '<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:14px;padding:40px;text-align:center;color:#64748b">'+
+      '\ud83d\udcc5 Calendario sessioni disponibile presto</div>';
+  } else if(sec==='revenue'){
+    mn.innerHTML='<h2 style="font-family:sans-serif;font-size:1.3rem;font-weight:800;margin:0 0 20px;color:#f1f5f9">Revenue</h2>'+
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">'+
+      kpi('\u20ac'+(cl*p),'Questo mese','#0fd6c2')+kpi('\u20ac'+(cl*p*12),'Proiezione annua','#818cf8')+kpi(cl,'Clienti attivi','#f5c842')+'</div>';
+  } else if(sec==='profilo'){
+    mn.innerHTML='<h2 style="font-family:sans-serif;font-size:1.3rem;font-weight:800;margin:0 0 20px;color:#f1f5f9">Profilo</h2>'+
+      '<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:14px;padding:22px">'+
+      '<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">'+
+      '<div style="width:60px;height:60px;border-radius:16px;background:'+(tr.col||'#6366f1')+';display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;color:#fff">'+((tr.ph||'T').substring(0,2))+'</div>'+
+      '<div><h3 style="margin:0 0 4px;color:#f1f5f9">'+tr.name+' '+(tr.surname||'')+'</h3>'+
+      '<div style="color:#64748b;font-size:.85rem">'+tr.email+'</div></div></div>'+
+      '<div style="color:#64748b;font-size:.9rem">'+( tr.bio||'Trainer certificato')+'</div></div>';
+  }
+};
+
+window.tGenScheda=function(){
+  var nm=(document.getElementById('_sc_nm')||{}).value||'Cliente';
+  var gl=(document.getElementById('_sc_gl')||{}).value||'Ipertrofia';
+  var lv=(document.getElementById('_sc_lv')||{}).value||'Intermedio';
+  var d=(document.getElementById('_sc_d')||{}).value||'4';
+  var out=document.getElementById('_sc_out');
+  if(!out)return;
+  out.innerHTML='<div style="background:#12121e;border:1px solid #1e1e2e;border-radius:14px;padding:24px;text-align:center;color:#64748b">\u26a1 Generando...</div>';
+  fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:'Scheda allenamento per '+nm+'. Obiettivo: '+gl+', Livello: '+lv+', '+d+' gg/sett. Rispondi in italiano con esercizi, serie, reps, recupero.'}]})})
+  .then(function(r){return r.json();}).then(function(data){
+    var txt=((data.content||[]).find(function(b){return b.type==='text';})||{}).text||'Errore';
+    var pre=document.createElement('pre');
+    pre.style.cssText='background:#12121e;border:1px solid #1e1e2e;border-radius:14px;padding:20px;white-space:pre-wrap;font-size:.85rem;color:#94a3b8;line-height:1.7;font-family:inherit';
+    pre.textContent=txt;out.innerHTML='';out.appendChild(pre);
+  }).catch(function(e){out.innerHTML='<div style="color:#f87171;padding:20px">Errore: '+e.message+'</div>';});
+};
+
+/* ── OVERRIDE GLOBALI ── */
+// Override TUTTE le funzioni trainer che i bottoni chiamano
+window.openTrainerLogin=tOpenLogin;
+window.openTrainerReg=tOpenReg;
+window.openTrainerDash=tOpenDash;
+window.closeTrainerArea=tClose;
+window.trOpenLogin=tOpenLogin;
+window.trOpenReg=tOpenReg;
+window.trOpenDash=tOpenDash;
+window.trClose=tClose;
+window.trLogin=window.tLogin;
+window.trReg=window.tReg;
+window.trLogout=window.tLogout;
+window.trdGo=window.tDGo;
+window.trainerLoginAction=window.tLogin;
+window.trainerRegAction=window.tReg;
+window.trainerLogoutAction=window.tLogout;
+
+// mvBecomeTrainer
+window.mvBecomeTrainer=function(){
+  tOpenReg();
+  setTimeout(function(){if(typeof closeMarketplaceOverlay==='function')closeMarketplaceOverlay();},100);
+};
+
+// Override showPage per trainer
+var _sp0=window.showPage;
+window.showPage=function(id,sub){
+  if(id==='pg-trainer-login'||id==='pg-trainer-dash'&&!tLoad()){tOpenLogin();return;}
+  if(id==='pg-trainer-reg'){tOpenReg();return;}
+  if(id==='pg-trainer-dash'){tOpenDash();return;}
+  if(typeof _sp0==='function')_sp0(id,sub);
+};
+
+// ESC
+document.addEventListener('keydown',function(ev){
+  if(ev.key==='Escape') tHideAll();
+});
+
+console.log('[Trainer v3] Sistema pronto. openTrainerLogin=',typeof openTrainerLogin);
+})();
+</script>
