@@ -214,9 +214,7 @@ select.inp option,.form-select option{background:var(--bg2)}
 #toast.error{border-color:rgba(248,113,113,.4);color:var(--red)}
 
 /* ─── MODAL ─── */
-.modal-bg{display:none;position:fixed;inset:0;z-index:9000;
-  background:rgba(0,0,0,.82);backdrop-filter:blur(12px);
-  align-items:center;justify-content:center;padding:20px}
+.modal-bg{display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.82);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:20px}
 .modal-bg.open{display:flex}
 .modal{background:var(--card2);border:1px solid var(--border2);border-radius:var(--r-xl);
   padding:30px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;
@@ -2272,7 +2270,7 @@ document.addEventListener('keydown', function(e){
     </div>
     <!-- PLAYER AREA -->
     <div id="yt-player-area" style="background:#000;position:relative">
-      <div id="yt-player-content" style="min-height:200px;display:flex;align-items:center;justify-content:center"></div>
+      <div id="yt-player-content" style="min-height:200px;background:#000"></div>
     </div>
     <!-- INFO + BUTTONS -->
     <div style="padding:16px 20px;background:var(--card2)">
@@ -3479,20 +3477,17 @@ function toast(msg, type=''){
 
 // ─── MODAL ───────────────────────────────────────────────
 function openModal(id){ document.getElementById(id).classList.add('open'); }
-function closeModal(id){ 
-  const el = document.getElementById(id);
-  if(el) el.classList.remove('open');
-  if(id==='yt-modal'){
-    // Clear iframe to stop video
-    const iframe = document.getElementById('yt-iframe');
-    if(iframe) iframe.src = '';
-    // Clear player area
-    const player = document.getElementById('yt-player-content');
+function closeModal(id){
+  var el = document.getElementById(id);
+  if(!el) return;
+  el.classList.remove('open');
+  el.style.zIndex = '';
+  if(id === 'yt-modal'){
+    var player = document.getElementById('yt-player-content');
     if(player) player.innerHTML = '';
-    const actions = document.getElementById('yt-modal-actions');
+    var actions = document.getElementById('yt-modal-actions');
     if(actions) actions.innerHTML = '';
   }
-  if(id==='wod-timer-modal') wodTimerReset();
 }
 
 // ─── LOCAL STORAGE HELPERS ───────────────────────────────
@@ -5713,12 +5708,10 @@ function openYT(ex){
             frameborder="0" allowfullscreen
             style="position:absolute;inset:0;width:100%;height:100%"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
             onerror="ytEmbedFailed('${ex.name}')"
             onload="ytEmbedLoaded(this)">
           </iframe>
-          <div id="yt-embed-overlay" style="position:absolute;inset:0;background:rgba(0,0,0,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;display:none">
-            <div style="font-size:2rem">▶</div>
+          
             <p style="color:#fff;font-size:13px;text-align:center">Caricamento video...</p>
           </div>
         </div>`;
@@ -5744,15 +5737,12 @@ function openYT(ex){
   }
 
   openModal('yt-modal');
+  // Boost z-index sopra tutti gli overlay
+  var m = document.getElementById('yt-modal');
+  if(m){ m.style.zIndex = '99995'; }
 }
 
-function ytEmbedLoaded(iframe){
-  // Check if embed loaded correctly
-  try {
-    const overlay = document.getElementById('yt-embed-overlay');
-    if(overlay) overlay.style.display = 'none';
-  } catch(e){}
-}
+function ytEmbedLoaded(iframe){ }
 
 function ytEmbedFailed(exName){
   const player = document.getElementById('yt-player-content');
