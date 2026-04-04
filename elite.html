@@ -3478,15 +3478,16 @@ function toast(msg, type=''){
 // ─── MODAL ───────────────────────────────────────────────
 function openModal(id){ document.getElementById(id).classList.add('open'); }
 function closeModal(id){
-  var el = document.getElementById(id);
+  var el=document.getElementById(id);
   if(!el) return;
   el.classList.remove('open');
-  el.style.zIndex = '';
-  if(id === 'yt-modal'){
-    var player = document.getElementById('yt-player-content');
-    if(player) player.innerHTML = '';
-    var actions = document.getElementById('yt-modal-actions');
-    if(actions) actions.innerHTML = '';
+  el.style.zIndex='';
+  document.body.style.overflow='';
+  if(id==='yt-modal'){
+    var p=document.getElementById('yt-player-content');
+    if(p) p.innerHTML='';
+    var a=document.getElementById('yt-modal-actions');
+    if(a) a.innerHTML='';
   }
 }
 
@@ -5680,66 +5681,82 @@ function ytSearchUrlEn(exName){
 }
 
 function openYT(ex){
-  if(!ex || !ex.name) return;
-  const url = getYTLink(ex);
-  const videoId = url ? getYTVideoId(url) : null;
-  const embedUrl = videoId ? ytEmbedUrl(url) : null;
-  const searchIT = ytSearchUrl(ex.name);
-  const searchEN = ytSearchUrlEn(ex.name);
-  const directUrl = url || searchIT;
+  if(!ex||!ex.name) return;
 
-  // Set modal title
-  const titleEl = document.getElementById('yt-modal-title');
-  if(titleEl) titleEl.textContent = '▶ ' + ex.name;
+  // Crea il modal se non esiste nel DOM
+  if(!document.getElementById('yt-modal')){
+    var nm=document.createElement('div');
+    nm.id='yt-modal';
+    nm.className='modal-bg';
+    nm.innerHTML=
+      '<div class="modal" style="max-width:740px;padding:0;overflow:hidden;border-radius:16px">'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--card2)">'+
+      '<h3 id="yt-modal-title" style="font-family:var(--font2);font-size:15px;font-weight:700;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Video</h3>'+
+      '<button style="background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;flex-shrink:0" onclick="closeModal(\'yt-modal\')">\u00d7</button>'+
+      '</div>'+
+      '<div id="yt-player-area" style="background:#000;position:relative">'+
+      '<div id="yt-player-content" style="min-height:200px;background:#000"></div>'+
+      '</div>'+
+      '<div style="padding:14px 18px;background:var(--card2)">'+
+      '<p id="yt-modal-desc" style="color:var(--sub);font-size:13px;line-height:1.5;margin:0 0 10px"></p>'+
+      '<div id="yt-modal-actions" style="display:flex;gap:8px;flex-wrap:wrap"></div>'+
+      '</div></div>';
+    nm.onclick=function(e){if(e.target===nm)closeModal('yt-modal');};
+    document.body.appendChild(nm);
+  }
 
-  // Set description
-  const descEl = document.getElementById('yt-modal-desc');
-  if(descEl) descEl.textContent = ex.desc || '';
+  var url      = typeof getYTLink==='function'     ? getYTLink(ex)      : null;
+  var videoId  = url && typeof getYTVideoId==='function' ? getYTVideoId(url) : null;
+  var embedUrl = videoId && typeof ytEmbedUrl==='function'  ? ytEmbedUrl(url)  : null;
+  var searchIT = typeof ytSearchUrl==='function'   ? ytSearchUrl(ex.name)   : 'https://www.youtube.com/results?search_query='+encodeURIComponent(ex.name+' esercizio tutorial');
+  var searchEN = typeof ytSearchUrlEn==='function' ? ytSearchUrlEn(ex.name) : 'https://www.youtube.com/results?search_query='+encodeURIComponent(ex.name+' exercise tutorial');
 
-  // Build player content
-  const playerEl = document.getElementById('yt-player-content');
+  // Titolo
+  var titleEl=document.getElementById('yt-modal-title');
+  if(titleEl) titleEl.textContent='\u25b6 '+ex.name;
+
+  // Descrizione
+  var descEl=document.getElementById('yt-modal-desc');
+  if(descEl) descEl.textContent=ex.desc||'';
+
+  // Player — iframe diretto, ZERO overlay
+  var playerEl=document.getElementById('yt-player-content');
   if(playerEl){
     if(embedUrl){
-      // Try embed first, with error handling
-      playerEl.innerHTML = `
-        <div style="position:relative;width:100%;padding-bottom:56.25%">
-          <iframe id="yt-iframe"
-            src="${embedUrl}"
-            frameborder="0" allowfullscreen
-            style="position:absolute;inset:0;width:100%;height:100%"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            onerror="ytEmbedFailed('${ex.name}')"
-            onload="ytEmbedLoaded(this)">
-          </iframe>
-          
-            <p style="color:#fff;font-size:13px;text-align:center">Caricamento video...</p>
-          </div>
-        </div>`;
+      playerEl.innerHTML=
+        '<div style="position:relative;width:100%;padding-bottom:56.25%;background:#000;overflow:hidden">'+
+        '<iframe src="'+embedUrl+'" frameborder="0" allowfullscreen '+
+        'style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;display:block" '+
+        'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share">'+
+        '</iframe></div>';
     } else {
-      // No specific video — show search interface
-      playerEl.innerHTML = buildYTSearchPanel(ex.name);
+      playerEl.innerHTML=
+        '<div style="padding:32px;text-align:center;background:#000;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center">'+
+        '<div style="font-size:2rem;margin-bottom:10px">\ud83d\udd0d</div>'+
+        '<p style="color:#94a3b8;margin:0 0 16px;font-size:.9rem">Cerca <strong style="color:#f1f5f9">'+ex.name+'</strong> su YouTube</p>'+
+        '<a href="'+searchIT+'" target="_blank" style="padding:10px 20px;background:#ff0000;color:#fff;border-radius:10px;text-decoration:none;font-weight:600;font-size:.9rem">Cerca su YouTube</a>'+
+        '</div>';
     }
   }
 
-  // Build action buttons
-  const actEl = document.getElementById('yt-modal-actions');
+  // Bottoni azione
+  var actEl=document.getElementById('yt-modal-actions');
   if(actEl){
-    actEl.innerHTML = `
-      <a href="${searchIT}" target="_blank" class="btn btn-primary" style="text-decoration:none;gap:8px">
-        <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.55 3.5 12 3.5 12 3.5s-7.55 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.03 0 12 0 12s0 3.97.5 5.81a3.02 3.02 0 002.12 2.14C4.45 20.5 12 20.5 12 20.5s7.55 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.97 24 12 24 12s0-3.97-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>
-        Cerca su YouTube (IT)
-      </a>
-      <a href="${searchEN}" target="_blank" class="btn btn-ghost" style="text-decoration:none;gap:8px">
-        <svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.55 3.5 12 3.5 12 3.5s-7.55 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.03 0 12 0 12s0 3.97.5 5.81a3.02 3.02 0 002.12 2.14C4.45 20.5 12 20.5 12 20.5s7.55 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.97 24 12 24 12s0-3.97-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>
-        Cerca su YouTube (EN)
-      </a>
-      ${videoId ? `<a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" class="btn btn-ghost" style="text-decoration:none">Apri direttamente →</a>` : ''}`;
+    actEl.innerHTML=
+      '<a href="'+searchIT+'" target="_blank" rel="noopener" class="btn btn-primary" style="text-decoration:none;font-size:13px;display:inline-flex;align-items:center;gap:6px">'+
+      '<svg width="14" height="14" viewBox="0 0 24 24"><path fill="currentColor" d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.55 3.5 12 3.5 12 3.5s-7.55 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.03 0 12 0 12s0 3.97.5 5.81a3.02 3.02 0 002.12 2.14C4.45 20.5 12 20.5 12 20.5s7.55 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.97 24 12 24 12s0-3.97-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>'+
+      'Cerca su YouTube (IT)</a>'+
+      '<a href="'+searchEN+'" target="_blank" rel="noopener" class="btn btn-ghost" style="text-decoration:none;font-size:13px">EN</a>'+
+      (videoId?'<a href="https://www.youtube.com/watch?v='+videoId+'" target="_blank" rel="noopener" class="btn btn-ghost" style="text-decoration:none;font-size:13px">Apri su YouTube \u2192</a>':'');
   }
 
-  openModal('yt-modal');
-  // Boost z-index sopra tutti gli overlay
-  var m = document.getElementById('yt-modal');
-  if(m){ m.style.zIndex = '99995'; }
+  // Apri modal
+  var m=document.getElementById('yt-modal');
+  if(m){
+    m.classList.add('open');
+    m.style.zIndex='99995';
+    document.body.style.overflow='hidden';
+  }
 }
 
 function ytEmbedLoaded(iframe){ }
@@ -6937,6 +6954,7 @@ function renderDashSec(sec){
   else if(sec==='export') renderDashExport();
   else if(sec==='checkin') renderDashCheckin();
   else if(sec==='analysis') renderDashAnalysis();
+  else if(sec==='esercizi') renderDashEsercizi();
 }
 
 function renderDashHome(){
@@ -18050,4 +18068,93 @@ document.addEventListener('keydown',function(ev){
 
 console.log('[Trainer v3] Sistema pronto. openTrainerLogin=',typeof openTrainerLogin);
 })();
+
+/* LIBRERIA DASH */
+var _dlp=0,_dlf=[],_dlpp=30;
+function renderDashEsercizi(){
+  if(typeof initExercises==='function'&&(!window.ALL_EXERCISES||!ALL_EXERCISES.length)) initExercises();
+  libDF();
+}
+function libDF(){
+  var s=((document.getElementById('lib-s-d')||{}).value||'').toLowerCase().trim();
+  var m=((document.getElementById('lib-m-d')||{}).value||'').toLowerCase();
+  var l=((document.getElementById('lib-l-d')||{}).value||'').toLowerCase();
+  var exs=(typeof ALL_EXERCISES!=='undefined'&&ALL_EXERCISES)||[];
+  _dlf=exs.filter(function(ex){
+    if(s&&!((ex.name||'').toLowerCase().includes(s)||(ex.muscle||'').toLowerCase().includes(s))) return false;
+    if(m&&(ex.muscle||'').toLowerCase()!==m) return false;
+    if(l&&(ex.level||'').toLowerCase()!==l) return false;
+    return true;
+  });
+  _dlp=0;
+  var cnt=document.getElementById('lib-c-d');
+  if(cnt) cnt.textContent=_dlf.length+' esercizi';
+  libDR();
+}
+function libDR(){
+  var grid=document.getElementById('lib-g-d');
+  var btn=document.getElementById('lib-more-d');
+  if(!grid) return;
+  window._dlx=_dlf;
+  var end=(_dlp+1)*_dlpp;
+  var shown=_dlf.slice(0,end);
+  if(!shown.length){
+    grid.innerHTML='<div style="padding:40px;text-align:center;color:var(--sub)">Nessun esercizio trovato</div>';
+    if(btn) btn.style.display='none'; return;
+  }
+  var colMap={'petto':'#6366f1','schiena':'#0891b2','spalle':'#7c3aed','gambe':'#059669','glutei':'#d97706','addome':'#dc2626','bicipiti':'#2563eb','tricipiti':'#9333ea','cardio':'#e11d48'};
+  function mk(ex,i){
+    var vid=typeof getYTLink==='function'?getYTLink(ex):null;
+    var vid_id=vid&&typeof getYTVideoId==='function'?getYTVideoId(vid):'';
+    var thumb=vid_id?'https://img.youtube.com/vi/'+vid_id+'/mqdefault.jpg':'';
+    var col=colMap[(ex.muscle||'').toLowerCase()]||'#64748b';
+    var img=thumb?'<img src="'+thumb+'" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover">':'';
+    return '<div class="lib-card" onclick="libDO('+i+')" style="cursor:pointer;border-radius:14px;background:var(--card);border:1px solid var(--border);overflow:hidden">'+
+      '<div style="position:relative;padding-bottom:56.25%;background:#111;overflow:hidden">'+img+
+        '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">'+
+          '<svg width="46" height="46" viewBox="0 0 48 48"><circle cx="24" cy="24" r="24" fill="rgba(220,30,30,.9)"/><polygon points="19,14 37,24 19,34" fill="#fff"/></svg>'+
+        '</div>'+
+      '</div>'+
+      '<div style="padding:12px">'+
+        '<div style="font-size:.65rem;font-weight:700;color:'+col+';text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px">'+(ex.muscle||'')+'</div>'+
+        '<div style="font-size:.9rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:4px">'+(ex.name||'')+'</div>'+
+        '<div style="font-size:.77rem;color:var(--sub)">'+(ex.muscle2||ex.desc||'').substring(0,50)+'</div>'+
+        '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:7px">'+
+          (ex.level?'<span style="font-size:.68rem;padding:2px 7px;border-radius:50px;background:var(--bg3);color:var(--sub)">'+ex.level+'</span>':'')+
+          (vid?'<span style="font-size:.68rem;padding:2px 7px;border-radius:50px;background:rgba(220,30,30,.08);color:#f44">&#9654; Tutorial</span>':'')+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }
+  if(_dlp===0){ grid.innerHTML=shown.map(mk).join(''); }
+  else{ var st=_dlp*_dlpp; grid.innerHTML+=_dlf.slice(st,end).map(function(ex,i){ return mk(ex,st+i); }).join(''); }
+  if(btn) btn.style.display=end<_dlf.length?'inline-block':'none';
+}
+function libDO(i){ var ex=window._dlx&&window._dlx[i]; if(ex) openYT(ex); }
+function libDM(){ _dlp++; libDR(); }
+
+
+// ESC chiude qualsiasi modal-bg aperto
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){
+    document.querySelectorAll('.modal-bg.open').forEach(function(m){
+      m.classList.remove('open');
+      m.style.zIndex = '';
+    });
+    document.body.style.overflow = '';
+    var p = document.getElementById('yt-player-content');
+    if(p) p.innerHTML = '';
+  }
+});
+// Click fuori dal modal chiude
+document.addEventListener('click', function(e){
+  if(e.target && e.target.classList && e.target.classList.contains('modal-bg')){
+    e.target.classList.remove('open');
+    e.target.style.zIndex = '';
+    document.body.style.overflow = '';
+    var p = document.getElementById('yt-player-content');
+    if(p) p.innerHTML = '';
+  }
+});
 </script>
+<div class="dash-section" id="ds-esercizi" style="display:none"><div style="margin-bottom:20px"><h2 style="font-family:var(--font2);font-size:1.4rem;font-weight:800;margin:0 0 4px">Libreria Esercizi</h2><p style="color:var(--sub);font-size:.88rem;margin:0">700+ esercizi con video tutorial — clicca per guardare</p></div><div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;align-items:center"><input id="lib-s-d" class="inp" placeholder="Cerca esercizio..." style="flex:1;min-width:150px;max-width:240px;font-size:14px;padding:9px 14px" oninput="libDF()"><select id="lib-m-d" class="inp" style="padding:9px 12px;font-size:14px" onchange="libDF()"><option value="">Tutti i muscoli</option><option>Petto</option><option>Schiena</option><option>Spalle</option><option>Bicipiti</option><option>Tricipiti</option><option>Gambe</option><option>Glutei</option><option>Addome</option><option>Polpacci</option><option>Cardio</option></select><select id="lib-l-d" class="inp" style="padding:9px 12px;font-size:14px" onchange="libDF()"><option value="">Tutti i livelli</option><option>Principiante</option><option>Intermedio</option><option>Avanzato</option></select><span id="lib-c-d" style="font-size:.82rem;color:var(--sub)"></span></div><div class="lib-grid" id="lib-g-d"></div><div style="text-align:center;margin-top:16px"><button class="btn btn-ghost" id="lib-more-d" onclick="libDM()" style="display:none">Carica altri</button></div></div>
