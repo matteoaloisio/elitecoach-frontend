@@ -1317,6 +1317,10 @@ footer{border-top:1px solid var(--border);padding:24px;display:flex;
 <script>
 // Sicurezza: al caricamento assicura che body scroll sia libero
 document.addEventListener('DOMContentLoaded', function(){
+  // Init libreria esercizi
+  try{ initExercises(); }catch(e){ console.warn('initExercises:',e); }
+  try{ initCookieBanner(); }catch(e){}
+
   document.body.style.overflow = '';
   document.documentElement.style.overflow = '';
   // Nascondi tutti gli overlay trainer
@@ -1594,7 +1598,7 @@ document.addEventListener('keydown', function(e){
       <p>Unisciti a 50.000+ persone che hanno già scelto EliteCoachProgram.fit per i loro obiettivi di fitness.</p>
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
         <button class="btn btn-xl btn-primary" onclick="showPage('pg-auth','register')">Crea account gratis →</button>
-        <button class="btn btn-lg btn-ghost" onclick="openTrainerLogin()">Trova il tuo trainer</button>
+        <button class="btn btn-lg btn-ghost" onclick="openMarketplaceOverlay()">Trova il tuo trainer</button>
       </div>
     </div>
   </div>
@@ -1603,7 +1607,7 @@ document.addEventListener('keydown', function(e){
 <footer>
   <div class="footer-logo" style="display:flex;align-items:center"><svg width="200" height="28" viewBox="0 0 420 56" xmlns="http://www.w3.org/2000/svg" style="overflow:visible"><defs><style>@keyframes _spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}@keyframes _spinR{0%{transform:rotate(0deg)}100%{transform:rotate(-360deg)}}@keyframes _glow{0%,100%{filter:drop-shadow(0 0 4px #0099ff)}50%{filter:drop-shadow(0 0 10px #0099ff)}}@keyframes _bolt{0%,100%{opacity:.8}50%{opacity:1}}</style><filter id="lgf2"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g transform="translate(28,28)" style="animation:_glow 2.4s ease-in-out infinite"><circle cx="0" cy="0" r="24" fill="none" stroke="#0099ff" stroke-width="1" stroke-dasharray="8 5" opacity=".4" style="transform-origin:0 0;animation:_spin 8s linear infinite"/><circle cx="0" cy="0" r="19" fill="none" stroke="#0099ff" stroke-width="0.5" opacity=".2"/><polygon points="0,-18 18,0 0,18 -18,0" fill="rgba(0,153,255,.08)" stroke="#0099ff" stroke-width="1.5"/><polygon points="0,-10 10,0 0,10 -10,0" fill="rgba(0,153,255,.15)" stroke="#0099ff" stroke-width="1" opacity=".7"/><polygon points="2,-7 -3,1 2,1 -2,7 3,-1 -2,-1" fill="#0099ff" filter="url(#lgf2)" style="animation:_bolt 1.8s ease-in-out infinite"/><circle cx="0" cy="-18" r="2" fill="#0099ff" opacity=".8"/><circle cx="18" cy="0" r="2" fill="#0099ff" opacity=".8"/><circle cx="0" cy="18" r="2" fill="#0099ff" opacity=".8"/><circle cx="-18" cy="0" r="2" fill="#0099ff" opacity=".8"/><circle cx="0" cy="0" r="26" fill="none" stroke="#00ccff" stroke-width="0.5" stroke-dasharray="3 18" opacity=".3" style="transform-origin:0 0;animation:_spinR 12s linear infinite"/></g><g transform="translate(64,0)"><rect x="0" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="0" y="0" width="40" height="9" rx="2" fill="#0099ff"/><rect x="0" y="23" width="30" height="9" rx="2" fill="#0099ff"/><rect x="0" y="47" width="40" height="9" rx="2" fill="#0099ff"/><rect x="52" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="52" y="47" width="40" height="9" rx="2" fill="#0099ff"/><rect x="104" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="118" y="0" width="40" height="9" rx="2" fill="#0099ff"/><rect x="134" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="202" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="166" y="0" width="40" height="9" rx="2" fill="#0099ff"/><rect x="175" y="23" width="31" height="9" rx="2" fill="#0099ff"/><rect x="166" y="47" width="40" height="9" rx="2" fill="#0099ff"/><rect x="222" y="8" width="1" height="40" fill="rgba(255,255,255,.08)"/><text x="232" y="38" font-family="Arial Narrow,Arial,sans-serif" font-size="20" font-weight="700" letter-spacing="5" fill="rgba(255,255,255,.55)">COACH</text><rect x="334" y="8" width="1" height="40" fill="rgba(255,255,255,.05)"/><text x="344" y="24" font-family="Arial,sans-serif" font-size="10" letter-spacing="2" fill="rgba(255,255,255,.22)">PROGRAM</text><text x="344" y="42" font-family="Arial,sans-serif" font-size="11" font-weight="700" letter-spacing="2" fill="#0099ff">.FIT</text></g></svg></div>
   <div class="footer-links">
-    <a onclick="document.getElementById('modal-privacy').classList.add('open')" style="cursor:pointer">Privacy</a><a onclick="document.getElementById('modal-termini').classList.add('open')" style="cursor:pointer">Termini</a><a onclick="document.getElementById('modal-cookie').classList.add('open')" style="cursor:pointer">Cookie</a>
+    <a onclick="openPrivacy()" style="cursor:pointer">Privacy</a><a onclick="openTermini()" style="cursor:pointer">Termini</a><a onclick="document.getElementById('modal-cookie').classList.add('open')" style="cursor:pointer">Cookie</a>
     <a onclick="openOwnerOverlay()" title="Owner Panel" style="cursor:pointer">⚙</a>
   </div>
   <div class="footer-copy"><span onclick="ownerSecretClick()" style="cursor:default">© 2025 EliteCoachProgram.fit</span></div>
@@ -1612,97 +1616,133 @@ document.addEventListener('keydown', function(e){
 
 <!-- AUTH PAGE -->
 <div class="pg" id="pg-auth">
-<nav>
-  <a class="nav-logo" onclick="showPage('pg-land')" style="display:flex;align-items:center;text-decoration:none;-webkit-tap-highlight-color:transparent"><svg width="200" height="28" viewBox="0 0 420 56" xmlns="http://www.w3.org/2000/svg" style="overflow:visible"><defs><style>@keyframes _spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}@keyframes _spinR{0%{transform:rotate(0deg)}100%{transform:rotate(-360deg)}}@keyframes _glow{0%,100%{filter:drop-shadow(0 0 4px #0099ff)}50%{filter:drop-shadow(0 0 10px #0099ff)}}@keyframes _bolt{0%,100%{opacity:.8}50%{opacity:1}}</style><filter id="lgf3"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g transform="translate(28,28)" style="animation:_glow 2.4s ease-in-out infinite"><circle cx="0" cy="0" r="24" fill="none" stroke="#0099ff" stroke-width="1" stroke-dasharray="8 5" opacity=".4" style="transform-origin:0 0;animation:_spin 8s linear infinite"/><circle cx="0" cy="0" r="19" fill="none" stroke="#0099ff" stroke-width="0.5" opacity=".2"/><polygon points="0,-18 18,0 0,18 -18,0" fill="rgba(0,153,255,.08)" stroke="#0099ff" stroke-width="1.5"/><polygon points="0,-10 10,0 0,10 -10,0" fill="rgba(0,153,255,.15)" stroke="#0099ff" stroke-width="1" opacity=".7"/><polygon points="2,-7 -3,1 2,1 -2,7 3,-1 -2,-1" fill="#0099ff" filter="url(#lgf3)" style="animation:_bolt 1.8s ease-in-out infinite"/><circle cx="0" cy="-18" r="2" fill="#0099ff" opacity=".8"/><circle cx="18" cy="0" r="2" fill="#0099ff" opacity=".8"/><circle cx="0" cy="18" r="2" fill="#0099ff" opacity=".8"/><circle cx="-18" cy="0" r="2" fill="#0099ff" opacity=".8"/><circle cx="0" cy="0" r="26" fill="none" stroke="#00ccff" stroke-width="0.5" stroke-dasharray="3 18" opacity=".3" style="transform-origin:0 0;animation:_spinR 12s linear infinite"/></g><g transform="translate(64,0)"><rect x="0" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="0" y="0" width="40" height="9" rx="2" fill="#0099ff"/><rect x="0" y="23" width="30" height="9" rx="2" fill="#0099ff"/><rect x="0" y="47" width="40" height="9" rx="2" fill="#0099ff"/><rect x="52" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="52" y="47" width="40" height="9" rx="2" fill="#0099ff"/><rect x="104" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="118" y="0" width="40" height="9" rx="2" fill="#0099ff"/><rect x="134" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="202" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="166" y="0" width="40" height="9" rx="2" fill="#0099ff"/><rect x="175" y="23" width="31" height="9" rx="2" fill="#0099ff"/><rect x="166" y="47" width="40" height="9" rx="2" fill="#0099ff"/><rect x="222" y="8" width="1" height="40" fill="rgba(255,255,255,.08)"/><text x="232" y="38" font-family="Arial Narrow,Arial,sans-serif" font-size="20" font-weight="700" letter-spacing="5" fill="rgba(255,255,255,.55)">COACH</text><rect x="334" y="8" width="1" height="40" fill="rgba(255,255,255,.05)"/><text x="344" y="24" font-family="Arial,sans-serif" font-size="10" letter-spacing="2" fill="rgba(255,255,255,.22)">PROGRAM</text><text x="344" y="42" font-family="Arial,sans-serif" font-size="11" font-weight="700" letter-spacing="2" fill="#0099ff">.FIT</text></g></svg></a>
-  <div class="nav-right">
-    <button class="btn-nav ghost" onclick="showPage('pg-land')">← Torna</button>
-  </div>
+<nav style="position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:rgba(10,10,18,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:200">
+  <a onclick="showPage('pg-land')" style="display:flex;align-items:center;cursor:pointer;text-decoration:none">
+    <svg width="160" height="22" viewBox="0 0 420 56" xmlns="http://www.w3.org/2000/svg" style="overflow:visible"><defs><filter id="lgfA"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g transform="translate(28,28)" style="animation:_glow 2.4s ease-in-out infinite"><circle cx="0" cy="0" r="24" fill="none" stroke="#0099ff" stroke-width="1" stroke-dasharray="8 5" opacity=".4" style="transform-origin:0 0;animation:_spin 8s linear infinite"/><polygon points="0,-16 16,0 0,16 -16,0" fill="rgba(0,153,255,.1)" stroke="#0099ff" stroke-width="1.5"/><polygon points="2,-6 -3,1 2,1 -2,6 3,-1 -2,-1" fill="#0099ff" filter="url(#lgfA)" style="animation:_bolt .9s ease-in-out infinite"/></g><g transform="translate(64,0)"><rect x="0" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="0" y="0" width="40" height="9" rx="2" fill="#0099ff"/><rect x="0" y="23" width="30" height="9" rx="2" fill="#0099ff"/><rect x="0" y="47" width="40" height="9" rx="2" fill="#0099ff"/><rect x="52" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="52" y="47" width="40" height="9" rx="2" fill="#0099ff"/><rect x="104" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="118" y="0" width="40" height="9" rx="2" fill="#0099ff"/><rect x="134" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="202" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="166" y="0" width="40" height="9" rx="2" fill="#0099ff"/><rect x="175" y="23" width="31" height="9" rx="2" fill="#0099ff"/><rect x="166" y="47" width="40" height="9" rx="2" fill="#0099ff"/><text x="232" y="38" font-family="Arial Narrow,Arial,sans-serif" font-size="20" font-weight="700" letter-spacing="5" fill="rgba(255,255,255,.55)">COACH</text><text x="344" y="24" font-family="Arial,sans-serif" font-size="10" letter-spacing="2" fill="rgba(255,255,255,.22)">PROGRAM</text><text x="344" y="42" font-family="Arial,sans-serif" font-size="11" font-weight="700" letter-spacing="2" fill="#0099ff">.FIT</text></g></svg>
+  </a>
 </nav>
-<div style="min-height:calc(100vh - var(--nav-h));padding-top:var(--nav-h);display:flex;align-items:center;justify-content:center;padding:calc(var(--nav-h) + 30px) 16px 40px">
-  <div style="max-width:420px;width:100%">
-    <div class="tabs" id="auth-tabs" style="margin-bottom:24px">
+
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:calc(var(--nav-h)+24px) 16px 40px;background:var(--bg)">
+  <div style="width:100%;max-width:480px">
+
+    <!-- TABS -->
+    <div class="tabs" style="margin-bottom:24px">
       <button class="tab-btn act" id="tab-login" onclick="switchAuthTab('login')">Accedi</button>
       <button class="tab-btn" id="tab-register" onclick="switchAuthTab('register')">Registrati</button>
     </div>
-    <!-- LOGIN -->
-    <div id="auth-login" class="card">
-      <h2 style="font-family:var(--font2);margin-bottom:20px">Bentornato</h2>
+
+    <!-- ═══ LOGIN ═══ -->
+    <div id="auth-login" class="card" style="padding:28px 24px">
+      <h2 style="font-family:var(--font2);margin:0 0 20px;font-size:1.4rem">Bentornato</h2>
       <div style="display:flex;flex-direction:column;gap:14px">
-        <div class="field"><label>Email</label><input class="inp" id="log-email" type="email" placeholder="tuaemail@example.com" autocomplete="email" inputmode="email" style="font-size:16px!important" onkeydown="if(event.key==='Enter')document.getElementById('log-pass').focus()"></div>
-        <div class="field"><label>Password</label><input class="inp" id="log-pass" type="password" placeholder="••••••••" autocomplete="current-password" style="font-size:16px!important" onkeydown="if(event.key==='Enter'){event.preventDefault();doLogin();}"></div>
-        <div id="auth-err" style="color:var(--red);font-size:.85rem;display:none"></div>
-        <button class="btn btn-primary" style="width:100%;padding:14px;font-size:15px" onclick="doLogin()">Accedi</button>
-        <p style="text-align:center;margin:12px 0 0"><a onclick="showForgotPassword()" style="color:var(--accent);font-size:.85rem;cursor:pointer;text-decoration:underline">Hai dimenticato la password?</a></p>
-        <p style="text-align:center;font-size:.82rem;color:var(--sub)">
-          Non hai un account? <a onclick="switchAuthTab('register')" style="color:var(--accent);cursor:pointer">Registrati gratis</a>
-        </p>
-        <div style="border-top:1px solid var(--border2);padding-top:14px;display:flex;flex-direction:column;gap:8px">
-          <div style="text-align:center;font-size:11px;color:var(--muted);margin-bottom:6px;position:relative">
-            <span style="background:var(--card);padding:0 10px;position:relative;z-index:1">oppure accedi con</span>
-            <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:var(--border)"></div>
+        <div class="field">
+          <label style="font-size:.8rem;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px">Email</label>
+          <input class="inp" id="log-email" type="email" placeholder="tuaemail@example.com" autocomplete="email" style="font-size:16px!important" onkeydown="if(event.key==='Enter')document.getElementById('log-pass').focus()">
+        </div>
+        <div class="field">
+          <label style="font-size:.8rem;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px">Password</label>
+          <input class="inp" id="log-pass" type="password" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autocomplete="current-password" style="font-size:16px!important" onkeydown="if(event.key==='Enter')doLogin()">
+        </div>
+      </div>
+      <div id="auth-err" style="display:none;margin-top:12px;padding:10px 14px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;color:var(--red);font-size:.85rem"></div>
+      <button class="btn btn-primary" style="width:100%;margin-top:18px;padding:14px;font-size:15px;font-weight:700;border-radius:50px" onclick="doLogin()">Accedi</button>
+
+      <p style="text-align:center;margin:14px 0 0">
+        <a onclick="showForgotPassword()" style="color:var(--accent);font-size:.85rem;cursor:pointer;text-decoration:underline">Hai dimenticato la password?</a>
+      </p>
+      <p style="text-align:center;font-size:.82rem;color:var(--sub);margin:8px 0 0">
+        Non hai un account? <a onclick="switchAuthTab('register')" style="color:var(--accent);cursor:pointer;font-weight:600">Registrati gratis</a>
+      </p>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:20px 0">
+        <div style="flex:1;height:1px;background:var(--border)"></div>
+        <span style="font-size:.75rem;color:var(--muted)">oppure accedi con</span>
+        <div style="flex:1;height:1px;background:var(--border)"></div>
+      </div>
+
+      <button onclick="signInWithGoogle()" class="btn btn-ghost" style="width:100%;padding:12px;display:flex;align-items:center;justify-content:center;gap:10px;border-radius:50px;font-size:14px;font-weight:600">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continua con Google
+      </button>
+
+      <p style="text-align:center;font-size:.72rem;color:var(--muted);margin:12px 0 0">
+        Accedendo accetti i nostri
+        <a onclick="openTermini()" style="color:var(--sub);cursor:pointer;text-decoration:underline">Termini</a>
+        e la
+        <a onclick="openPrivacy()" style="color:var(--sub);cursor:pointer;text-decoration:underline">Privacy Policy</a>
+      </p>
+    </div>
+
+    <!-- ═══ REGISTER ═══ -->
+    <div id="auth-register" class="card" style="display:none;padding:28px 24px">
+      <h2 style="font-family:var(--font2);margin:0 0 20px;font-size:1.4rem">Crea account gratuito</h2>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="field">
+            <label style="font-size:.8rem;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px">Nome</label>
+            <input class="inp" id="reg-name" placeholder="Mario" autocomplete="given-name" style="font-size:16px!important">
           </div>
-          <div style="position:relative">
-          <div id="g-signin-btn-auth" style="display:none"></div>
-          <!-- Fallback button mobile-friendly -->
-          <button id="g-btn-auth-fallback" onclick="showGoogleTermsModal('login')" 
-            style="display:flex;width:100%;padding:11px 16px;border-radius:8px;border:1px solid var(--border2);background:var(--bg2);color:var(--text);font-size:14px;font-weight:500;cursor:pointer;align-items:center;justify-content:center;gap:10px">
-            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-            Continua con Google
-          </button>
-          
+          <div class="field">
+            <label style="font-size:.8rem;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px">Cognome</label>
+            <input class="inp" id="reg-surname" placeholder="Rossi" autocomplete="family-name" style="font-size:16px!important">
+          </div>
         </div>
-            <p style="font-size:.72rem;color:var(--muted);text-align:center;margin:6px 0 0;line-height:1.5">Accedendo accetti i nostri <a href="javascript:void(0)" onclick="showTermsModal()" style="color:var(--accent)">Termini</a> e <a href="javascript:void(0)" onclick="showPrivacyModal()" style="color:var(--accent)">Privacy Policy</a></p>
-          
-          
+        <div class="field">
+          <label style="font-size:.8rem;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px">Email</label>
+          <input class="inp" id="reg-email" type="email" placeholder="tuaemail@example.com" autocomplete="email" style="font-size:16px!important">
         </div>
-      </div>
-    </div>
-    <!-- REGISTER -->
-    <div id="auth-register" class="card" style="display:none">
-      <h2 style="font-family:var(--font2);margin-bottom:20px">Crea account gratuito</h2>
-      <div style="display:flex;flex-direction:column;gap:14px">
-        <div class="field-row c2">
-          <div class="field"><label>Nome</label><input class="inp" id="reg-name" placeholder="Mario" autocomplete="given-name" style="font-size:16px!important"></div>
-          <div class="field"><label>Cognome</label><input class="inp" id="reg-surname" placeholder="Rossi" autocomplete="family-name" style="font-size:16px!important"></div>
-        </div>
-        <div class="field"><label>Email</label><input class="inp" id="reg-email" type="email" placeholder="tuaemail@example.com" autocomplete="email" inputmode="email" style="font-size:16px!important"></div>
-        <div class="field"><label>Password</label><input class="inp" id="reg-pass" type="password" placeholder="min 6 caratteri" autocomplete="new-password" style="font-size:16px!important" onkeydown="if(event.key==='Enter'){event.preventDefault();doRegisterWithLegal();}"></div>
-        <div id="auth-err2" style="color:var(--red);font-size:.85rem;display:none"></div>
-                <div style="background:rgba(245,200,66,.07);border:1px solid rgba(245,200,66,.2);border-radius:10px;padding:12px 14px;margin-bottom:8px">
-          <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer">
-            <input type="checkbox" id="check-liberatoria" style="margin-top:3px;accent-color:var(--accent);width:16px;height:16px;flex-shrink:0">
-            <span style="font-size:.8rem;color:var(--sub);line-height:1.5">Dichiaro di essere in buona salute, privo di patologie che sconsiglino l'attività fisica intensa, e di aver letto e accettato la <a onclick="document.getElementById('modal-liberatoria').classList.add('open')" style="color:var(--gold);cursor:pointer;text-decoration:underline;font-weight:600">Liberatoria da Responsabilità</a>.</span>
-          </label>
-        </div>
-        <div style="margin-bottom:8px">
-          <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer">
-            <input type="checkbox" id="check-termini" style="margin-top:3px;accent-color:var(--accent);width:16px;height:16px;flex-shrink:0">
-            <span style="font-size:.8rem;color:var(--sub);line-height:1.5">Ho letto e accetto i <a onclick="document.getElementById('modal-termini').classList.add('open')" style="color:var(--accent);cursor:pointer;text-decoration:underline">Termini di Servizio</a> e la <a onclick="document.getElementById('modal-privacy').classList.add('open')" style="color:var(--accent);cursor:pointer;text-decoration:underline">Privacy Policy</a>. Confermo di avere almeno 18 anni.</span>
-          </label>
-        </div>
-        <button class="btn btn-primary" style="width:100%" onclick="doRegisterWithLegal()">Crea account gratis →</button>
-        <div style="display:flex;align-items:center;gap:10px;margin:12px 0;color:var(--sub);font-size:.8rem">
-          <div style="flex:1;height:1px;background:var(--border)"></div>
-          <span>oppure registrati con</span>
-          <div style="flex:1;height:1px;background:var(--border)"></div>
-        </div>
-        <div style="position:relative">
-          <div id="g-signin-btn-register" style="display:none"></div>
-          <!-- Fallback mobile -->
-          <button id="g-btn-reg-fallback" onclick="showGoogleTermsModal('register')"
-            style="display:flex;width:100%;padding:11px 16px;border-radius:8px;border:1px solid var(--border2);background:var(--bg2);color:var(--text);font-size:14px;font-weight:500;cursor:pointer;align-items:center;justify-content:center;gap:10px">
-            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-            Continua con Google
-          </button>
-          
+        <div class="field">
+          <label style="font-size:.8rem;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px">Password</label>
+          <input class="inp" id="reg-pass" type="password" placeholder="Minimo 6 caratteri" autocomplete="new-password" style="font-size:16px!important">
         </div>
       </div>
+
+      <!-- Checkbox legali -->
+      <div style="margin-top:18px;display:flex;flex-direction:column;gap:12px">
+        <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer;padding:14px;background:var(--bg3);border:1.5px solid var(--border2);border-radius:12px">
+          <input type="checkbox" id="check-liberatoria" style="margin-top:3px;accent-color:var(--accent);flex-shrink:0;width:18px;height:18px">
+          <span style="font-size:.83rem;color:var(--sub);line-height:1.5">
+            Dichiaro di essere in buona salute, privo di patologie che sconsiglino l&#39;attivit&#224; fisica intensa, e di aver letto e accettato la
+            <a onclick="event.preventDefault();event.stopPropagation();openLiberatoria()" style="color:var(--gold);cursor:pointer;text-decoration:underline;font-weight:600">Liberatoria da Responsabilit&#224;</a>.
+          </span>
+        </label>
+
+        <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer">
+          <input type="checkbox" id="check-termini" style="margin-top:3px;accent-color:var(--accent);flex-shrink:0;width:18px;height:18px">
+          <span style="font-size:.83rem;color:var(--sub);line-height:1.5">
+            Ho letto e accetto i
+            <a onclick="event.preventDefault();event.stopPropagation();openTermini()" style="color:var(--accent);cursor:pointer;text-decoration:underline;font-weight:600">Termini di Servizio</a>
+            e la
+            <a onclick="event.preventDefault();event.stopPropagation();openPrivacy()" style="color:var(--accent);cursor:pointer;text-decoration:underline;font-weight:600">Privacy Policy</a>.
+            Confermo di avere almeno 18 anni.
+          </span>
+        </label>
+      </div>
+
+      <div id="auth-err2" style="display:none;margin-top:12px;padding:10px 14px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;color:var(--red);font-size:.85rem"></div>
+
+      <button class="btn btn-primary" style="width:100%;margin-top:18px;padding:14px;font-size:15px;font-weight:700;border-radius:50px" onclick="doRegisterWithLegal()">Crea account gratis &#8594;</button>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:20px 0">
+        <div style="flex:1;height:1px;background:var(--border)"></div>
+        <span style="font-size:.75rem;color:var(--muted)">oppure registrati con</span>
+        <div style="flex:1;height:1px;background:var(--border)"></div>
+      </div>
+
+      <button onclick="signInWithGoogle()" class="btn btn-ghost" style="width:100%;padding:12px;display:flex;align-items:center;justify-content:center;gap:10px;border-radius:50px;font-size:14px;font-weight:600">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continua con Google
+      </button>
+
+      <p style="text-align:center;font-size:.82rem;color:var(--sub);margin:14px 0 0">
+        Hai gi&#224; un account? <a onclick="switchAuthTab('login')" style="color:var(--accent);cursor:pointer;font-weight:600">Accedi</a>
+      </p>
     </div>
+
   </div>
 </div>
 </div>
 
-<!-- ONBOARDING -->
 <div class="pg" id="pg-onboard">
 <nav><a class="nav-logo" style="display:flex;align-items:center;text-decoration:none;-webkit-tap-highlight-color:transparent"><svg width="200" height="28" viewBox="0 0 420 56" xmlns="http://www.w3.org/2000/svg" style="overflow:visible"><defs><style>@keyframes _spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}@keyframes _spinR{0%{transform:rotate(0deg)}100%{transform:rotate(-360deg)}}@keyframes _glow{0%,100%{filter:drop-shadow(0 0 4px #0099ff)}50%{filter:drop-shadow(0 0 10px #0099ff)}}@keyframes _bolt{0%,100%{opacity:.8}50%{opacity:1}}</style><filter id="lgf4"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g transform="translate(28,28)" style="animation:_glow 2.4s ease-in-out infinite"><circle cx="0" cy="0" r="24" fill="none" stroke="#0099ff" stroke-width="1" stroke-dasharray="8 5" opacity=".4" style="transform-origin:0 0;animation:_spin 8s linear infinite"/><circle cx="0" cy="0" r="19" fill="none" stroke="#0099ff" stroke-width="0.5" opacity=".2"/><polygon points="0,-18 18,0 0,18 -18,0" fill="rgba(0,153,255,.08)" stroke="#0099ff" stroke-width="1.5"/><polygon points="0,-10 10,0 0,10 -10,0" fill="rgba(0,153,255,.15)" stroke="#0099ff" stroke-width="1" opacity=".7"/><polygon points="2,-7 -3,1 2,1 -2,7 3,-1 -2,-1" fill="#0099ff" filter="url(#lgf4)" style="animation:_bolt 1.8s ease-in-out infinite"/><circle cx="0" cy="-18" r="2" fill="#0099ff" opacity=".8"/><circle cx="18" cy="0" r="2" fill="#0099ff" opacity=".8"/><circle cx="0" cy="18" r="2" fill="#0099ff" opacity=".8"/><circle cx="-18" cy="0" r="2" fill="#0099ff" opacity=".8"/><circle cx="0" cy="0" r="26" fill="none" stroke="#00ccff" stroke-width="0.5" stroke-dasharray="3 18" opacity=".3" style="transform-origin:0 0;animation:_spinR 12s linear infinite"/></g><g transform="translate(64,0)"><rect x="0" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="0" y="0" width="40" height="9" rx="2" fill="#0099ff"/><rect x="0" y="23" width="30" height="9" rx="2" fill="#0099ff"/><rect x="0" y="47" width="40" height="9" rx="2" fill="#0099ff"/><rect x="52" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="52" y="47" width="40" height="9" rx="2" fill="#0099ff"/><rect x="104" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="118" y="0" width="40" height="9" rx="2" fill="#0099ff"/><rect x="134" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="202" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="166" y="0" width="40" height="9" rx="2" fill="#0099ff"/><rect x="175" y="23" width="31" height="9" rx="2" fill="#0099ff"/><rect x="166" y="47" width="40" height="9" rx="2" fill="#0099ff"/><rect x="222" y="8" width="1" height="40" fill="rgba(255,255,255,.08)"/><text x="232" y="38" font-family="Arial Narrow,Arial,sans-serif" font-size="20" font-weight="700" letter-spacing="5" fill="rgba(255,255,255,.55)">COACH</text><rect x="334" y="8" width="1" height="40" fill="rgba(255,255,255,.05)"/><text x="344" y="24" font-family="Arial,sans-serif" font-size="10" letter-spacing="2" fill="rgba(255,255,255,.22)">PROGRAM</text><text x="344" y="42" font-family="Arial,sans-serif" font-size="11" font-weight="700" letter-spacing="2" fill="#0099ff">.FIT</text></g></svg></a><div class="nav-right"><span id="onb-step-lbl" style="color:var(--sub);font-size:.85rem"></span></div></nav>
 <div style="max-width:640px;margin:0 auto;padding:40px 20px">
@@ -5800,6 +5840,20 @@ function openYTDirect(name){
     || { name: name };
   openYT(ex);
 }
+// ── Libreria esercizi: apri per indice (evita problemi con JSON in onclick) ──
+function openLibEx(idx){
+  var ex = window._libExs && window._libExs[idx];
+  if(!ex && idx >= 0){
+    // Fallback: cerca in ALL_EXERCISES
+    ex = ALL_EXERCISES && ALL_EXERCISES[idx];
+  }
+  if(!ex){
+    console.warn('openLibEx: esercizio non trovato per idx', idx);
+    return;
+  }
+  openYT(ex);
+}
+
 
 function openYTById(idx){
   const exs = window._libExs || LIB_FILTERED || [];
@@ -5849,8 +5903,8 @@ function renderLibGrid(){
     const lvlColor = LEVEL_COLOR[(ex.level||'').toLowerCase()] || '#9999bb';
     const muscles = (ex.muscles||ex.muscle||'').split(',').slice(0,2).map(m=>m.trim()).filter(Boolean).join(' · ');
     const equip = ex.equip || '';
-    const exJSON = JSON.stringify(ex).replace(/"/g,"'").replace(/'/g,"&apos;");
-    return `<div class="lib-card lc2" onclick="openYT(${exJSON})" style="cursor:pointer;position:relative;overflow:hidden;border-radius:14px;background:var(--card);border:1px solid var(--border2);transition:.22s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column">
+    const exIdx = window._libExs ? window._libExs.indexOf(ex) : -1;
+    return `<div class="lib-card lc2" onclick="openLibEx(${exIdx})" style="cursor:pointer;position:relative;overflow:hidden;border-radius:14px;background:var(--card);border:1px solid var(--border2);transition:.22s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column">
       <div style="height:88px;display:flex;align-items:center;justify-content:center;background:#000;position:relative;flex-shrink:0">
         <svg width="44" height="44" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#FF0000"/><polygon points="10,8 18,12 10,16" fill="#fff"/></svg>
       </div>
@@ -7047,7 +7101,7 @@ function renderTrainerMessage(u){
   const trainers=getTrainers().filter(t=>t.status==='active');
   if(!u.trainerId){
     return `<p style="color:var(--sub);font-size:.88rem;margin-bottom:10px">Non hai ancora un trainer assegnato</p>
-      <button class="btn btn-ghost btn-sm" onclick="openTrainerLogin()">Trova trainer</button>`;
+      <button class="btn btn-ghost btn-sm" onclick="openMarketplaceOverlay()">Trova trainer</button>`;
   }
   const tr=trainers.find(t=>t.email===u.trainerId);
   return tr?`<div style="display:flex;align-items:center;gap:10px">
@@ -8746,7 +8800,7 @@ function renderDashChat(){
         <div style="margin-bottom:12px;opacity:.25;display:flex;justify-content:center"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
         <h3 style="margin-bottom:8px">Nessun trainer assegnato</h3>
         <p style="color:var(--sub);margin-bottom:16px">Trova un trainer nel marketplace per iniziare a chattare</p>
-        <button class="btn btn-primary" onclick="openTrainerLogin()">Trova trainer →</button>
+        <button class="btn btn-primary" onclick="openMarketplaceOverlay()">Trova trainer →</button>
       </div>`:`
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:12px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius)">
         <div class="avatar">${(myTrainer.name||'T')[0]}</div>
@@ -15915,18 +15969,37 @@ async function initNotificationSystem(){
 
 // ════ RECUPERO PASSWORD ════
 function showForgotPassword(){
-  var m=document.getElementById('forgot-modal');
-  if(m) m.style.display='flex';
-  var em=document.getElementById('forgot-email');
-  if(em) em.value='';
-  var msg=document.getElementById('forgot-msg');
-  if(msg) msg.style.display='none';
-  var btn=document.getElementById('forgot-btn');
-  if(btn){btn.disabled=false;btn.textContent='Invia link';}
-  setTimeout(function(){if(em)em.focus();},100);
+  setTimeout(function(){
+    var m = document.getElementById('forgot-modal');
+    if(!m){ 
+      // Crea dinamicamente
+      m = document.createElement('div');
+      m.id = 'forgot-modal';
+      m.innerHTML = '<div style="background:#1a1a2e;border:1px solid #2d2d44;border-radius:20px;padding:28px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.6)">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">' +
+          '<h3 style="margin:0;font-size:1.1rem;font-weight:700;color:#f1f5f9;font-family:sans-serif">Password dimenticata</h3>' +
+          '<button onclick="closeForgotPassword()" style="background:none;border:none;color:#94a3b8;font-size:1.4rem;cursor:pointer">&#10005;</button>' +
+        '</div>' +
+        '<p style="color:#94a3b8;font-size:.85rem;margin:0 0 18px;line-height:1.5">Inserisci la tua email e ti invieremo un link per reimpostare la password.</p>' +
+        '<div id="forgot-msg" style="display:none;padding:10px 14px;border-radius:10px;font-size:.85rem;margin-bottom:14px"></div>' +
+        '<input id="forgot-email" type="email" placeholder="tuaemail@example.com" style="width:100%;box-sizing:border-box;padding:12px 14px;background:#0d0d1a;border:1.5px solid #2d2d44;border-radius:10px;color:#f1f5f9;font-size:16px;outline:none;margin-bottom:14px" onkeydown="if(event.key===&quot;Enter&quot;)submitForgotPassword()">' +
+        '<button id="forgot-btn" onclick="submitForgotPassword()" style="width:100%;padding:14px;background:linear-gradient(135deg,#6366f1,#818cf8);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Invia link reset</button>' +
+        '<p style="text-align:center;margin-top:12px;font-size:.82rem;color:#94a3b8">Ricordi la password? <a onclick="closeForgotPassword()" style="color:#818cf8;cursor:pointer">Torna al login</a></p>' +
+      '</div>';
+      m.onclick = function(e){ if(e.target===m) closeForgotPassword(); };
+      document.body.appendChild(m);
+    }
+    m.style.cssText = 'display:flex;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);z-index:9999999;align-items:center;justify-content:center;padding:20px;box-sizing:border-box';
+    var em = document.getElementById('forgot-email');
+    if(em){ em.value=''; setTimeout(function(){ em.focus(); }, 100); }
+    var msg = document.getElementById('forgot-msg');
+    if(msg) msg.style.display='none';
+    var btn = document.getElementById('forgot-btn');
+    if(btn){ btn.disabled=false; btn.textContent='Invia link reset'; }
+  }, 10);
 }
 function closeForgotPassword(){
-  var m=document.getElementById('forgot-modal');
+  var m = document.getElementById('forgot-modal');
   if(m) m.style.display='none';
 }
 async function submitForgotPassword(){
@@ -16104,22 +16177,44 @@ function showTermsModal(){ showLegalModal('Termini di Servizio', '<p><strong>1. 
 function showPrivacyModal(){ showLegalModal('Privacy Policy', '<p><strong>Dati raccolti:</strong> Email, nome, dati fisici, sessioni allenamento.</p><p><strong>Uso:</strong> Esclusivamente per personalizzare il tuo programma.</p><p><strong>Storage:</strong> Railway EU con crittografia. Nessuna condivisione con terzi.</p><p><strong>Cancellazione:</strong> Scrivi a info@elitecoachprogram.fit per eliminare tutti i dati.</p>'); }
 function showLiberatoriaModal(){ showLegalModal('Liberatoria', '<p>Accettando dichiaro di:</p><p>✓ Essere in buona salute e non avere controindicazioni mediche.</p><p>✓ Assumermi la piena responsabilita per eventuali infortuni.</p><p>✓ Comprendere che i programmi AI sono suggerimenti, non sostituiscono un professionista.</p><p>✓ Avere almeno 16 anni.</p>'); }
 function showLegalModal(title, content){
+  // Rimuovi eventuale modal precedente
   var old = document.getElementById('legal-modal');
   if(old) old.remove();
+  // Crea modal
   var modal = document.createElement('div');
   modal.id = 'legal-modal';
-  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:99998;display:flex;align-items:center;justify-content:center;padding:20px';
+  modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);z-index:9999999;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box';
+  var box = document.createElement('div');
+  box.style.cssText = 'background:#1a1a2e;border:1px solid #2d2d44;border-radius:18px;padding:28px 24px;width:100%;max-width:600px;max-height:85vh;overflow-y:auto;position:relative';
+  var header = document.createElement('div');
+  header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #2d2d44';
+  var h2 = document.createElement('h2');
+  h2.style.cssText = 'margin:0;font-size:1.1rem;font-weight:700;color:#f1f5f9;font-family:sans-serif';
+  h2.textContent = title;
   var closeBtn = document.createElement('button');
-  closeBtn.className = 'btn btn-primary';
-  closeBtn.style.cssText = 'width:100%;margin-top:20px;border-radius:50px';
-  closeBtn.textContent = 'Ho capito';
+  closeBtn.style.cssText = 'background:none;border:none;color:#94a3b8;font-size:1.4rem;cursor:pointer;padding:4px 8px;border-radius:8px;line-height:1';
+  closeBtn.textContent = '✕';
   closeBtn.onclick = function(){ modal.remove(); };
-  var inner = document.createElement('div');
-  inner.style.cssText = 'background:var(--bg2);border-radius:16px;padding:28px;width:100%;max-width:500px;max-height:80vh;overflow-y:auto';
-  inner.innerHTML = '<h3 style="font-family:var(--font2);margin:0 0 16px">'+title+'</h3><div style="font-size:.85rem;color:var(--sub);line-height:1.7">'+content+'</div>';
-  inner.appendChild(closeBtn);
-  modal.appendChild(inner);
+  header.appendChild(h2);
+  header.appendChild(closeBtn);
+  var body = document.createElement('div');
+  body.innerHTML = content;
+  var acceptBtn = document.createElement('button');
+  acceptBtn.style.cssText = 'width:100%;margin-top:20px;padding:14px;background:linear-gradient(135deg,#6366f1,#818cf8);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:sans-serif';
+  acceptBtn.textContent = '✓ Ho letto e accetto';
+  acceptBtn.onclick = function(){ modal.remove(); };
+  box.appendChild(header);
+  box.appendChild(body);
+  box.appendChild(acceptBtn);
+  modal.appendChild(box);
+  // Chiudi cliccando fuori
+  modal.onclick = function(e){ if(e.target === modal) modal.remove(); };
+  // ESC chiude
+  var escHandler = function(e){ if(e.key==='Escape'){ modal.remove(); document.removeEventListener('keydown', escHandler); } };
+  document.addEventListener('keydown', escHandler);
   document.body.appendChild(modal);
+  // Force repaint
+  modal.offsetHeight;
 }
 
 
@@ -17527,6 +17622,79 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   }, 500);
 });
+
+// ── Modal apri/chiudi helpers ─────────────────────────────────
+
+
+
+
+
+
+// Override showTermsModal e showPrivacyModal per usare showLegalModal
+
+
+
+
+
+function openLiberatoria(){
+  var el = document.getElementById('modal-liberatoria');
+  if(el){ el.classList.add('open'); return; }
+  var content = '<div style="font-size:.9rem;line-height:1.8;color:#94a3b8">';
+  content += '<p style="margin-bottom:12px"><strong style="color:#f1f5f9">Dichiarazione di Idoneità Fisica</strong><br>';
+  content += 'Dichiaro di essere in buono stato di salute, non affetto da patologie cardiovascolari o muscolo-scheletriche.</p>';
+  content += '<p style="margin-bottom:12px"><strong style="color:#f1f5f9">Limitazione di Responsabilità</strong><br>';
+  content += 'EliteCoachProgram.fit non è responsabile per infortuni derivanti dagli esercizi. I programmi AI sono suggerimenti, non prescrizioni mediche.</p>';
+  content += '<p style="margin-bottom:12px"><strong style="color:#f1f5f9">Consenso Informato</strong><br>';
+  content += 'Confermo di avere almeno 18 anni e di aver consultato un medico prima di iniziare.</p>';
+  content += '<div style="background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.2);border-radius:10px;padding:12px;margin-top:16px">';
+  content += '⚠️ Consultare sempre un medico prima di iniziare qualsiasi programma di allenamento.</div>';
+  content += '</div>';
+  showLegalModal('Liberatoria da Responsabilità', content);
+}
+
+function openTermini(){
+  var el = document.getElementById('modal-termini');
+  if(el){ el.classList.add('open'); return; }
+  showTermsModal();
+}
+
+function openPrivacy(){
+  var el = document.getElementById('modal-privacy');
+  if(el){ el.classList.add('open'); return; }
+  showPrivacyModal();
+}
+
+function showTermsModal(){
+  var content = '<div style="font-size:.9rem;line-height:1.8;color:#94a3b8">';
+  content += '<p style="margin-bottom:10px"><strong style="color:#f1f5f9">1. Servizio</strong><br>';
+  content += 'EliteCoachProgram.fit fornisce programmi AI indicativi, non sostituiscono un professionista medico o sportivo.</p>';
+  content += '<p style="margin-bottom:10px"><strong style="color:#f1f5f9">2. Account</strong><br>';
+  content += 'Sei responsabile della sicurezza del tuo account e delle credenziali di accesso.</p>';
+  content += '<p style="margin-bottom:10px"><strong style="color:#f1f5f9">3. Dati</strong><br>';
+  content += 'I tuoi dati sono conservati su server EU sicuri e non vengono venduti a terzi.</p>';
+  content += '<p style="margin-bottom:10px"><strong style="color:#f1f5f9">4. Responsabilità</strong><br>';
+  content += 'Ti alleni sotto la tua personale responsabilità. EliteCoachProgram.fit non è responsabile per infortuni.</p>';
+  content += '<p style="margin-bottom:10px"><strong style="color:#f1f5f9">5. Età</strong><br>';
+  content += 'Servizio riservato a utenti di almeno 18 anni.</p>';
+  content += '<p style="margin-bottom:10px"><strong style="color:#f1f5f9">6. Abbonamento</strong><br>';
+  content += 'Piano Pro con rinnovo mensile. Rimborso garantito entro 14 giorni (diritto di recesso UE).</p>';
+  content += '</div>';
+  showLegalModal('Termini di Servizio', content);
+}
+
+function showPrivacyModal(){
+  var content = '<div style="font-size:.9rem;line-height:1.8;color:#94a3b8">';
+  content += '<p style="margin-bottom:10px"><strong style="color:#f1f5f9">Dati raccolti</strong><br>';
+  content += 'Email, nome, dati fisici (peso, altezza, obiettivi), sessioni di allenamento.</p>';
+  content += '<p style="margin-bottom:10px"><strong style="color:#f1f5f9">Finalità</strong><br>';
+  content += 'I dati sono utilizzati esclusivamente per personalizzare il programma.</p>';
+  content += '<p style="margin-bottom:10px"><strong style="color:#f1f5f9">Storage</strong><br>';
+  content += 'Server Railway EU con crittografia SSL. Nessuna condivisione con terzi senza consenso.</p>';
+  content += '<p style="margin-bottom:10px"><strong style="color:#f1f5f9">I tuoi diritti</strong><br>';
+  content += 'Diritto di accesso, rettifica e cancellazione dei dati. Scrivi a info@elitecoachprogram.fit</p>';
+  content += '</div>';
+  showLegalModal('Privacy Policy', content);
+}
 </script>
 
 
