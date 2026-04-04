@@ -17662,6 +17662,42 @@ function tHideAll(){
   document.body.style.overflow='';
 }
 
+var _TR_DEMO_CLIENTS = [
+  {id:'c1', name:'Alessandro', surname:'Rossi', email:'alex@demo.it',
+   goal:'Ipertrofia', level:'Intermedio', age:28, weight:78, height:178,
+   target_weight:83, days:4, injuries:'Nessuno', since:'Gen 2025',
+   avatar:'AR', color:'#6366f1', status:'attivo', sessions:24,
+   adherence:87, pr_bench:95, pr_squat:130, pr_dead:150,
+   log:[{date:'2025-04-01',vol:8400},{date:'2025-03-25',vol:7800},{date:'2025-03-18',vol:9200}]},
+  {id:'c2', name:'Giulia', surname:'Ferrari', email:'giulia@demo.it',
+   goal:'Dimagrimento', level:'Principiante', age:31, weight:65, height:165,
+   target_weight:58, days:3, injuries:'Lombalgia lieve', since:'Feb 2025',
+   avatar:'GF', color:'#ec4899', status:'attivo', sessions:12,
+   adherence:72, pr_bench:30, pr_squat:45, pr_dead:55,
+   log:[{date:'2025-04-01',vol:3200},{date:'2025-03-25',vol:2900},{date:'2025-03-18',vol:3400}]},
+  {id:'c3', name:'Marco', surname:'Conti', email:'marco.c@demo.it',
+   goal:'Powerlifting', level:'Avanzato', age:35, weight:92, height:182,
+   target_weight:92, days:5, injuries:'Spalla dx (recupero)', since:'Mar 2025',
+   avatar:'MC', color:'#f97316', status:'in pausa', sessions:8,
+   adherence:60, pr_bench:140, pr_squat:200, pr_dead:240,
+   log:[{date:'2025-03-25',vol:12000},{date:'2025-03-18',vol:11500}]},
+];
+function _tSparkline(data, col){
+  if(!data || !data.length) return '';
+  var max = Math.max.apply(null, data.map(function(d){return d.vol;}));
+  var min = Math.min.apply(null, data.map(function(d){return d.vol;}));
+  var range = max - min || 1;
+  var w = 80, h = 30;
+  var pts = data.map(function(d,i){
+    var x = (i/(data.length-1||1))*w;
+    var y = h - ((d.vol-min)/range)*h;
+    return x+','+y;
+  }).join(' ');
+  return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'">'
+    +'<polyline points="'+pts+'" fill="none" stroke="'+(col||'#6366f1')+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+    +'</svg>';
+}
+
 /* ── OPEN LOGIN ── */
 function tOpenLogin(){
   tHideAll();
