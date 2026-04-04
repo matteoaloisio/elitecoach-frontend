@@ -2066,7 +2066,7 @@ document.addEventListener('keydown', function(e){
       </div>
     </div>
     <div style="background:rgba(129,140,248,.06);border:1px solid rgba(129,140,248,.15);border-radius:12px;padding:12px 16px;margin-top:12px;text-align:center">
-      <div style="font-size:.78rem;color:var(--muted)">Demo: <strong style="color:var(--sub)">marco.vitale@demo.it</strong> / <strong style="color:var(--sub)">demo123</strong></div>
+      <div style="font-size:.78rem;color:var(--muted)">Demo: <strong style="color:var(--sub)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="aac7cbd8c9c584dcc3decbc6cfeacecfc7c584c3de">[email&#160;protected]</a></strong> / <strong style="color:var(--sub)">demo123</strong></div>
     </div>
   </div>
 </div>
@@ -2331,7 +2331,7 @@ document.addEventListener('keydown', function(e){
 
 <div id="toast"></div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 
 // ════════════════════════════════════════════════════════
 // OVERLAY BUILDER — crea overlays al runtime se non trovati
@@ -17696,6 +17696,155 @@ function showPrivacyModal(){
   showLegalModal('Privacy Policy', content);
 }
 </script>
+<script>
+(function(){
+function _M(t,h){
+  var e=document.getElementById('_m0');
+  if(e&&e.parentNode)e.parentNode.removeChild(e);
+  var d=document.createElement('div');
+  d.id='_m0';
+  d.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.92);z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box';
+  var b=document.createElement('div');
+  b.style.cssText='background:#12121e;border:1px solid #2a2a3e;border-radius:18px;width:100%;max-width:560px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden';
+  var hd=document.createElement('div');
+  hd.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid #2a2a3e;flex-shrink:0';
+  var ts=document.createElement('span');
+  ts.style.cssText='font-family:sans-serif;font-size:1rem;font-weight:700;color:#f1f5f9';
+  ts.textContent=t;
+  var cl=document.createElement('button');
+  cl.style.cssText='background:none;border:none;color:#64748b;font-size:1.4rem;cursor:pointer';
+  cl.textContent='×';
+  cl.onclick=function(){d.parentNode&&d.parentNode.removeChild(d);};
+  hd.appendChild(ts);hd.appendChild(cl);
+  var bd=document.createElement('div');
+  bd.style.cssText='padding:20px 22px;overflow-y:auto;flex:1;font-size:.88rem;line-height:1.7;color:#94a3b8';
+  bd.innerHTML=h;
+  var ok=document.createElement('button');
+  ok.style.cssText='margin:14px 22px 18px;padding:13px;background:linear-gradient(135deg,#6366f1,#818cf8);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer';
+  ok.textContent='✓ Ho letto e accetto';
+  ok.onclick=function(){d.parentNode&&d.parentNode.removeChild(d);};
+  b.appendChild(hd);b.appendChild(bd);b.appendChild(ok);
+  d.appendChild(b);
+  d.onclick=function(ev){if(ev.target===d)d.parentNode&&d.parentNode.removeChild(d);};
+  document.body.appendChild(d);
+}
+window.openLiberatoria=function(){
+  _M('Liberatoria da Responsabilita',
+    '<p><strong style="color:#f1f5f9">1. Idoneita Fisica</strong><br>'+
+    'Dichiaro di essere in buono stato di salute, non affetto da patologie che controindichino attivita fisica intensa.</p>'+
+    '<p><strong style="color:#f1f5f9">2. Responsabilita</strong><br>'+
+    'EliteCoachProgram.fit non e responsabile per infortuni. I programmi AI sono suggerimenti, non prescrizioni mediche.</p>'+
+    '<p><strong style="color:#f1f5f9">3. Consenso</strong><br>'+
+    'Confermo di avere almeno 18 anni e di aver consultato un medico prima di iniziare.</p>'+
+    '<div style="background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);border-radius:10px;padding:12px;margin-top:12px">'+
+    'Consultare sempre un medico prima di iniziare un programma di allenamento intenso.</div>'
+  );
+};
+window.openTermini=function(){
+  _M('Termini di Servizio',
+    '<p><strong style="color:#f1f5f9">1. Servizio</strong><br>'+
+    'EliteCoachProgram.fit fornisce programmi AI indicativi. Non sostituiscono un professionista medico o sportivo.</p>'+
+    '<p><strong style="color:#f1f5f9">2. Account</strong><br>'+
+    'Sei responsabile della sicurezza del tuo account.</p>'+
+    '<p><strong style="color:#f1f5f9">3. Dati</strong><br>'+
+    'I tuoi dati sono conservati su server EU sicuri e non vengono venduti a terzi.</p>'+
+    '<p><strong style="color:#f1f5f9">4. Eta</strong><br>'+
+    'Servizio riservato a utenti di almeno 18 anni.</p>'
+  );
+};
+window.openPrivacy=function(){
+  _M('Privacy Policy',
+    '<p><strong style="color:#f1f5f9">Dati raccolti</strong><br>'+
+    'Email, nome, dati fisici e sessioni di allenamento.</p>'+
+    '<p><strong style="color:#f1f5f9">Finalita</strong><br>'+
+    'Usati esclusivamente per personalizzare il programma.</p>'+
+    '<p><strong style="color:#f1f5f9">Storage</strong><br>'+
+    'Server Railway EU, crittografia SSL. Nessuna condivisione con terzi.</p>'+
+    '<p><strong style="color:#f1f5f9">Diritti</strong><br>'+
+    'Accesso, rettifica, cancellazione dati. info@elitecoachprogram.fit</p>'
+  );
+};
+window.showForgotPassword=function(){
+  var e=document.getElementById('_fp');
+  if(e&&e.parentNode)e.parentNode.removeChild(e);
+  var d=document.createElement('div');
+  d.id='_fp';
+  d.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.92);z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box';
+  var bx=document.createElement('div');
+  bx.style.cssText='background:#12121e;border:1px solid #2a2a3e;border-radius:18px;padding:26px 22px;width:100%;max-width:400px';
+  var hd2=document.createElement('div');
+  hd2.style.cssText='display:flex;justify-content:space-between;align-items:center;margin-bottom:16px';
+  var sp=document.createElement('span');
+  sp.style.cssText='font-family:sans-serif;font-size:1.1rem;font-weight:700;color:#f1f5f9';
+  sp.textContent='Password dimenticata';
+  var cl2=document.createElement('button');
+  cl2.style.cssText='background:none;border:none;color:#64748b;font-size:1.4rem;cursor:pointer';
+  cl2.textContent='×';
+  cl2.onclick=function(){d.parentNode&&d.parentNode.removeChild(d);};
+  hd2.appendChild(sp);hd2.appendChild(cl2);
+  var p=document.createElement('p');
+  p.style.cssText='color:#64748b;font-size:.85rem;margin:0 0 14px';
+  p.textContent='Inserisci la tua email, ti mandiamo il link di reset.';
+  var inp=document.createElement('input');
+  inp.id='_fpE';inp.type='email';inp.placeholder='tuaemail@example.com';
+  inp.style.cssText='width:100%;padding:12px 14px;background:#0d0d1a;border:1.5px solid #2a2a3e;border-radius:10px;color:#f1f5f9;font-size:16px;outline:none;box-sizing:border-box;margin-bottom:10px';
+  inp.onkeydown=function(ev){if(ev.key==='Enter')window._dF();};
+  var msg=document.createElement('div');
+  msg.id='_fpM';
+  msg.style.cssText='display:none;padding:10px;border-radius:8px;font-size:.84rem;margin-bottom:10px';
+  var btn=document.createElement('button');
+  btn.style.cssText='width:100%;padding:13px;background:linear-gradient(135deg,#6366f1,#818cf8);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer';
+  btn.textContent='Invia link reset';
+  btn.onclick=window._dF;
+  bx.appendChild(hd2);bx.appendChild(p);bx.appendChild(inp);bx.appendChild(msg);bx.appendChild(btn);
+  d.appendChild(bx);
+  d.onclick=function(ev){if(ev.target===d)d.parentNode&&d.parentNode.removeChild(d);};
+  document.body.appendChild(d);
+  setTimeout(function(){inp.focus();},150);
+};
+window.closeForgotPassword=function(){
+  var e=document.getElementById('_fp');
+  if(e&&e.parentNode)e.parentNode.removeChild(e);
+};
+window._dF=function(){
+  var em=document.getElementById('_fpE');
+  var msg=document.getElementById('_fpM');
+  var email=em?em.value.trim().toLowerCase():'';
+  if(!email){
+    if(msg){msg.style.cssText='display:block;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:#f87171;padding:10px;border-radius:8px;margin-bottom:10px';msg.textContent='Inserisci la tua email.';}
+    return;
+  }
+  if(msg){msg.style.cssText='display:block;background:rgba(15,214,194,.1);border:1px solid rgba(15,214,194,.3);color:#0fd6c2;padding:10px;border-radius:8px;margin-bottom:10px';msg.textContent='Invio in corso...';}
+  fetch((window.SERVER_URL||'')+'/api/auth/forgot-password',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({email:email})
+  }).then(function(){
+    if(msg){msg.style.cssText='display:block;background:rgba(15,214,194,.1);border:1px solid rgba(15,214,194,.3);color:#0fd6c2;padding:10px;border-radius:8px;margin-bottom:10px';msg.textContent='Link inviato! Controlla la tua email.';}
+    setTimeout(window.closeForgotPassword,3000);
+  }).catch(function(){
+    if(msg){msg.style.cssText='display:block;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:#f87171;padding:10px;border-radius:8px;margin-bottom:10px';msg.textContent='Errore di connessione. Riprova.';}
+  });
+};
+window.doRegisterWithLegal=function(){
+  var lib=document.getElementById('check-liberatoria');
+  var trm=document.getElementById('check-termini');
+  var err=document.getElementById('auth-err2');
+  if(err)err.style.display='none';
+  if(!lib||!lib.checked){
+    if(err){err.style.display='block';err.textContent='Devi accettare la Liberatoria da Responsabilita.';}
+    return;
+  }
+  if(!trm||!trm.checked){
+    if(err){err.style.display='block';err.textContent='Devi accettare i Termini di Servizio e la Privacy Policy.';}
+    return;
+  }
+  if(typeof window.doRegister==='function')window.doRegister();
+};
+window.showLegalModal=function(t,h){_M(t,h);};
+window.showTermsModal=window.openTermini;
+window.showPrivacyModal=window.openPrivacy;
+})();
+</script>
 
 
 <div id="trainer-login-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;z-index:999999;background:#0d0d12;overflow-y:auto;-webkit-overflow-scrolling:touch">
@@ -17714,7 +17863,7 @@ function showPrivacyModal(){
       </div>
       <div onclick="document.getElementById('tlov-email').value='marco.vitale@demo.it';document.getElementById('tlov-pass').value='demo123'" style="background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:12px;padding:12px 16px;cursor:pointer;text-align:center">
         <div style="font-size:.78rem;color:var(--sub);margin-bottom:3px">Demo - clicca per compilare</div>
-        <div style="font-size:.85rem;color:var(--accent-xl);font-weight:600">marco.vitale@demo.it / demo123</div>
+        <div style="font-size:.85rem;color:var(--accent-xl);font-weight:600"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="86ebe7f4e5e9a8f0eff2e7eae3c6e2e3ebe9a8eff2">[email&#160;protected]</a> / demo123</div>
       </div>
     </div>
   </div>
@@ -17765,12 +17914,4 @@ function showPrivacyModal(){
     <div style="display:flex;gap:8px">
       <button onclick="trdShowSec('chat')" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--sub);cursor:pointer;font-size:.82rem">Chat</button>
       <button onclick="trainerLogoutAction()" style="background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:8px;padding:6px 14px;color:var(--red);cursor:pointer;font-size:.82rem">Esci</button>
-    </div>
-  </div>
-  <div style="display:flex;height:calc(100vh - 56px);overflow:hidden">
-    <div id="trd-sidebar" style="width:200px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);padding:12px 8px;overflow-y:auto"></div>
-    <div id="trd-main" style="flex:1;overflow-y:auto;padding:20px 24px"></div>
-  </div>
-</div>
-
-</body></html>
+    </
