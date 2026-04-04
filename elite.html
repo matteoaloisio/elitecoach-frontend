@@ -5609,9 +5609,9 @@ function getYTVideoId(url){
 
 // Build the best embed URL
 function ytEmbedUrl(url){
-  const id = getYTVideoId(url);
+  var id = getYTVideoId(url);
   if(!id) return null;
-  return 'https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0&modestbranding=1&playsinline=1&origin='+encodeURIComponent(window.location.origin);
+  return 'https://www.youtube.com/embed/'+id+'?autoplay=1&rel=0&playsinline=1';
 }
 
 // Build YouTube search URL for the exercise
@@ -17363,7 +17363,6 @@ function trSaveProfilo(){
 
 function openTrainerArea(){openTrainerLogin();}
 
-async 
 
 
 
