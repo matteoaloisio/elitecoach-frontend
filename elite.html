@@ -1349,7 +1349,7 @@ document.addEventListener('keydown', function(e){
 <!-- LANDING PAGE -->
 <div class="pg on" id="pg-land">
 <nav>
-  <a class="nav-logo" onclick="showPage('pg-land')" style="display:flex;align-items:center;text-decoration:none;-webkit-tap-highlight-color:transparent"><svg width="200" height="28" viewBox="0 0 420 56" xmlns="http://www.w3.org/2000/svg" style="overflow:visible"><defs><style>@keyframes _spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}@keyframes _spinR{0%{transform:rotate(0deg)}100%{transform:rotate(-360deg)}}@keyframes _glow{0%,100%{filter:drop-shadow(0 0 4px #0099ff)}50%{filter:drop-shadow(0 0 10px #0099ff)}}@keyframes _bolt{0%,100%{opacity:.8}50%{opacity:1}}</style><filter id="lgf1"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g transform="translate(28,28)" style="animation:_glow 2.4s ease-in-out infinite"><circle cx="0" cy="0" r="24" fill="none" stroke="#0099ff" stroke-width="1" stroke-dasharray="8 5" opacity=".4" style="transform-origin:0 0;animation:_spin 8s linear infinite"/><circle cx="0" cy="0" r="19" fill="none" stroke="#0099ff" stroke-width="0.5" opacity=".2"/><polygon points="0,-18 18,0 0,18 -18,0" fill="rgba(0,153,255,.08)" stroke="#0099ff" stroke-width="1.5"/><polygon points="0,-10 10,0 0,10 -10,0" fill="rgba(0,153,255,.15)" stroke="#0099ff" stroke-width="1" opacity=".7"/><polygon points="2,-7 -3,1 2,1 -2,7 3,-1 -2,-1" fill="#0099ff" filter="url(#lgf1)" style="animation:_bolt 1.8s ease-in-out infinite"/><circle cx="0" cy="-18" r="2" fill="#0099ff" opacity=".8"/><circle cx="18" cy="0" r="2" fill="#0099ff" opacity=".8"/><circle cx="0" cy="18" r="2" fill="#0099ff" opacity=".8"/><circle cx="-18" cy="0" r="2" fill="#0099ff" opacity=".8"/><circle cx="0" cy="0" r="26" fill="none" stroke="#00ccff" stroke-width="0.5" stroke-dasharray="3 18" opacity=".3" style="transform-origin:0 0;animation:_spinR 12s linear infinite"/></g><g transform="translate(64,0)"><rect x="0" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="0" y="0" width="40" height="9" rx="2" fill="#0099ff"/><rect x="0" y="23" width="30" height="9" rx="2" fill="#0099ff"/><rect x="0" y="47" width="40" height="9" rx="2" fill="#0099ff"/><rect x="52" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="52" y="47" width="40" height="9" rx="2" fill="#0099ff"/><rect x="104" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="118" y="0" width="40" height="9" rx="2" fill="#0099ff"/><rect x="134" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="202" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="166" y="0" width="40" height="9" rx="2" fill="#0099ff"/><rect x="175" y="23" width="31" height="9" rx="2" fill="#0099ff"/><rect x="166" y="47" width="40" height="9" rx="2" fill="#0099ff"/><rect x="222" y="8" width="1" height="40" fill="rgba(255,255,255,.08)"/><text x="232" y="38" font-family="Arial Narrow,Arial,sans-serif" font-size="20" font-weight="700" letter-spacing="5" fill="rgba(255,255,255,.55)">COACH</text><rect x="334" y="8" width="1" height="40" fill="rgba(255,255,255,.05)"/><text x="344" y="24" font-family="Arial,sans-serif" font-size="10" letter-spacing="2" fill="rgba(255,255,255,.22)">PROGRAM</text><text x="344" y="42" font-family="Arial,sans-serif" font-size="11" font-weight="700" letter-spacing="2" fill="#0099ff">.FIT</text></g></svg></a>
+  <a onclick="openTrainerLogin()" style="display:flex;align-items:center;gap:6px;padding:7px 16px;border:1.5px solid var(--border2);border-radius:50px;color:var(--sub);font-size:.85rem;font-weight:600;cursor:pointer;text-decoration:none">⋆ Trainer</a> <a class="nav-logo" onclick="showPage('pg-land')" style="display:flex;align-items:center;text-decoration:none;-webkit-tap-highlight-color:transparent"><svg width="200" height="28" viewBox="0 0 420 56" xmlns="http://www.w3.org/2000/svg" style="overflow:visible"><defs><style>@keyframes _spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}@keyframes _spinR{0%{transform:rotate(0deg)}100%{transform:rotate(-360deg)}}@keyframes _glow{0%,100%{filter:drop-shadow(0 0 4px #0099ff)}50%{filter:drop-shadow(0 0 10px #0099ff)}}@keyframes _bolt{0%,100%{opacity:.8}50%{opacity:1}}</style><filter id="lgf1"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g transform="translate(28,28)" style="animation:_glow 2.4s ease-in-out infinite"><circle cx="0" cy="0" r="24" fill="none" stroke="#0099ff" stroke-width="1" stroke-dasharray="8 5" opacity=".4" style="transform-origin:0 0;animation:_spin 8s linear infinite"/><circle cx="0" cy="0" r="19" fill="none" stroke="#0099ff" stroke-width="0.5" opacity=".2"/><polygon points="0,-18 18,0 0,18 -18,0" fill="rgba(0,153,255,.08)" stroke="#0099ff" stroke-width="1.5"/><polygon points="0,-10 10,0 0,10 -10,0" fill="rgba(0,153,255,.15)" stroke="#0099ff" stroke-width="1" opacity=".7"/><polygon points="2,-7 -3,1 2,1 -2,7 3,-1 -2,-1" fill="#0099ff" filter="url(#lgf1)" style="animation:_bolt 1.8s ease-in-out infinite"/><circle cx="0" cy="-18" r="2" fill="#0099ff" opacity=".8"/><circle cx="18" cy="0" r="2" fill="#0099ff" opacity=".8"/><circle cx="0" cy="18" r="2" fill="#0099ff" opacity=".8"/><circle cx="-18" cy="0" r="2" fill="#0099ff" opacity=".8"/><circle cx="0" cy="0" r="26" fill="none" stroke="#00ccff" stroke-width="0.5" stroke-dasharray="3 18" opacity=".3" style="transform-origin:0 0;animation:_spinR 12s linear infinite"/></g><g transform="translate(64,0)"><rect x="0" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="0" y="0" width="40" height="9" rx="2" fill="#0099ff"/><rect x="0" y="23" width="30" height="9" rx="2" fill="#0099ff"/><rect x="0" y="47" width="40" height="9" rx="2" fill="#0099ff"/><rect x="52" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="52" y="47" width="40" height="9" rx="2" fill="#0099ff"/><rect x="104" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="118" y="0" width="40" height="9" rx="2" fill="#0099ff"/><rect x="134" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="202" y="0" width="9" height="56" rx="2" fill="#0099ff"/><rect x="166" y="0" width="40" height="9" rx="2" fill="#0099ff"/><rect x="175" y="23" width="31" height="9" rx="2" fill="#0099ff"/><rect x="166" y="47" width="40" height="9" rx="2" fill="#0099ff"/><rect x="222" y="8" width="1" height="40" fill="rgba(255,255,255,.08)"/><text x="232" y="38" font-family="Arial Narrow,Arial,sans-serif" font-size="20" font-weight="700" letter-spacing="5" fill="rgba(255,255,255,.55)">COACH</text><rect x="334" y="8" width="1" height="40" fill="rgba(255,255,255,.05)"/><text x="344" y="24" font-family="Arial,sans-serif" font-size="10" letter-spacing="2" fill="rgba(255,255,255,.22)">PROGRAM</text><text x="344" y="42" font-family="Arial,sans-serif" font-size="11" font-weight="700" letter-spacing="2" fill="#0099ff">.FIT</text></g></svg></a>
   <!-- DESKTOP nav-right -->
   <div class="nav-right nav-desktop">
     <button id="theme-toggle-btn" onclick="toggleTheme()" class="btn-nav ghost" style="padding:7px 10px;font-size:1rem" title="Cambia tema"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
@@ -1374,6 +1374,7 @@ document.addEventListener('keydown', function(e){
   <button class="btn btn-primary" style="width:100%;justify-content:flex-start;padding:12px 16px;font-size:15px;border-radius:12px" onclick="showPage('pg-auth','register');closeMobileMenu()">Inizia gratis</button>
   <div style="height:1px;background:var(--border);margin:4px 0"></div>
   <button class="btn btn-ghost" style="width:100%;justify-content:flex-start;padding:12px 16px;font-size:15px;border-radius:12px" onclick="closeMobileMenu();openMarketplaceOverlay()">Trova Trainer</button>
+  <button class="btn btn-ghost" style="width:100%;justify-content:flex-start;padding:12px 16px;font-size:15px;border-radius:12px" onclick="closeMobileMenu();openTrainerLogin()">⋆ Area Trainer</button>
   <button class="btn btn-ghost" style="width:100%;justify-content:flex-start;padding:12px 16px;font-size:15px;border-radius:12px" onclick="closeMobileMenu();openTrainerLogin()">Area Trainer</button>
   <button class="btn btn-ghost" style="width:100%;justify-content:flex-start;padding:12px 16px;font-size:15px;border-radius:12px" onclick="closeMobileMenu();setTimeout(function(){document.getElementById('libreria-section')&&document.getElementById('libreria-section').scrollIntoView({behavior:'smooth'})},100)">Libreria Esercizi</button>
   <div style="height:1px;background:var(--border);margin:4px 0"></div>
@@ -2454,7 +2455,7 @@ function openMarketplaceOverlay(){
 }
 
 // Override openTrainerLogin to use dynamic creation
-function openTrainerLogin(){ if(typeof trOpenLogin==="function"){trOpenLogin();}else{console.error("[Trainer] trOpenLogin non trovata");} }
+function openTrainerLogin(){ if(typeof tOpenLogin==="function"){tOpenLogin();}else if(typeof window.trOpenLogin==="function"){window.trOpenLogin();}else if(typeof openTrainerDash==="function"&&localStorage.getItem("_ts")){openTrainerDash();}else{console.warn("[Trainer] login function not found");} }
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -19100,6 +19101,37 @@ window._bldInitExList = function(){
 };
 
 
+
+/* ── GLOBAL EXPORTS — trainer functions to window ── */
+window.openTrainerLogin  = tOpenLogin;
+window.openTrainerReg    = tOpenReg;
+window.openTrainerDash   = tOpenDash;
+window.closeTrainerArea  = tClose;
+window.trOpenLogin       = tOpenLogin;
+window.trOpenReg         = tOpenReg;
+window.trOpenDash        = tOpenDash;
+window.trClose           = tClose;
+window.trLogin           = tLogin;
+window.trReg             = tReg;
+window.trLogout          = tLogout;
+window.mvBecomeTrainer   = function(){ tOpenReg(); };
+
+/* Override showPage per trainer pages */
+var _sp0 = window.showPage;
+window.showPage = function(id, sub){
+  if(id==='pg-trainer-login' || (id==='pg-trainer-dash' && !tLoad())){ tOpenLogin(); return; }
+  if(id==='pg-trainer-reg'){ tOpenReg(); return; }
+  if(id==='pg-trainer-dash'){ tOpenDash(); return; }
+  if(id==='pg-owner'){ if(typeof openOwnerOverlay==='function') openOwnerOverlay(); return; }
+  if(typeof _sp0==='function') _sp0(id, sub);
+};
+
+/* ESC closes trainer overlays */
+document.addEventListener('keydown', function(e){
+  if(e.key==='Escape') tHideAll();
+});
+
+console.log('[Trainer v5] Sistema pronto');
 })();
 
 /* LIBRERIA DASH */
